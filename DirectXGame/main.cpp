@@ -1,11 +1,10 @@
-#include "MySetup.h"
+#include "MyDirectX.h"
 #include "Logger.h"
 
 int WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
-	std::unique_ptr<MySetup> setup = std::make_unique<MySetup>(1280, 720);
-
-	setup->Initialize();
+	MyDirectX* myDirectX = new MyDirectX(1280, 720);
+	myDirectX->Initialize();
 
 	MSG msg{};
 
@@ -17,10 +16,13 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			DispatchMessage(&msg);
 		} else {
 			//ゲームの更新処理
+			myDirectX->ClearScreen();
+			myDirectX->EndFrame();
 		}
 	}
 
-	setup->Finalize();	//DirectXの解放
+	myDirectX->Finalize();
+	delete myDirectX;
 
 	return 0;
 }
