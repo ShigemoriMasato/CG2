@@ -17,6 +17,7 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		} else {
 			//ゲームの更新処理
 			myDirectX->ClearScreen();
+			myDirectX->DrawTriangle();
 			myDirectX->EndFrame();
 		}
 	}
