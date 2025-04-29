@@ -103,7 +103,7 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			//windowの大きさ(てきとうに)
 			ImGui::SetNextWindowSize(ImVec2(300, 400));
-			ImGui::Begin("Sphere");
+			ImGui::Begin("wvpMatrix");
 			ImGui::SliderVector("Scale", transform.scale, 0.0f, 10.0f);
 			ImGui::SliderVector("Rotation", transform.rotation, -3.14f, 3.14f);
 			ImGui::SliderVector("Position", transform.position, -10.0f, 10.0f);
@@ -112,7 +112,7 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			ImGui::End();
 
 			ImGui::SetNextWindowSize(ImVec2(300, 400));
-			ImGui::Begin("Sprite");
+			ImGui::Begin("wvp");
 			ImGui::SliderVector("Scale", tra.scale, 0.0f, 3.0f);
 			ImGui::SliderVector("Rotation", tra.rotation, -3.14f, 3.14f);
 			ImGui::SliderVector("Position", tra.position, 0.0f, 1280.0f);
@@ -122,9 +122,7 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			wvpMatrix = worldMatrix * viewMatrix * projectionMatrix;
 			Matrix4x4 wvp = MakeTransformMatrix(tra) * MakeIdentity4x4() * MakeOrthographicMatrix(0.0f, 0.0f, float(kWindowWidth), float(kWindowHeight), 0.0f, 100.0f);
 
-			myDirectX->DrawSphere(wvpMatrix, triangleColor, textureHandle);
-
-			myDirectX->DrawSprite(sprite1.lt, sprite1.rt, sprite1.lb, sprite1.rb, wvp, Vector4());
+			myDirectX->DrawTriangle3D(MakeIdentity4x4(), triangleColor, textureHandle);
 
 			myDirectX->EndFrame();
 		}

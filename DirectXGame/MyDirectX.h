@@ -43,6 +43,8 @@ public:
 
 	void DrawSphere(Matrix4x4 wvpMatrix, Vector4 color, int textureHandle);
 
+	void DrawTriangle3D(Matrix4x4 wvpMatrix, Vector4 color, int textureHandle);
+
 	void DrawSprite(Vector4 lt, Vector4 rt, Vector4 lb, Vector4 rb, Matrix4x4 wvpMatrix, Vector4 color);
 
 	void EndFrame();
@@ -90,12 +92,12 @@ private:
 	ID3D12Fence* fence = nullptr;
 	HANDLE fenceEvent;
 
-	//三角形描画用
+	//球描画用
 	ID3D12DescriptorHeap* dsvDescriptorHeap = nullptr;
 	ID3D12Resource* depthStencilResource = nullptr;
-	ID3D12Resource* vertexResource = nullptr;
-	ID3D12Resource* wvpResource = nullptr;
-	ID3D12Resource* materialResource = nullptr;
+	ID3D12Resource* vertexResourceSphere = nullptr;
+	ID3D12Resource* wvpResourceSphere = nullptr;
+	ID3D12Resource* materialResourceSphere = nullptr;
 	ID3D12PipelineState* graphicsPipelineState = nullptr;
 	ID3D10Blob* signatureBlob = nullptr;
 	ID3DBlob* errorBlob = nullptr;
@@ -103,6 +105,20 @@ private:
 	IDxcBlob* pixelShaderBlob = nullptr;
 	IDxcBlob* vertexShaderBlob = nullptr;
 	std::vector<D3D12_SUBRESOURCE_DATA> subresources;
+	uint32_t drawSphereTriangleCount = 0;
+
+	VertexData* vertexData = nullptr;
+	Matrix4x4* wvpData = nullptr;
+	Vector4* materialData = nullptr;
+
+	//三角形描画用
+	ID3D12Resource* vertexResourceTriangle3D = nullptr;
+	ID3D12Resource* wvpResourceTriangle3D = nullptr;
+	ID3D12Resource* materialResourceTriangle3D = nullptr;
+	VertexData* vertexDataTriangle3D = nullptr;
+	Matrix4x4* wvpDataTriangle3D = nullptr;
+	Vector4* materialDataTriangle3D = nullptr;
+	uint32_t drawTriangle3DCount = 0;
 
 	//画像の関数
 	std::vector<D3D12_GPU_DESCRIPTOR_HANDLE> textureSrvHandleGPU;
@@ -115,16 +131,14 @@ private:
 	uint32_t descriptorSizeRTV;
 	uint32_t descriptorSizeDSV;
 
-	VertexData* vertexData = nullptr;
-	Matrix4x4* wvpData = nullptr;
-	Vector4* materialData = nullptr;
-
 	//sprite
 	ID3D12Resource* vertexResourceSprite = nullptr;
-	ID3D12Resource* transformationMatrixResourceSprite = nullptr;	//スプライト用の頂点バッファ
+	ID3D12Resource* wvpResourceSprite = nullptr;	//スプライト用の頂点バッファ
+
+	uint32_t drawTriangle2DCount = 0;
 
 	VertexData* vertexDataSprite = nullptr;
-	Matrix4x4* transformationMatrixDataSprite = nullptr;
+	Matrix4x4* wvpDataSprite = nullptr;
 
 	//imgui用
 	ID3D12DescriptorHeap* srvDescriptorHeap = nullptr;

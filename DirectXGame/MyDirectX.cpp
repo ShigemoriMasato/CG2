@@ -310,11 +310,14 @@ void MyDirectX::BeginFrame() {
     BeginImGui();
     ClearScreen();
 
-    vertexResource->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
-    wvpResource->Map(0, nullptr, reinterpret_cast<void**>(&wvpData));
-    materialResource->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
+    vertexResourceSphere->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
+    wvpResourceSphere->Map(0, nullptr, reinterpret_cast<void**>(&wvpData));
+    materialResourceSphere->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
     vertexResourceSprite->Map(0, nullptr, reinterpret_cast<void**>(&vertexDataSprite));
-    transformationMatrixResourceSprite->Map(0, nullptr, reinterpret_cast<void**>(&transformationMatrixDataSprite));
+    wvpResourceSprite->Map(0, nullptr, reinterpret_cast<void**>(&wvpDataSprite));
+    vertexResourceTriangle3D->Map(0, nullptr, reinterpret_cast<void**>(&vertexDataTriangle3D));
+    wvpResourceTriangle3D->Map(0, nullptr, reinterpret_cast<void**>(&wvpDataTriangle3D));
+    materialResourceTriangle3D->Map(0, nullptr, reinterpret_cast<void**>(&materialDataTriangle3D));
 }
 
 void MyDirectX::CreateWindowForApp() {
@@ -685,17 +688,17 @@ void MyDirectX::InitDirectX() {
         IID_PPV_ARGS(&graphicsPipelineState));
     assert(SUCCEEDED(hr));
 
-    //実際に頂点リソースを作る(50個)
-    vertexResource = CreateBufferResource(device, sizeof(VertexData) * 3 * 16384);
-    vertexResource->SetName(L"VertexResource");
+    //実際に頂点リソースを作る
+    vertexResourceSphere = CreateBufferResource(device, sizeof(VertexData) * 3 * 992 * 4);
+    vertexResourceSphere->SetName(L"VertexResource");
 
     //wvpMatrixのリソース作成
-    wvpResource = CreateBufferResource(device, alignedSize * 16384);
-    wvpResource->SetName(L"WVPResource");
+    wvpResourceSphere = CreateBufferResource(device, alignedSize * 992 * 4);
+    wvpResourceSphere->SetName(L"WVPResource");
 
     //マテリアル用のリソースを作る。今回はcolor一つ分のサイズを用意する
-    materialResource = CreateBufferResource(device, sizeof(Vector4) * 16384);
-    materialResource->SetName(L"MaterialResource");
+    materialResourceSphere = CreateBufferResource(device, sizeof(Vector4) * 992 * 4);
+    materialResourceSphere->SetName(L"MaterialResource");
 
     //SRV用のヒープを作成する
     srvDescriptorHeap = CreateDescriptorHeap(device, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 128, true);
@@ -704,7 +707,12 @@ void MyDirectX::InitDirectX() {
     vertexResourceSprite = CreateBufferResource(device, sizeof(VertexData) * 6);
 
     //Sprite用のTransformationMatrix用のリソースを作成する
-	transformationMatrixResourceSprite = CreateBufferResource(device, sizeof(Matrix4x4));
+	wvpResourceSprite = CreateBufferResource(device, sizeof(Matrix4x4));
+
+    //三角形
+    vertexResourceTriangle3D = CreateBufferResource(device, sizeof(VertexData) * 3 * 1000);
+    wvpResourceTriangle3D = CreateBufferResource(device, sizeof(Matrix4x4) * 1000);
+    materialResourceTriangle3D = CreateBufferResource(device, sizeof(Vector4) * 1000);
 }
 
 void MyDirectX::InitImGui() {
@@ -750,12 +758,12 @@ void MyDirectX::BeginImGui() {
 }
 
 void MyDirectX::DrawSphere(Matrix4x4 wvpMatrix, Vector4 color, int textureHandle) {
-    
+
     const float pie = 3.14159265358f;
     const int vertical = 32;
-	const int horizontal = 16;
+    const int horizontal = 16;
 
-	uint32_t drawTriangleCount = 0;
+    uint32_t instantDrawTriangleCount = 0;
 
     //頂点データを作成する
     for (int i = 0; i < vertical; ++i) {
@@ -769,129 +777,133 @@ void MyDirectX::DrawSphere(Matrix4x4 wvpMatrix, Vector4 color, int textureHandle
             if (i == 0) {
                 point = 0.5f;
                 buffer = 1;
-            } else {
-				point = -0.49f;
-				buffer = -1;
             }
-            
+            else {
+                point = -0.49f;
+                buffer = -1;
+            }
+
             for (int j = 0; j < horizontal; ++j) {
                 //球のさきっちょ
-                vertexData[drawTriangleCount * 3 + 1].position = { 0.0f, point, 0.0f, 1.0f };
-				vertexData[drawTriangleCount * 3 + 1].texcoord = { (float(horizontal - 1 - j)) / float(horizontal - 1), buffer == 1 ? 0.0f : 0.9999f};
+                vertexData[drawSphereTriangleCount * 3 + 1].position = { 0.0f, point, 0.0f, 1.0f };
+                vertexData[drawSphereTriangleCount * 3 + 1].texcoord = { (float(horizontal - 1 - j)) / float(horizontal - 1), buffer == 1 ? 0.0f : 0.9999f };
 
                 //先っちょから一個離れた点たち
-				vertexData[drawTriangleCount * 3 + 1 - buffer].position = { 
+                vertexData[drawSphereTriangleCount * 3 + 1 - buffer].position = {
                     sinf(pie * (j + 1) / float(horizontal - 1) * 2) * sinf(pie * float(i + 1) / float(vertical - 1)) / 2,
                     cosf(pie * float(i + 1) / float(vertical - 1)) / 2,
                     cosf(pie * (j + 1) / float(horizontal - 1) * 2) * sinf(pie * float(i + 1) / float(vertical - 1)) / 2,
                     1.0f
                 };
-                vertexData[drawTriangleCount * 3 + 1 - buffer].texcoord = {
-					float(horizontal - 1 - j - 1 + (8 * buffer) - 8) / float(horizontal - 1),
+                vertexData[drawSphereTriangleCount * 3 + 1 - buffer].texcoord = {
+                    float(horizontal - 1 - j - 1 + (8 * buffer) - 8) / float(horizontal - 1),
                     float(i + 1) / float(vertical)
                 };
 
-                vertexData[drawTriangleCount * 3 + 1 - buffer * -1].position = {
+                vertexData[drawSphereTriangleCount * 3 + 1 - buffer * -1].position = {
                     sinf(pie * (j) / float(horizontal - 1) * 2) * sinf(pie * float(i + 1) / float(vertical - 1)) / 2,
                     cosf(pie * float(i + 1) / float(vertical - 1)) / 2,
                     cosf(pie * (j) / float(horizontal - 1) * 2) * sinf(pie * float(i + 1) / float(vertical - 1)) / 2,
                     1.0f
                 };
-				vertexData[drawTriangleCount * 3 + 1 - buffer * -1].texcoord = {
-					float(horizontal - 1 - j + (8 * buffer) - 8) / float(horizontal - 1),
+                vertexData[drawSphereTriangleCount * 3 + 1 - buffer * -1].texcoord = {
+                    float(horizontal - 1 - j + (8 * buffer) - 8) / float(horizontal - 1),
                     float(i + 1) / float(vertical)
-				};
+                };
 
-                ++drawTriangleCount;
+                ++drawSphereTriangleCount;
+                ++instantDrawTriangleCount;
             }
         }
         else {
 
             if (i > vertical / 2) {
-				buffer = 1;
-			}
-			else {
-				buffer = -1;
+                buffer = 1;
+            }
+            else {
+                buffer = -1;
             }
 
             for (int j = 0; j < horizontal; ++j) {
                 //1つ目の三角形
                 //RightBottom
-                vertexData[drawTriangleCount * 3 + 2].position = {
+                vertexData[drawSphereTriangleCount * 3 + 2].position = {
                     sinf(pie * (j) / float(horizontal - 1) * 2) * sinf(pie * float(i + 1) / float(vertical - 1)) / 2,
                     cosf(pie * float(i + 1) / float(vertical - 1)) / 2,
                     cosf(pie * (j) / float(horizontal - 1) * 2) * sinf(pie * float(i + 1) / float(vertical - 1)) / 2,
                     1.0f
                 };
-                vertexData[drawTriangleCount * 3 + 2].texcoord = {
+                vertexData[drawSphereTriangleCount * 3 + 2].texcoord = {
                     float(horizontal - 1 - j) / float(horizontal - 1),
                     float(i + 1) / float(vertical)
                 };
 
                 //RightTop
-                vertexData[drawTriangleCount * 3 + 1].position = {
-                    sinf(pie * (j) / float(horizontal - 1) * 2)* sinf(pie * float(i) / float(vertical - 1)) / 2,
+                vertexData[drawSphereTriangleCount * 3 + 1].position = {
+                    sinf(pie * (j) / float(horizontal - 1) * 2) * sinf(pie * float(i) / float(vertical - 1)) / 2,
                     cosf(pie * float(i) / float(vertical - 1)) / 2,
-                    cosf(pie * (j) / float(horizontal - 1) * 2)* sinf(pie * float(i) / float(vertical - 1)) / 2,
+                    cosf(pie * (j) / float(horizontal - 1) * 2) * sinf(pie * float(i) / float(vertical - 1)) / 2,
                     1.0f
                 };
-                vertexData[drawTriangleCount * 3 + 1].texcoord = {
+                vertexData[drawSphereTriangleCount * 3 + 1].texcoord = {
                     float(horizontal - 1 - j) / float(horizontal - 1),
                     float(i) / float(vertical)
                 };
 
                 //LeftTop
-                vertexData[drawTriangleCount * 3].position = {
-                    sinf(pie * (j + 1) / float(horizontal - 1) * 2)* sinf(pie * float(i) / float(vertical - 1)) / 2,
-                    cosf(pie * float(i) / float(vertical - 1)) / 2,
-                    cosf(pie * (j + 1) / float(horizontal - 1) * 2)* sinf(pie * float(i) / float(vertical - 1)) / 2,
-                    1.0f
-                };
-                vertexData[drawTriangleCount * 3].texcoord = {
-                    float(horizontal - 1 - j - 1) / float(horizontal - 1),
-                    float(i) / float(vertical)
-                };
-
-                ++drawTriangleCount;
-
-                //2つ目の三角形
-                //RightBottom
-                vertexData[drawTriangleCount * 3 + 2].position = {
-                    sinf(pie * (j) / float(horizontal - 1) * 2) * sinf(pie * float(i + 1) / float(vertical - 1)) / 2,
-                    cosf(pie * float(i + 1) / float(vertical - 1)) / 2,
-                    cosf(pie * (j) / float(horizontal - 1) * 2) * sinf(pie * float(i + 1) / float(vertical - 1)) / 2,
-                    1.0f
-                };
-                vertexData[drawTriangleCount * 3 + 2].texcoord = {
-                    float(horizontal - 1 - j) / float(horizontal - 1),
-                    float(i + 1) / float(vertical)
-                };
-
-                //LeftTop
-                vertexData[drawTriangleCount * 3 + 1].position = {
+                vertexData[drawSphereTriangleCount * 3].position = {
                     sinf(pie * (j + 1) / float(horizontal - 1) * 2) * sinf(pie * float(i) / float(vertical - 1)) / 2,
                     cosf(pie * float(i) / float(vertical - 1)) / 2,
                     cosf(pie * (j + 1) / float(horizontal - 1) * 2) * sinf(pie * float(i) / float(vertical - 1)) / 2,
                     1.0f
                 };
-                vertexData[drawTriangleCount * 3 + 1].texcoord = {
+                vertexData[drawSphereTriangleCount * 3].texcoord = {
+                    float(horizontal - 1 - j - 1) / float(horizontal - 1),
+                    float(i) / float(vertical)
+                };
+
+                ++drawSphereTriangleCount;
+                ++instantDrawTriangleCount;
+
+                //2つ目の三角形
+                //RightBottom
+                vertexData[drawSphereTriangleCount * 3 + 2].position = {
+                    sinf(pie * (j) / float(horizontal - 1) * 2) * sinf(pie * float(i + 1) / float(vertical - 1)) / 2,
+                    cosf(pie * float(i + 1) / float(vertical - 1)) / 2,
+                    cosf(pie * (j) / float(horizontal - 1) * 2) * sinf(pie * float(i + 1) / float(vertical - 1)) / 2,
+                    1.0f
+                };
+                vertexData[drawSphereTriangleCount * 3 + 2].texcoord = {
+                    float(horizontal - 1 - j) / float(horizontal - 1),
+                    float(i + 1) / float(vertical)
+                };
+
+                //LeftTop
+                vertexData[drawSphereTriangleCount * 3 + 1].position = {
+                    sinf(pie * (j + 1) / float(horizontal - 1) * 2) * sinf(pie * float(i) / float(vertical - 1)) / 2,
+                    cosf(pie * float(i) / float(vertical - 1)) / 2,
+                    cosf(pie * (j + 1) / float(horizontal - 1) * 2) * sinf(pie * float(i) / float(vertical - 1)) / 2,
+                    1.0f
+                };
+                vertexData[drawSphereTriangleCount * 3 + 1].texcoord = {
                     float(horizontal - 1 - j - 1) / float(horizontal - 1),
                     float(i) / float(vertical)
                 };
 
                 //LeftBottom
-                vertexData[drawTriangleCount * 3].position = {
+                vertexData[drawSphereTriangleCount * 3].position = {
                     sinf(pie * (j + 1) / float(horizontal - 1) * 2) * sinf(pie * float(i + 1) / float(vertical - 1)) / 2,
                     cosf(pie * float(i + 1) / float(vertical - 1)) / 2,
                     cosf(pie * (j + 1) / float(horizontal - 1) * 2) * sinf(pie * float(i + 1) / float(vertical - 1)) / 2,
                     1.0f
                 };
-                vertexData[drawTriangleCount * 3].texcoord = {
+                vertexData[drawSphereTriangleCount * 3].texcoord = {
                     float(horizontal - 1 - j - 1) / float(horizontal - 1),
                     float(i + 1) / float(vertical)
                 };
 
-                ++drawTriangleCount;
+                ++drawSphereTriangleCount;
+                ++instantDrawTriangleCount;
             }
 
         }
@@ -909,9 +921,9 @@ void MyDirectX::DrawSphere(Matrix4x4 wvpMatrix, Vector4 color, int textureHandle
     //頂点のバッファビューを作成する
     D3D12_VERTEX_BUFFER_VIEW vertexBufferView{};
     //リソースの先頭のアドレスから使う
-    vertexBufferView.BufferLocation = vertexResource->GetGPUVirtualAddress();
+    vertexBufferView.BufferLocation = vertexResourceSphere->GetGPUVirtualAddress() + sizeof(VertexData) * (drawSphereTriangleCount - instantDrawTriangleCount) * 3;
     //使用するリソースのサイズは頂点3つ分のサイズ
-    vertexBufferView.SizeInBytes = sizeof(VertexData) * 3 * drawTriangleCount;
+    vertexBufferView.SizeInBytes = sizeof(VertexData) * 3 * instantDrawTriangleCount;
     //1頂点当たりのサイズ
     vertexBufferView.StrideInBytes = sizeof(VertexData);
 
@@ -938,15 +950,74 @@ void MyDirectX::DrawSphere(Matrix4x4 wvpMatrix, Vector4 color, int textureHandle
     commandList->IASetVertexBuffers(0, 1, &vertexBufferView);
 
     //マテリアルCBufferの場所を設定
-    commandList->SetGraphicsRootConstantBufferView(0, materialResource->GetGPUVirtualAddress());
+    commandList->SetGraphicsRootConstantBufferView(0, materialResourceSphere->GetGPUVirtualAddress());
     //wvp用のCBufferの場所を設定
-    commandList->SetGraphicsRootConstantBufferView(1, wvpResource->GetGPUVirtualAddress());
+    commandList->SetGraphicsRootConstantBufferView(1, wvpResourceSphere->GetGPUVirtualAddress());
     //SRVのDescriptorTableの先頭を設定。2はrootParameter[2]である。
     commandList->SetGraphicsRootDescriptorTable(2, textureSrvHandleGPU[textureHandle]);
     //形状を設定。PSOに設定しているものとはまた別。同じものを設定すると考えておけばよい
     commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
     //描画！(DrawCall/ドローコール)。3頂点で1つのインスタンス。インスタンスについては今後
-    commandList->DrawInstanced(drawTriangleCount * 3, 1, 0, 0);
+    commandList->DrawInstanced(instantDrawTriangleCount * 3, 1, 0, 0);
+}
+
+void MyDirectX::DrawTriangle3D(Matrix4x4 wvpMatrix, Vector4 color, int textureHandle) {
+    // 現在の描画数に基づいて三角形のベースインデックスを計算
+    int baseIndex = drawTriangle3DCount * 3;
+
+    // 三角形の頂点を設定
+    vertexDataTriangle3D[baseIndex].position = { -0.5f, -0.5f, 0.0f, 1.0f };
+    vertexDataTriangle3D[baseIndex].texcoord = { 0.0f, 1.0f };
+
+    vertexDataTriangle3D[baseIndex + 1].position = { 0.0f, 0.5f, 0.0f, 1.0f };
+    vertexDataTriangle3D[baseIndex + 1].texcoord = { 0.5f, 0.0f };
+
+    vertexDataTriangle3D[baseIndex + 2].position = { 0.5f, -0.5f, 0.0f, 1.0f };
+    vertexDataTriangle3D[baseIndex + 2].texcoord = { 1.0f, 1.0f };
+
+    // ワールド・ビュープロジェクション行列とマテリアルカラーを書き込む
+    *wvpDataTriangle3D = wvpMatrix;
+    *materialDataTriangle3D = color;
+
+    // ビューポート設定
+    D3D12_VIEWPORT viewport{};
+    viewport.Width = static_cast<float>(kClientWidth);
+    viewport.Height = static_cast<float>(kClientHeight);
+    viewport.TopLeftX = 0;
+    viewport.TopLeftY = 0;
+    viewport.MinDepth = 0.0f;
+    viewport.MaxDepth = 1.0f;
+
+    D3D12_RECT scissorRect{};
+    scissorRect.left = 0;
+    scissorRect.right = kClientWidth;
+    scissorRect.top = 0;
+    scissorRect.bottom = kClientHeight;
+
+    commandList->RSSetViewports(1, &viewport);
+    commandList->RSSetScissorRects(1, &scissorRect);
+
+    // パイプラインとルートシグネチャの設定
+    commandList->SetGraphicsRootSignature(rootSignature);
+    commandList->SetPipelineState(graphicsPipelineState);
+
+    // 頂点バッファビューを更新して、これまで描画されたすべての頂点データを反映
+    D3D12_VERTEX_BUFFER_VIEW vertexBufferView{};
+    vertexBufferView.BufferLocation = vertexResourceTriangle3D->GetGPUVirtualAddress();
+    vertexBufferView.SizeInBytes = sizeof(VertexData) * (baseIndex + 3);
+    vertexBufferView.StrideInBytes = sizeof(VertexData);
+
+    commandList->IASetVertexBuffers(0, 1, &vertexBufferView);
+    commandList->SetGraphicsRootConstantBufferView(0, materialResourceTriangle3D->GetGPUVirtualAddress());
+    commandList->SetGraphicsRootConstantBufferView(1, wvpResourceTriangle3D->GetGPUVirtualAddress());
+    commandList->SetGraphicsRootDescriptorTable(2, textureSrvHandleGPU[textureHandle]);
+    commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+    // 描画コールを発行
+    commandList->DrawInstanced(3, 1, baseIndex, 0);
+
+    // 描画カウントを更新
+    ++drawTriangle3DCount;
 }
 
 void MyDirectX::DrawSprite(Vector4 lt, Vector4 rt, Vector4 lb, Vector4 rb, Matrix4x4 wvpMatrix, Vector4 color) {
@@ -970,7 +1041,7 @@ void MyDirectX::DrawSprite(Vector4 lt, Vector4 rt, Vector4 lb, Vector4 rb, Matri
     vertexDataSprite[5].position = rb;
     vertexDataSprite[5].texcoord = { 1.0f, 1.0f };
 
-    *transformationMatrixDataSprite = wvpMatrix;
+    *wvpDataSprite = wvpMatrix;
 
     //頂点バッファビューを作成する
     D3D12_VERTEX_BUFFER_VIEW vertexBufferViewSprite{};
@@ -984,7 +1055,7 @@ void MyDirectX::DrawSprite(Vector4 lt, Vector4 rt, Vector4 lb, Vector4 rb, Matri
     //Spriteの描画。変更が必要なものだけ変更する
     commandList->IASetVertexBuffers(0, 1, &vertexBufferViewSprite);
     //TransformationMatrixCBufferの場所を設定
-    commandList->SetGraphicsRootConstantBufferView(1, transformationMatrixResourceSprite->GetGPUVirtualAddress());
+    commandList->SetGraphicsRootConstantBufferView(1, wvpResourceSprite->GetGPUVirtualAddress());
     //Texture
     commandList->SetGraphicsRootDescriptorTable(2, textureSrvHandleGPU[0]);
     //描画
@@ -1024,23 +1095,29 @@ void MyDirectX::EndFrame() {
         WaitForSingleObject(fenceEvent, INFINITE);
     }
 
+    drawTriangle2DCount = 0;
+    drawSphereTriangleCount = 0;
+    drawTriangle3DCount = 0;
     //次のフレームのためのcommandReset
     commandAllocator->Reset();
     commandList->Reset(commandAllocator, nullptr);
 }
 
 void MyDirectX::Finalize() {
+    vertexResourceTriangle3D->Release();
+    wvpResourceTriangle3D->Release();
+	materialResourceTriangle3D->Release();
 	vertexResourceSprite->Release();
-	transformationMatrixResourceSprite->Release();
+	wvpResourceSprite->Release();
     dsvDescriptorHeap->Release();
     depthStencilResource->Release();
     for (uint32_t i = 0; i < readTextureCount; ++i) {
         intermediateResource[i]->Release();
         textureResource[i]->Release();
     }
-    vertexResource->Release();
-    wvpResource->Release();
-    materialResource->Release();
+    vertexResourceSphere->Release();
+    wvpResourceSphere->Release();
+    materialResourceSphere->Release();
     graphicsPipelineState->Release();
     signatureBlob->Release();
     if (errorBlob) {
