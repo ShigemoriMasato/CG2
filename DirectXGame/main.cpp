@@ -82,9 +82,6 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Matrix4x4 viewMatrix = Inverse(MakeTransformMatrix(camera));
 	Matrix4x4 projectionMatrix = MakePerspectiveFovMatrix(0.45f, float(kWindowWidth) / float(kWindowHeight), 0.1f, 100.0f);
 
-	myDirectX->ReadTexture("resources/uvChecker.png");
-	myDirectX->ReadTexture("resources/cube.jpg");
-
 	bool textureHandle = 1;
 
 	MSG msg{};
@@ -121,8 +118,6 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			Matrix4x4 worldMatrix = MakeTransformMatrix(transform);
 			wvpMatrix = worldMatrix * viewMatrix * projectionMatrix;
 			Matrix4x4 wvp = MakeTransformMatrix(tra) * MakeIdentity4x4() * MakeOrthographicMatrix(0.0f, 0.0f, float(kWindowWidth), float(kWindowHeight), 0.0f, 100.0f);
-
-			myDirectX->DrawTriangle3D(MakeIdentity4x4(), triangleColor, textureHandle);
 
 			myDirectX->EndFrame();
 		}
