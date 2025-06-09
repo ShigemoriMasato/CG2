@@ -24,6 +24,6 @@ public:
 private:
 
 	static MyDirectX* myDirectX_;
-	static bool* isCanDraw_ = nullptr;
+	static bool* isCanDraw_;
 
 };
