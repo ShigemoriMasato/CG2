@@ -219,7 +219,7 @@
     <ClCompile Include="Engine\Tools\FPS\FPSObserver.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Emitter\DefaultEmitter.cpp">
+    <ClCompile Include="AppSource\Game\Emitter\DefaultEmitter.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Render\Resource\PostEffectResource.cpp">
@@ -241,6 +241,9 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Resource\Audio\Data\MP3Data.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Block.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -404,7 +407,7 @@
     <ClInclude Include="Engine\Tools\FPS\FPSObserver.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Emitter\DefaultEmitter.h">
+    <ClInclude Include="AppSource\Game\Emitter\DefaultEmitter.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Render\Resource\PostEffectResource.h">
@@ -428,6 +431,9 @@
     <ClInclude Include="Engine\Resource\Audio\Data\MP3Data.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="Block.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt">
@@ -435,6 +441,6 @@
     </Text>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Game\Emitter\ReadMe.md" />
+    <None Include="AppSource\Game\Emitter\ReadMe.md" />
   </ItemGroup>
 </Project>

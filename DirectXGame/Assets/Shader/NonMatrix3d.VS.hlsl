@@ -1,13 +1,6 @@
-#include "object3d.hlsli"
+#include "ShaderCommon.hlsli"
 
-struct VertexShaderInput
-{
-    float32_t4 position : POSITION0;
-    float32_t2 texcoord : TEXCOORD0;
-    float32_t3 normal : NORMAL0;
-};
-
-VertexShaderOutput main(VertexShaderInput input)
+VertexShaderOutput main(VertexData input)
 {
     VertexShaderOutput output;
     output.position = input.position;

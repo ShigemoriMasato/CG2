@@ -15,6 +15,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Block.cpp" />
     <ClCompile Include="Engine\Resource\Audio\Data\AudioData.cpp" />
     <ClCompile Include="Engine\Resource\Audio\AudioManager.cpp" />
     <ClCompile Include="Engine\Render\Resource\Data\BaseResource.cpp" />
@@ -67,12 +68,13 @@
     <ClCompile Include="Engine\Scene\Engine\ShaderEditScene.cpp" />
     <ClCompile Include="Engine\Math\MyString.cpp" />
     <ClCompile Include="Engine\Render\Resource\ParticleResource.cpp" />
-    <ClCompile Include="Game\Emitter\DefaultEmitter.cpp" />
+    <ClCompile Include="AppSource\Game\Emitter\DefaultEmitter.cpp" />
     <ClCompile Include="Engine\Render\Resource\PostEffectResource.cpp" />
     <ClCompile Include="Engine\Resource\Audio\Data\MP3Data.cpp" />
     <ClCompile Include="Engine\Resource\Audio\Data\WAVData.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Block.h" />
     <ClInclude Include="Engine\Resource\Audio\Data\AudioData.h" />
     <ClInclude Include="Engine\Resource\Audio\AudioManager.h" />
     <ClInclude Include="Engine\Render\Resource\Data\BaseResource.h" />
@@ -130,7 +132,7 @@
     <ClInclude Include="Engine\Math\MyString.h" />
     <ClInclude Include="Engine\Render\Resource\ParticleResource.h" />
     <ClInclude Include="Engine\Tools\FPS\FPSObserver.h" />
-    <ClInclude Include="Game\Emitter\DefaultEmitter.h" />
+    <ClInclude Include="AppSource\Game\Emitter\DefaultEmitter.h" />
     <ClInclude Include="Engine\Render\Resource\PostEffectResource.h" />
     <ClInclude Include="Engine\Resource\Audio\Data\MP3Data.h" />
     <ClInclude Include="Engine\Resource\Audio\Data\WAVData.h" />
@@ -144,7 +146,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Game\Emitter\ReadMe.md" />
+    <None Include="AppSource\Game\Emitter\ReadMe.md" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -222,7 +224,7 @@
     <PostBuildEvent>
       <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
 copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dxil.dll"
-xcopy /E /I /Y "$(ProjectDir)Assets\*" "$(TargetDir)Assets\"</Command>
+</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -277,7 +279,7 @@ xcopy /E /I /Y "$(ProjectDir)Assets\*" "$(TargetDir)Assets\"</Command>
     <PostBuildEvent>
       <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
 copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dxil.dll"
-xcopy /E /I /Y "$(ProjectDir)Assets\*" "$(TargetDir)Assets\"</Command>
+</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
