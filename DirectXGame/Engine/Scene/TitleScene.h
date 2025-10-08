@@ -3,7 +3,7 @@
 #include <Render/Resource/ModelResource.h>
 #include <Camera/DebugCamera.h>
 #include <Tools/Grid/GridMaker.h>
-#include <Emitter/DefaultEmitter.h>
+#include <Game/Emitter/DefaultEmitter.h>
 #include <Render/ImGuiWrapper.h>
 
 class TitleScene : public BaseScene {

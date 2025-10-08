@@ -6,12 +6,7 @@
 #include <string>
 #include <unordered_map>
 
-//Shader
-#include <../Assets/Shader/ShaderCommon.hlsli>
-#include <../Assets/Shader/Particle.hlsli>
-#include <../Assets/Shader/Reflection.hlsli>
-
-//hlsliをcppで読み込めるようにするためのやつ
+//Shader(本来はこれをhlsliに入れとくべき)
 #ifdef __cplusplus
 using float4 = Vector4;
 using float3 = Vector3;
@@ -19,6 +14,14 @@ using float2 = Vector2;
 using float4x4 = Matrix4x4;
 using float3x3 = Matrix3x3;
 #endif
+
+#include <../Assets/Shader/ShaderCommon.hlsli>
+
+struct VertexData final {
+	Vector4 position; //位置
+	Vector2 texcoord; //UV
+	Vector3 normal;   //法線
+};;
 
 struct Transform {
 	Vector3 scale{ 1.0f, 1.0f, 1.0f }; //拡大縮小

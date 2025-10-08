@@ -5,10 +5,3 @@ struct ParticleVSOutput
     float3 normal : NORMAL0;
     float4 color : COLOR0;
 };
-
-struct ParticleData
-{
-    float4x4 World;
-    float4x4 WVP;
-    float4 Color;
-};

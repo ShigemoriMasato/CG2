@@ -115,7 +115,7 @@ void DrawResource::DrawReady() {
 		}
 	}
 
-	light_->enableLighting = static_cast<int32_t>(enableLighting_);
+	light_->enableLight= static_cast<int32_t>(enableLighting_);
 
 	//Lighting
 	if (enableLighting_) {

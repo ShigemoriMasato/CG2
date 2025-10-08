@@ -20,8 +20,8 @@ struct PixelShaderOutput
 
 struct MatrixData
 {
-    float4x4 WVP;
-    float4x4 World;
+    float4x4 world;
+    float4x4 wvp;
 };
 
 struct Material
@@ -40,7 +40,14 @@ struct DirectionalLightData
     float intensity;
 };
 
-struct Camera
+struct CameraData
 {
     float3 worldPosition;
+};
+
+struct ParticleData
+{
+    float4x4 world;
+    float4x4 wvp;
+    float4 color;
 };

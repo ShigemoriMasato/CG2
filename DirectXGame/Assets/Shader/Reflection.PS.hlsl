@@ -1,6 +1,11 @@
 #include "Reflection.hlsli"
 #include "ShaderCommon.hlsli"
 
+struct PixelShaderOutput
+{
+    float4 color : SV_TARGET0;
+};
+
 //Material
 ConstantBuffer<Material> gMaterial : register(b0);
 
@@ -8,7 +13,7 @@ ConstantBuffer<Material> gMaterial : register(b0);
 ConstantBuffer<DirectionalLightData> gDirectionalLight : register(b1);
 
 //Camera`s WorldPosition
-ConstantBuffer<Camera> gCamera : register(b2);
+ConstantBuffer<CameraData> gCamera : register(b2);
 
 //Texture
 Texture2D<float4> gTexture : register(t0);
