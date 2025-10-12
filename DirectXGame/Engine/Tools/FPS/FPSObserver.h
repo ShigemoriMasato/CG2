@@ -3,6 +3,7 @@
 #include <sstream>
 #include <windows.h>
 #include <timeapi.h>
+#include <Logger/Logger.h>
 
 class FPSObserver {
 public:
@@ -39,4 +40,6 @@ private:
 
     // より精密な時間待機
     void PreciseSleep(double seconds);
+
+    Logger logger_;
 };

@@ -1,16 +1,21 @@
 #include "Particle.hlsli"
-#include "ShaderCommon.hlsli"
 
-Texture2D<float4> gTexture : register(t0);
-
-SamplerState gSampler : register(s0);
+struct ParticleData
+{
+    float4 color;
+};
 
 struct PixelShaderOutput
 {
     float4 color : SV_TARGET0;
 };
 
-PixelShaderOutput main(ParticleVSOutput input)
+Texture2D<float4> gTexture : register(t0);
+StructuredBuffer<ParticleData> gData : register(t1);
+
+SamplerState gSampler : register(s0);
+
+PixelShaderOutput main(VertexShaderOutput input)
 {
     PixelShaderOutput output;
     float4 textureColor = gTexture.Sample(gSampler, input.texcoord);

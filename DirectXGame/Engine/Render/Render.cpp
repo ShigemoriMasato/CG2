@@ -218,11 +218,27 @@ void Render::Draw(DrawResource* resource) {
 }
 
 void Render::Draw(ModelResource* resource) {
-	resource->DrawReady();
-	auto resources = resource->GetResources();
-    for (auto& res : resources) {
-        Draw(res);
+    resource->DrawReady();
+
+	psoEditor_->SetPSOConfig(resource->psoConfig_);
+	psoEditor_->Setting(commandList.Get());
+    auto drawData = resource->GetModelDrawDatas();
+
+    for(const auto& [name, drawData] : drawData) {
+        auto vertexBufferView = drawData.vertexBufferView;
+        commandList->IASetVertexBuffers(0, 1, drawData.vertexBufferView);
+        auto indexBufferView = drawData.indexBufferView;
+        commandList->IASetIndexBuffer(drawData.indexBufferView);
+        //Material
+		commandList->SetGraphicsRootConstantBufferView(0, resource->GetMaterialResource()->GetGPUVirtualAddress());
+        //Matrixのポインタを設定
+        commandList->SetGraphicsRootDescriptorTable(1, resource->GetMatrixSRVDesc());
+        //Texture
+        commandList->SetGraphicsRootDescriptorTable(2, textureManager_->GetTextureData(drawData.textureHandle)->GetTextureGPUHandle());
+        //インデックスがある場合は、インデックスを設定して描画
+        commandList->DrawIndexedInstanced(drawData.indexNum, 1, 0, 0, 0);
 	}
+
 }
 
 void Render::Draw(ParticleResource* resource) {

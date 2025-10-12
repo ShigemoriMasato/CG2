@@ -38,6 +38,6 @@ private:
 	std::unique_ptr<BinaryOutput> output;
 	std::vector<std::shared_ptr<ValueBase>> values;
 
-	inline static const std::string basePath = "Assets/Bin/"; // データの保存先パス
+	inline static const std::string basePath = "Assets/Binary/"; // データの保存先パス
 
 };

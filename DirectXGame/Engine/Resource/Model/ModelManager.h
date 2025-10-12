@@ -4,7 +4,7 @@
 class ModelManager {
 public:
 
-	ModelManager(TextureManager* textureManager);
+	ModelManager(TextureManager* textureManager, DXDevice* device);
 	~ModelManager();
 
 	int LoadModel(const std::string& directoryPath);
@@ -19,6 +19,6 @@ private:
 	const std::string basePath_ = "Assets/Model/";
 
 	TextureManager* textureManager_ = nullptr;
-
+	DXDevice* device_ = nullptr;
 };
 

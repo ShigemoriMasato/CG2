@@ -72,10 +72,12 @@ OffScreenData::OffScreenData(int width, int height, float* clearColor, DXDevice*
 
     device->GetDevice()->CreateDepthStencilView(depthStencilResource_.Get(), &dsvDesc, dsvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart());
 
+	width_ = width;
+	height_ = height;
 }
 
 void OffScreenData::EditBarrier(ID3D12GraphicsCommandList* commandlist, D3D12_RESOURCE_STATES stateAfter, D3D12_RESOURCE_BARRIER_TYPE type, D3D12_RESOURCE_BARRIER_FLAGS flags) {
-	InsertBarrier(commandlist, resourceState_, stateAfter, textureResource_.Get(), type, flags);
+	InsertBarrier(commandlist, stateAfter, resourceState_, textureResource_.Get(), type, flags);
 }
 
 void OffScreenData::DrawReady(ID3D12GraphicsCommandList* commandList) {

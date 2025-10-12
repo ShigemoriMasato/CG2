@@ -11,8 +11,6 @@ EngineTerminal::~EngineTerminal() {
 }
 
 bool EngineTerminal::IsLoop() {
-	fpsObserver_->TimeAdjustment();
-
 	while (msg.message != WM_QUIT) {
 
 		//メッセージがあれば処理する
@@ -66,10 +64,11 @@ void EngineTerminal::Initialize(int32_t windowWidth, int32_t windowHeight) {
 
 	BaseResource::StaticInitialize(dxDevice_.get(), srvManager_.get());
 	ParticleResource::StaticInitialize(dxDevice_.get(), srvManager_.get());
+	ModelResource::StaticInitialize(dxDevice_.get(), srvManager_.get());
 
 	textureManager_ = std::make_unique<TextureManager>();
 	textureManager_->Initialize(dxDevice_.get(), render_->GetCommandList(), srvManager_.get());
-	modelManager_ = std::make_unique<ModelManager>(textureManager_.get());
+	modelManager_ = std::make_unique<ModelManager>(textureManager_.get(), dxDevice_.get());
 	offScreenManager_ = std::make_unique<OffScreenManager>();
 	offScreenManager_->Initialize(dxDevice_.get(), render_->GetCommandList(), srvManager_.get());
 	input_ = std::make_unique<Input>(dxDevice_->GetWndClass().hInstance, dxDevice_->GetHwnd());
@@ -93,7 +92,7 @@ void EngineTerminal::Initialize(int32_t windowWidth, int32_t windowHeight) {
 	}
 
 
-	fpsObserver_ = std::make_unique<FPSObserver>(false, 60.0);
+	fpsObserver_ = std::make_unique<FPSObserver>(true, 60.0);
 }
 
 // =========================- MainLoop -===============================
@@ -115,6 +114,8 @@ void EngineTerminal::Update() {
 	input_->Update();
 	auto windowSize = dxDevice_->GetWindowSize();
 	ImGuiOperator::StartFrame(static_cast<float>(windowSize.first), static_cast<float>(windowSize.second));
+
+	fpsObserver_->TimeAdjustment();
 }
 
 void EngineTerminal::PreDraw() {
@@ -122,5 +123,4 @@ void EngineTerminal::PreDraw() {
 
 void EngineTerminal::PostDraw() {
 	render_->PostDraw(imgui_.get());
-	fpsObserver_->TimeAdjustment();
 }

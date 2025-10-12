@@ -243,7 +243,7 @@
     <ClCompile Include="Engine\Resource\Audio\Data\MP3Data.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Block.cpp">
+    <ClCompile Include="Engine\Tools\KeyConfig\KeyManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -431,7 +431,7 @@
     <ClInclude Include="Engine\Resource\Audio\Data\MP3Data.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Block.h">
+    <ClInclude Include="Engine\Tools\KeyConfig\KeyManager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

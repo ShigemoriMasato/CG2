@@ -1,48 +1,57 @@
-#include "ShaderCommon.hlsli"
+#include "Object3d.hlsli"
+
+struct Material
+{
+    float32_t4 color;
+    float32_t4x4 uvTransform;
+    float32_t shininess;
+};
 
 ConstantBuffer<Material> gMaterial : register(b0);
 
-ConstantBuffer<DirectionalLightData> gDirectionalLight : register(b1);
-
-Texture2D<float4> gTexture : register(t0);
-SamplerState gSampler : register(s0);
-
-
-float4 HalfLambert(float3 normal, float4 color, float4 textureColor, DirectionalLightData directionalLight)
+struct DirectionalLight
 {
-    float NdotL = dot(normalize(normal), -gDirectionalLight.direction);
-    float cos = pow(NdotL * 0.5f + 0.5f, 2.0f);
-    float4 outputColor = gMaterial.color * textureColor * gDirectionalLight.color * cos * gDirectionalLight.intensity;
-    outputColor.w = color.w * textureColor.w;
-    return outputColor;
-}
-
-float4 LambertReflectance(float3 normal, float4 color, float4 textureColor, DirectionalLightData directionalLight)
-{
-    float NdotL = dot(normalize(normal), -directionalLight.direction);
-    float cos = saturate(dot(normalize(normal), -directionalLight.direction));
-    float4 outputColor = color * textureColor * directionalLight.color * cos * directionalLight.intensity;
-    outputColor.w = color.w * textureColor.w;
-    return outputColor;
-}
-
-struct VertexShaderOutput
-{
-    float4 position : SV_POSITION;
-    float2 texcoord : TEXCOORD0;
-    float3 normal : NORMAL0;
+    int32_t enableLight;
+    float32_t4 color;
+    float32_t3 direction;
+    float intensity;
 };
+
+ConstantBuffer<DirectionalLight> gDirectionalLight : register(b1);
 
 struct PixelShaderOutput
 {
-    float4 color : SV_TARGET0;
+    float32_t4 color : SV_TARGET0;
 };
+
+Texture2D<float32_t4> gTexture : register(t0);
+SamplerState gSampler : register(s0);
+
+
+float32_t4 HalfLambert(float32_t3 normal, float32_t4 color, float32_t4 textureColor, DirectionalLight directionalLight)
+{
+    float NdotL = dot(normalize(normal), -gDirectionalLight.direction);
+    float cos = pow(NdotL * 0.5f + 0.5f, 2.0f);
+    float32_t4 outputColor = gMaterial.color * textureColor * gDirectionalLight.color * cos * gDirectionalLight.intensity;
+    outputColor.w = color.w * textureColor.w;
+    return outputColor;
+}
+
+float32_t4 LambertReflectance(float32_t3 normal, float32_t4 color, float32_t4 textureColor, DirectionalLight directionalLight)
+{
+    float NdotL = dot(normalize(normal), -directionalLight.direction);
+    float cos = saturate(dot(normalize(normal), -directionalLight.direction));
+    float32_t4 outputColor = color * textureColor * directionalLight.color * cos * directionalLight.intensity;
+    outputColor.w = color.w * textureColor.w;
+    return outputColor;
+}
+
 
 PixelShaderOutput main(VertexShaderOutput input)
 {
     PixelShaderOutput output;
-    float4 transformedUV = mul(float4(input.texcoord, 0.0f, 1.0f), gMaterial.uvTransform);
-    float4 textureColor = gTexture.Sample(gSampler, transformedUV.xy);
+    float32_t4 transformedUV = mul(float32_t4(input.texcoord, 0.0f, 1.0f), gMaterial.uvTransform);
+    float32_t4 textureColor = gTexture.Sample(gSampler, transformedUV.xy);
     
     if (gDirectionalLight.enableLight)
     {

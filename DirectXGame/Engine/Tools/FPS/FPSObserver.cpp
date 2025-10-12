@@ -1,5 +1,6 @@
 #include "FPSObserver.h"
 #pragma comment(lib,"winmm.lib")
+#include <imgui/imgui.h>
 
 bool FPSObserver::isFix_ = true;
 float FPSObserver::deltatime_ = 1.0f / 60.0f;
@@ -14,6 +15,9 @@ FPSObserver::FPSObserver(bool isfix, double targetfps) : targetFPS_(targetfps), 
     timeBeginPeriod(1);
 
     isFix_ = isfix;
+
+	logger_ = Logger();
+	logger_.RegistLogFile("FPS");
 }
 
 FPSObserver::~FPSObserver() {
@@ -48,6 +52,13 @@ void FPSObserver::TimeAdjustment() {
         }
 
     }
+
+    ImGui::Begin("FPS");
+	ImGui::Text("FPS: %.2f", 1.0 / frameTime);
+	ImGui::Text("Frame Time: %.2f ms", frameTime * 1000.0);
+    ImGui::End();
+
+    logger_.Log(std::format("FPS: {}, Frame Time : {}", 1.0 / frameTime, frameTime * 1000.0f));
 
     deltatime_ = static_cast<float>(frameTime);
 

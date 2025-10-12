@@ -1,80 +1,99 @@
 #include "ModelResource.h"
 
+DXDevice* ModelResource::dxDevice_ = nullptr;
+SRVManager* ModelResource::srvManager_ = nullptr;
+
 ModelResource::ModelResource() {
 }
 
 ModelResource::~ModelResource() {
 }
 
-void ModelResource::Initialize(ModelData* modelData) {
-	
-	auto vertices = modelData->GetVertices();
-
-	for(auto& [name, vertex] : vertices) {
-		auto resource = std::make_unique<DrawResource>();
-		resource->Initialize(static_cast<uint32_t>(vertex.size()), 0, true);
-
-		for (int i = 0; i < vertex.size(); ++i) {
-			resource->localPos_[i] = { vertex[i].position.x, vertex[i].position.y, vertex[i].position.z};
-			resource->texcoord_[i] = { vertex[i].texcoord.x, vertex[i].texcoord.y };
-			resource->normal_[i] = { vertex[i].normal.x, vertex[i].normal.y, vertex[i].normal.z };
-		}
-
-		resource->textureHandle_ = modelData->GetTextureHandle(name);
-		resources_.push_back(std::move(resource));
+void ModelResource::Initialize(ModelManager* manager, int modelHandle) {
+	auto modelData = manager->GetModelData(modelHandle);
+	if (!modelData) {
+		assert(false && "ModelData is nullptr");
+		return;
 	}
 
-	psoConfig_ = resources_.back()->psoConfig_;
+	node_ = ConvertNodeToTransform(modelData->GetParentNode());
+
+	//データのコピー
+	auto vertex = modelData->GetVertexResource();
+	auto idnex = modelData->GetIndexResource();
+	auto materials = modelData->GetMaterials();
+
+	for (const auto& material : materials) {
+		ModelDrawData drawData{};
+		drawData.textureHandle = material.textureHandle;
+
+		drawData.vertexBufferView = vertex[material.name].bufferView.get();
+		drawData.indexBufferView = idnex[material.name].bufferView.get();
+		drawData.indexNum = idnex[material.name].indexNum;
+
+		modelDrawDatas_[material.name] = drawData;
+	}
+
+	matrixResource_.Attach(CreateBufferResource(dxDevice_->GetDevice(), sizeof(MatrixData) * modelData->GetNodeCount()));
+	matrixResource_->Map(0, nullptr, (void**)&matrix_);
+
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+	srvDesc.Format = DXGI_FORMAT_UNKNOWN;
+	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
+	srvDesc.Buffer.FirstElement = 0;
+	srvDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
+	srvDesc.Buffer.NumElements = modelData->GetNodeCount();
+	srvDesc.Buffer.StructureByteStride = sizeof(MatrixData);
+
+	D3D12_CPU_DESCRIPTOR_HANDLE matrixCPUHandle = srvManager_->GetCPUHandle();
+	matrixGPUHandle_ = srvManager_->GetGPUHandle();
+
+	dxDevice_->GetDevice()->CreateShaderResourceView(matrixResource_.Get(), &srvDesc, matrixCPUHandle);
+
+
+	materialResource_.Attach(CreateBufferResource(dxDevice_->GetDevice(), sizeof(Material)));
+	materialResource_->Map(0, nullptr, (void**)&material_);
+
+	psoConfig_.vs = "Model.VS.hlsl";
+	psoConfig_.ps = "Model.PS.hlsl";
+	psoConfig_.rootID = RootSignatureID::Model;
+	psoConfig_.inputLayoutID = InputLayoutID::Model;
 }
 
 void ModelResource::DrawReady() {
-	for (auto& res : resources_) {
-		res->psoConfig_ = psoConfig_;
-	}
+
+	material_->color = {
+		((color_ >> 16) & 0xff) / 255.0f,
+		((color_ >> 8) & 0xff) / 255.0f,
+		(color_ & 0xff) / 255.0f,
+		((color_ >> 24) & 0xff) / 255.0f
+	};
+
+	DrawReadyNode(node_, Matrix::MakeIdentity4x4());
 }
 
-void ModelResource::SetMaterial(const uint32_t& color, const int textureHandle, const Vector2 texturePos, const float textureRotate) {
-	for (auto& res : resources_) {
-		res->color_ = color;
-		res->texturePos_ = texturePos;
-		res->textureRotate_ = textureRotate;
-		res->textureHandle_ = textureHandle;
+ModelResource::NodeTransform ModelResource::ConvertNodeToTransform(const Node& node) {
+	NodeTransform result{};
+	result.localMatrix = node.localMatrix;
+	result.name = node.name;
+	result.nodeIndex = node.nodeIndex;
+	for (const auto& child : node.children) {
+		result.children.push_back(ConvertNodeToTransform(child));
 	}
+
+	return result;
 }
 
-void ModelResource::SetLight(bool enableLighting, const uint32_t& color, const Vector3& direction, float intensity) {
-	for (auto& res : resources_) {
-		res->enableLighting_ = enableLighting;
-		res->lightColor_ = color;
-		res->lightDirection_ = direction;
-		res->lightIntensity_ = intensity;
-	}
-}
+void ModelResource::DrawReadyNode(NodeTransform node, const Matrix4x4& parentMatrix) {
 
-std::vector<DrawResource*> ModelResource::GetResources() {
-	std::vector<DrawResource*> res;
-	for (auto& r : resources_) {
-		res.push_back(r.get());
-	}
-	return res;
-}
+	Matrix4x4 worldMatrix = Matrix::MakeScaleMatrix(scale_) * Matrix::MakeRotationMatrix(rotate_) * Matrix::MakeTranslationMatrix(position_);
+	Matrix4x4 localMatrix = Matrix::MakeScaleMatrix(node.scale) * Matrix::MakeRotationMatrix(node.rotate) * Matrix::MakeTranslationMatrix(node.translate);
 
-void ModelResource::SetMatrixData(Vector3 scale, Vector3 rotate, Vector3 pos) {
-	for (auto& res : resources_) {
-		res->scale_ = scale;
-		res->rotate_ = rotate;
-		res->position_ = pos;
-	}
-}
+	matrix_[node.nodeIndex].world = parentMatrix * node.localMatrix * localMatrix * worldMatrix;
+	matrix_[node.nodeIndex].wvp = matrix_[node.nodeIndex].world * camera_->GetVPMatrix();
 
-void ModelResource::SetMatrixData(Matrix4x4 world) {
-	for (auto& res : resources_) {
-		res->SetWorldMatrix(world);
-	}
-}
-
-void ModelResource::SetCamera(Camera* camera) {
-	for (auto& res : resources_) {
-		res->camera_ = camera;
+	for(auto& child : node.children) {
+		DrawReadyNode(child, matrix_[node.nodeIndex].world);
 	}
 }

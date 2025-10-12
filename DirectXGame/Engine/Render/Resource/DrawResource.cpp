@@ -4,9 +4,6 @@
 
 using namespace Matrix;
 
-DrawResource::DrawResource() {
-}
-
 DrawResource::~DrawResource() {
 }
 
@@ -97,11 +94,20 @@ void DrawResource::DrawReady() {
 	Matrix4x4 worldMat = GetWorldMatrix(scale_, rotate_, position_);
 
 	if (matrix_) {
-		matrix_->world = worldMat;
+		//初期化
+		matrix_->world = Matrix::MakeIdentity4x4();
+
+		//親の数だけかける
+		for(const auto& mat : parentMatrices_) {
+			matrix_->world *= mat;
+		}
+
+		matrix_->world *= worldMat;
 		
 		if (camera_) {
 			matrix_->wvp = matrix_->world * camera_->GetVPMatrix();
 		}
+
 	} else {
 
 		Matrix4x4 wvpMat = worldMat * camera_->GetVPMatrix();
@@ -115,7 +121,7 @@ void DrawResource::DrawReady() {
 		}
 	}
 
-	light_->enableLight= static_cast<int32_t>(enableLighting_);
+	light_->enableLighting = static_cast<int32_t>(enableLighting_);
 
 	//Lighting
 	if (enableLighting_) {
@@ -129,6 +135,13 @@ void DrawResource::DrawReady() {
 		lightDirection_ = lightDirection_.Normalize();
 		light_->direction = lightDirection_;
 	}
+
+	parentMatrices_.clear();
+
+}
+
+void DrawResource::AddParentMatrix(const Matrix4x4& parentMatrix) {
+	parentMatrices_.push_back(parentMatrix);
 }
 
 D3D12_INDEX_BUFFER_VIEW DrawResource::GetIndexBufferView() const {

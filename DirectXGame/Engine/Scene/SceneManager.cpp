@@ -23,6 +23,7 @@ void SceneManager::Update() {
 		nextScene_ = nullptr;
 	}
 
+	commonData_->keyManager_->Update();
 	nextScene_ = currentScene_->Update();
 }
 

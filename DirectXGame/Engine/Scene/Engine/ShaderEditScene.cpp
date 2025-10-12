@@ -44,10 +44,12 @@ void ShaderEditScene::Initialize() {
 	rootSignatures_.resize(static_cast<int>(RootSignatureID::Count));
 
 	inputLayouts_[static_cast<int>(InputLayoutID::Default)] = "Default";
+	inputLayouts_[static_cast<int>(InputLayoutID::Model)] = "Model";
 
 	rootSignatures_[static_cast<int>(RootSignatureID::Default)] = "Default";
 	rootSignatures_[static_cast<int>(RootSignatureID::NonMatrix)] = "NonMatrix";
 	rootSignatures_[static_cast<int>(RootSignatureID::Particle)] = "Particle";
+	rootSignatures_[static_cast<int>(RootSignatureID::Model)] = "Model";
 
 	auto rawData = binaryManager_->Read(saveFileName);
 	shaderDataIndex_.clear();

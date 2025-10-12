@@ -5,7 +5,7 @@
 
 enum class InputLayoutID : uint8_t {
 	Default = 0,
-	Reflection,			//PhongReflection用
+	Model,
 
 	Count
 };
@@ -20,7 +20,7 @@ public:
 
 private:
 
-	D3D12_INPUT_ELEMENT_DESC inputElementDescs[3];
+	std::vector<std::vector<D3D12_INPUT_ELEMENT_DESC>> inputElementsList_;
 	std::vector<D3D12_INPUT_LAYOUT_DESC> inputLayouts_;
 
 };

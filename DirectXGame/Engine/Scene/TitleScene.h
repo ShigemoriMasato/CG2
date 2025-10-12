@@ -34,4 +34,6 @@ private:
 
 	int mp3Handle;
 	int wavHandle;
+
+	std::unordered_map<Key, bool> keys_{};
 };

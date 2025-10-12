@@ -4,132 +4,139 @@
 #include <fstream>
 #include <sstream>
 
-void ModelData::LoadModel(const std::string& directoryPath, const std::string& filename, TextureManager* textureManager) {
-    std::vector<Vector4> positions;         //位置
-    std::vector<Vector3> normals;           //法線
-    std::vector<Vector2> texcoords;         //テクスチャ座標
-    std::string line;                       //ファイルから読んだ行を格納するバッファ
+#include <assimp/postprocess.h>
 
-    std::ifstream file(directoryPath + "/" + filename); //ファイルを開く
-    assert(file.is_open() && "MyDirectX::LoadObjFile / cannot open obj file");
+void ModelData::LoadModel(const std::string& directoryPath, const std::string& filename, TextureManager* textureManager, DXDevice* device) {
+    Assimp::Importer importer;
+    std::string path = (directoryPath + "/" + filename);
+    const aiScene* scene = nullptr;
+    scene = importer.ReadFile(path.c_str(), aiProcess_MakeLeftHanded | aiProcess_FlipWindingOrder | aiProcess_FlipUVs | aiProcess_Triangulate);
 
-    std::string materialName; //マテリアル名を格納する変数
+	LoadMaterial(scene, directoryPath, textureManager);
 
-    while (std::getline(file, line)) {
-        std::string identifier;
-        std::istringstream s(line);
-        s >> identifier; //行の先頭の文字列を取得
+	rootNode_ = LoadNode(scene->mRootNode, scene);
 
-        if (identifier == "usemtl") {
-            s >> materialName; //マテリアル名を取得
+	CreateID3D12Resource(device->GetDevice());
+}
 
-        } else if (identifier == "v") {
-            Vector4 position;
-            s >> position.x >> position.y >> position.z;
-            position.x *= -1.0f;
-            position.z *= -1.0f;
-            position.w = 1.0f;
-            positions.push_back(position); //位置を格納
+void ModelData::LoadMaterial(const aiScene* scene, std::string directoryPath, TextureManager* textureManager) {
+    for (uint32_t materialIndex = 0; materialIndex < scene->mNumMaterials; ++materialIndex) {
+        aiMaterial* material = scene->mMaterials[materialIndex];
 
-        } else if (identifier == "vt") {
-            Vector2 texcoord;
-            s >> texcoord.x >> texcoord.y; //テクスチャ座標を格納
-            texcoord.y = 1.0f - texcoord.y;
-            texcoords.push_back(texcoord);
+        this->material_.push_back(ModelMaterial());
+        this->material_[materialIndex].name = material->GetName().C_Str();
 
-        } else if (identifier == "vn") {
-            Vector3 normal;
-            s >> normal.x >> normal.y >> normal.z; //法線を格納
-            normal.x *= -1.0f; //y軸も反転
-            normals.push_back(normal);
-
-        } else if (identifier == "f") {
-
-            //面は三角形限定なので、読み込む前にEditor等で三角化させること。そのほかは未対応
-            for (int32_t faceVertex = 0; faceVertex < 3; ++faceVertex) {
-                std::string vertexDefinition;
-                s >> vertexDefinition; //頂点の定義を取得
-
-                //頂点の要素へのIndexは。「位置/UV/法線」で格納されているので、分解してIndexを取得する
-                std::istringstream v(vertexDefinition);
-                uint32_t elementIndices[3];
-                for (int32_t element = 0; element < 3; ++element) {
-                    std::string index;
-                    std::getline(v, index, '/');// /区切りでインデックスを読む
-                    if (index != "") {
-                        elementIndices[element] = std::stoi(index);
-                    } else {
-                        elementIndices[element] = -1;
-                    }
-                }
-
-
-                //要素へのIndexから、実際の要素の値を取得して頂点を構築する
-                Vector4 position = positions[elementIndices[0] - 1];
-
-                Vector2 texcoord;
-                if (elementIndices[1] != -1) {
-                    texcoord = texcoords[elementIndices[1] - 1];
-                } else {
-                    texcoord = { 0.0f, 0.0f }; //テクスチャ座標がない場合はデフォルト値を設定
-                }
-
-                Vector3 normal = normals[elementIndices[2] - 1];
-
-                VertexData vertex = { position, texcoord, normal };
-                vertices[materialName].push_back(vertex); //頂点を格納
-
-            }
-        } else if (identifier == "mtllib") {
-            std::string materialFilename;
-            s >> materialFilename;
-            material = LoadMaterialTemplateFile(directoryPath, materialFilename, textureManager); //マテリアルファイルを読み込む
+        if (material->GetTextureCount(aiTextureType_DIFFUSE) != 0) {
+            aiString textureFilePath;
+            material->GetTexture(aiTextureType_DIFFUSE, 0, &textureFilePath);
+            this->material_.back().textureHandle = textureManager->LoadTexture(directoryPath + "/" + std::string(textureFilePath.C_Str()));
+        } else {
+            this->material_.back().textureHandle = 0; //テクスチャがなかったら白テクスチャを使う
         }
     }
 
 }
 
-int ModelData::GetTextureHandle(std::string materialName) const {
-    for (auto m : material) {
-        if (m.name == materialName) {
-            return m.textureHandle;
+Node ModelData::LoadNode(aiNode* node, const aiScene* scene) {
+    Node result{};
+	result.name = node->mName.C_Str();
+    result.nodeIndex = nodeCount_;
+	aiMatrix4x4 mat = node->mTransformation;
+
+    for(int i = 0; i < 4; ++i) {
+        for(int j = 0; j < 4; ++j) {
+            result.localMatrix.m[i][j] = mat[j][i];
         }
+	}
+
+    for (unsigned int i = 0; i < node->mNumMeshes; i++) {
+        aiMesh* mesh = scene->mMeshes[i];
+
+        for (uint32_t v = 0; v < mesh->mNumVertices; ++v) {
+            aiVector3D pos = mesh->mVertices[v];
+            aiVector3D normal = mesh->HasNormals() ? mesh->mNormals[v] : aiVector3D(0, 1, 0);
+            aiVector3D tex = mesh->HasTextureCoords(0) ? mesh->mTextureCoords[0][v] : aiVector3D(0, 0, 0);
+
+            ModelVertexData vertexData{};
+            vertexData.position = { pos.x,pos.y,pos.z,1.0f };
+            vertexData.normal = { normal.x,normal.y,normal.z };
+            vertexData.texcoord = { tex.x,tex.y };
+
+			vertexData.nodeIndex = result.nodeIndex;
+
+            vertices_[scene->mMaterials[mesh->mMaterialIndex]->GetName().C_Str()].push_back(vertexData);
+        }
+
+        for (uint32_t faceIndex = 0; faceIndex < mesh->mNumFaces; ++faceIndex) {
+			aiFace& face = mesh->mFaces[faceIndex];
+			int indexOffset = static_cast<int>(vertices_[scene->mMaterials[mesh->mMaterialIndex]->GetName().C_Str()].size()) - static_cast<int>(mesh->mNumVertices);
+            assert(face.mNumIndices == 3); //三角形以外は非対応
+
+            for (unsigned int v = 0; v < face.mNumIndices; v++) {
+                int localIndex = face.mIndices[v] + indexOffset;
+				indices_[scene->mMaterials[mesh->mMaterialIndex]->GetName().C_Str()].push_back(localIndex);
+            }//vertex
+
+        }//mesh
+
+    }//node
+
+    nodeCount_++;
+
+    // --- 子ノードを再帰的に処理する ---
+    for (unsigned int i = 0; i < node->mNumChildren; i++) {
+        result.children.push_back(LoadNode(node->mChildren[i], scene));
     }
-    return -1;
+
+    return result;
 }
 
-std::vector<ModelMaterial> ModelData::LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename, TextureManager* textureManager) {
-    std::vector<ModelMaterial> material = {};
-    int index = -1;
-    std::string textureFilePath;
-    std::string line;
-    std::ifstream file(directoryPath + "/" + filename); //ファイルを開く
-    assert(file.is_open() && "MyDirectX::LoadMaterialTemplateFile cannot open the mtlFile");
+void ModelData::CreateID3D12Resource(ID3D12Device* device) {
+    for (auto& [material, vertex] : vertices_) {
+        VertexResource res{};
+        //超点数
+        res.vertexNum = static_cast<int>(vertex.size());
 
-    while (std::getline(file, line)) {
-        std::string identifier;
-        std::stringstream s(line);
-        s >> identifier;
+        //頂点リソースの作成
+        res.resource.Attach(CreateBufferResource(device, sizeof(ModelVertexData) * res.vertexNum));
 
-        if (identifier == "newmtl") {
-            material.push_back(ModelMaterial());
-            ++index;
-            s >> material[index].name; //新しいマテリアル名を取得
-        }
-        //identifierに応じて処理
-        else if (identifier == "map_Kd") {
-            std::string textureFilename;
-            s >> textureFilename;
-            //連結してファイルパスにする
-            textureFilePath = directoryPath + "/" + textureFilename;
-			material[index].textureHandle = textureManager->LoadTexture(textureFilePath);
-        }
+        //データの読み込み
+		ModelVertexData* mappedData = nullptr;
+        res.resource->Map(0, nullptr, (void**)&mappedData);
+        memcpy(mappedData, vertex.data(), sizeof(ModelVertexData) * res.vertexNum);
+		res.resource->Unmap(0, nullptr);
+
+        //BufferViewの作成
+		res.bufferView = std::make_shared<D3D12_VERTEX_BUFFER_VIEW>();
+        res.bufferView->BufferLocation = res.resource->GetGPUVirtualAddress();
+        res.bufferView->SizeInBytes = sizeof(ModelVertexData) * res.vertexNum;
+        res.bufferView->StrideInBytes = sizeof(ModelVertexData);
+
+		//登録
+		vertexBufferViews_[material] = res;
     }
 
-    if (material[index].textureHandle == -1) {
-        //テクスチャが読み込めなかった場合は白い1x1のテクスチャを使う
-        material[index].textureHandle = 0;
-    }
+    for (auto& [material, index] : indices_) {
+        IndexResource res{};
+        //インデックス数
+        res.indexNum = static_cast<int>(index.size());
 
-    return material;
+        //頂点リソースの作成
+        res.indexBuffer.Attach(CreateBufferResource(device, sizeof(uint32_t) * res.indexNum));
+
+        //データの読み込み
+		uint32_t* mappedData = nullptr;
+        res.indexBuffer->Map(0, nullptr, (void**)&mappedData);
+		memcpy(mappedData, index.data(), sizeof(uint32_t) * res.indexNum);
+		res.indexBuffer->Unmap(0, nullptr);
+
+        //BufferViewの作成
+		res.bufferView = std::make_shared<D3D12_INDEX_BUFFER_VIEW>();
+        res.bufferView->BufferLocation = res.indexBuffer->GetGPUVirtualAddress();
+        res.bufferView->SizeInBytes = sizeof(uint32_t) * res.indexNum;
+		res.bufferView->Format = DXGI_FORMAT_R32_UINT;
+
+		//登録
+		indexBufferViews_[material] = res;
+    }
 }

@@ -1,26 +1,23 @@
-#include "ShaderCommon.hlsli"
+#include "Object3d.hlsli"
 
-ConstantBuffer<MatrixData> gTransformMatrix : register(b0);
-
-struct VertexData
+struct TransformationMatrix
 {
-    float4 position : POSITION0;
-    float2 texcoord : TEXCOORD0;
-    float3 normal : NORMAL0;
+    float32_t4x4 WVP;
+    float32_t4x4 World;
 };
 
-struct VertexShaderOutput
-{
-    float4 position : SV_POSITION;
-    float2 texcoord : TEXCOORD0;
-    float3 normal : NORMAL0;
+ConstantBuffer<TransformationMatrix> gTransformMatrix : register(b0);
+
+struct VertexShaderInput {
+    float32_t4 position : POSITION0;
+    float32_t2 texcoord : TEXCOORD0;
+    float32_t3 normal : NORMAL0;
 };
 
-VertexShaderOutput main(VertexData input)
-{
+VertexShaderOutput main(VertexShaderInput input) {
     VertexShaderOutput output;
-    output.position = mul(input.position, gTransformMatrix.wvp);
+    output.position = mul(input.position, gTransformMatrix.WVP);
     output.texcoord = input.texcoord;
-    output.normal = normalize(mul(input.normal, (float3x3)gTransformMatrix.world));
+    output.normal = normalize(mul(input.normal, (float32_t3x3)gTransformMatrix.World));
     return output;
 }
