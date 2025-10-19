@@ -39,4 +39,5 @@ CommonData::CommonData() {
 }
 
 CommonData::~CommonData() {
+	
 }

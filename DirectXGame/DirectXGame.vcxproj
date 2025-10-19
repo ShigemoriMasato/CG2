@@ -15,6 +15,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AppSource\Game\Tetris\Block.cpp" />
+    <ClCompile Include="AppSource\Game\Tetris\Mino\Tetrimino.cpp" />
     <ClCompile Include="Engine\Resource\Audio\Data\AudioData.cpp" />
     <ClCompile Include="Engine\Resource\Audio\AudioManager.cpp" />
     <ClCompile Include="Engine\Render\Resource\Data\BaseResource.cpp" />
@@ -49,6 +51,8 @@
     <ClCompile Include="Engine\Core\PSO\Shelf\InputLayoutShelf.cpp" />
     <ClCompile Include="Engine\Render\ImGuiWrapper.cpp" />
     <ClCompile Include="Engine\Tools\FPS\FPSObserver.cpp" />
+    <ClCompile Include="AppSource\Game\Tetris\Score\LevelManager.cpp" />
+    <ClCompile Include="AppSource\Game\Tetris\Field\Field.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Engine\Core\PSO\Shelf\RasterizerShelf.cpp" />
     <ClCompile Include="Engine\Core\PSO\Shelf\RootSignatureShelf.cpp" />
@@ -72,8 +76,11 @@
     <ClCompile Include="Engine\Render\Resource\PostEffectResource.cpp" />
     <ClCompile Include="Engine\Resource\Audio\Data\MP3Data.cpp" />
     <ClCompile Include="Engine\Resource\Audio\Data\WAVData.cpp" />
+    <ClCompile Include="AppSource\Game\Tetris\Score\ScoreManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AppSource\Game\Tetris\Block.h" />
+    <ClInclude Include="AppSource\Game\Tetris\Mino\Tetrimino.h" />
     <ClInclude Include="Engine\Resource\Audio\Data\AudioData.h" />
     <ClInclude Include="Engine\Resource\Audio\AudioManager.h" />
     <ClInclude Include="Engine\Render\Resource\Data\BaseResource.h" />
@@ -136,6 +143,9 @@
     <ClInclude Include="Engine\Render\Resource\PostEffectResource.h" />
     <ClInclude Include="Engine\Resource\Audio\Data\MP3Data.h" />
     <ClInclude Include="Engine\Resource\Audio\Data\WAVData.h" />
+    <ClInclude Include="AppSource\Game\Tetris\Score\LevelManager.h" />
+    <ClInclude Include="AppSource\Game\Tetris\Score\ScoreManager.h" />
+    <ClInclude Include="AppSource\Game\Tetris\Field\Field.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />
