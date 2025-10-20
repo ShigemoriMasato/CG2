@@ -14,7 +14,7 @@ public:
 private:
 
 	std::vector<std::vector<int>> field_;
-	cosnt int width_ = 10;
+	const int width_ = 10;
 	const int height_ = 20;
 
 };
