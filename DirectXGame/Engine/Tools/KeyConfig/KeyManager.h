@@ -4,13 +4,28 @@
 #include <Tools/Binary/BinaryManager.h>
 
 enum class Key {
-	Right,			//右に行くキー。Dとか→とか
-	Left,			//左に行くキー。Aとか←とか
-	Up,				//エイム専用。Wとか↑とか
-	Down,			//エイム専用。Sとか↓とか
-	Action,			//アクションキー。Jumpとかワイヤー確定とか。スペース
-	Correct,		//確定キー。UI用。Enter,昔の人用にZとか入ってるといいかも
-	Reverse,		//キャンセルキー。UI用。Esc,昔の人用にXとか入ってるといいかも
+	// 移動系 -===========
+
+	Right,
+	Left,
+	Up,
+	Down,
+	
+	// 動作系 -===========
+
+	HardDrop,
+	Hold,
+
+	// 回転系 -===========
+
+	LRotate,
+	RRotate,
+
+	// UI系 -===========
+
+	Correct,//確定キー
+	Reverse,//取消キー
+	Pause,//ポーズキー
 
 	Count
 };
@@ -42,6 +57,7 @@ public:
 
 private:
 
+	//スティックの方向
 	enum Direction {
 		Right,
 		Left

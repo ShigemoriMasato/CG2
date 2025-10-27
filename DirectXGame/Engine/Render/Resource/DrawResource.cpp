@@ -87,7 +87,8 @@ void DrawResource::DrawReady() {
 	material_->uvTransform = {
 		textureScale_.x * cosf(textureRotate_), -textureScale_.y * sinf(textureRotate_), 0.0f, 0.0f,
 		textureScale_.x * sinf(textureRotate_), textureScale_.y * cosf(textureRotate_), 0.0f, 0.0f,
-		texturePos_.x, texturePos_.y, 1.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		texturePos_.x, texturePos_.y, 0.0f, 1.0f,
 	};
 
 	//Matrix

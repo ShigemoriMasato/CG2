@@ -36,4 +36,9 @@ private:
 	int wavHandle;
 
 	std::unordered_map<Key, bool> keys_{};
+
+private:
+	std::unique_ptr<Camera> camera2D_ = nullptr;
+	int textureHandle_ = -1;
+	std::unique_ptr<DrawResource> texture_ = nullptr;
 };

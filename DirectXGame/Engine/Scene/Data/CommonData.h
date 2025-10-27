@@ -1,5 +1,6 @@
 #pragma once
 #include <Tools/KeyConfig/KeyManager.h>
+#include <random>
 
 class CommonData {
 public:
@@ -7,7 +8,8 @@ public:
 	CommonData();
 	~CommonData();
 
-	std::unique_ptr<KeyManager> keyManager_ = nullptr;
+	std::unique_ptr<KeyManager> keyManager = nullptr;
+	std::random_device rd;
 
 private:
 

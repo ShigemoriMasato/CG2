@@ -1,8 +1,9 @@
 #pragma once
 #include <utility>
 #include <Tools/KeyConfig/KeyManager.h>
+#include <random>
 
-//落ちてるテトリミノ。落下したらInitializeする。
+//テトリミノに関する管理。7種1順をここで管理する
 class Tetrimino {
 public:
 
@@ -21,15 +22,17 @@ public:
 	Tetrimino() = default;
 	~Tetrimino() = default;
 
-	void Initialize(Type type);
-	void Fall();
-	void Controll(Key key);
-	std::pair<int, int> GetBlockPos() const { return pos_; }
+	void Initialize(Type type, std::mt19937 g);
+
+	void pop();
+
+	/// <summary>
+	/// 次のテトリミノを取得する
+	/// </summary>
+	/// <param name="nextNum">16まで</param>
+	Type GetNextTetrimino(int nextNum);
 
 private:
-
-	Type type_ = Type::None;
-	std::pair<int, int> pos_ = { 0, 0 };
 
 	std::unordered_map<Type, std::vector<std::pair<int, int>>> blockOffsets_ = {
 		{ Type::I, { {0, -1}, {0, 0}, {0, 1}, {0, 2} } },
@@ -40,5 +43,8 @@ private:
 		{ Type::L, { {1, -1}, {-1, 0}, {0, 0}, {1, 0} } },
 		{ Type::T, { {0, -1}, {-1, 0}, {0, 0}, {1, 0} } }
 	};
+
+	std::vector<Type> nexts_;
+	std::vector<Type> bag_ = { Type::I, Type::O, Type::S, Type::Z, Type::J, Type::L, Type::T };
 
 };

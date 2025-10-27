@@ -35,10 +35,43 @@ void TitleScene::Initialize() {
 
 	wavHandle = audio_->Load("fanfare.wav");
 	mp3Handle = audio_->Load("Clear.mp3");
+
+	camera2D_ = std::make_unique<Camera>();
+	camera2D_->SetProjectionMatrix(OrthographicDesc());
+	camera2D_->MakeMatrix();
+
+	texture_ = std::make_unique<DrawResource>();
+	textureHandle_ = textureManager_->LoadTexture("Assets/Texture/uvChecker.png");
+	texture_->Initialize(4,6);
+	texture_->textureHandle_ = textureHandle_;
+	texture_->localPos_ = {
+		{0.0f,  0.0f, 1.0f},
+		{ 512.0f,  0.0f, 1.0f},
+		{0.0f, 512.0f, 1.0f},
+		{ 512.0f, 512.0f, 1.0f},
+	};
+	texture_->texcoord_ = {
+		{0.0f, 0.0f},
+		{1.0f, 0.0f},
+		{0.0f, 1.0f},
+		{1.0f, 1.0f},
+	};
+	texture_->normal_ = {
+		{0.0f, 0.0f, -1.0f},
+		{0.0f, 0.0f, -1.0f},
+		{0.0f, 0.0f, -1.0f},
+		{0.0f, 0.0f, -1.0f},
+	};
+	texture_->index_ = {
+		0,1,2,
+		1,3,2,
+	};
+	texture_->psoConfig_.isSwapChain = true;
+	texture_->camera_ = camera2D_.get();
 }
 
 std::unique_ptr<BaseScene> TitleScene::Update() {
-	keys_ = commonData->keyManager_->GetKeyStates();
+	keys_ = commonData->keyManager->GetKeyStates();
 
 	camera_->Update();
 
@@ -90,6 +123,12 @@ std::unique_ptr<BaseScene> TitleScene::Update() {
 	}
 	ImGui::End();
 
+	ImGui::Begin("Texture");
+	ImGui::DragFloat2("TexPos", &texture_->texturePos_.x, 0.01f, -1.0f, 1.0f);
+	ImGui::DragFloat2("TexScale", &texture_->textureScale_.x, 0.01f, 0.0f, 2.0f);
+	ImGui::DragFloat("TexRotate", &texture_->textureRotate_, 0.5f, -180.0f, 180.0f);
+	ImGui::End();
+
 	return std::unique_ptr<BaseScene>();
 }
 
@@ -102,6 +141,8 @@ void TitleScene::Draw() {
 	}
 
 	render_->Draw(descModel_.get());
+
+	render_->Draw(texture_.get());
 
 	testEmitter_->Draw(render_);
 }
