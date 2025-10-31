@@ -17,11 +17,13 @@ void MP3Data::Load(std::filesystem::path filepath) {
 
 	// ソースリーダーの作成
 	IMFSourceReader* pMFSourceReader{ nullptr };
-	MFCreateSourceReaderFromURL(path.c_str(), NULL, &pMFSourceReader);
+	HRESULT hr = MFCreateSourceReaderFromURL(path.c_str(), NULL, &pMFSourceReader);
+	assert(SUCCEEDED(hr));
 
 	// メディアタイプを取得
 	IMFMediaType* pMFMediaType{ nullptr };
-	MFCreateMediaType(&pMFMediaType);
+	hr = MFCreateMediaType(&pMFMediaType);
+	assert(SUCCEEDED(hr));
 	
 	pMFMediaType->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Audio);
 	pMFMediaType->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_PCM);
@@ -33,7 +35,8 @@ void MP3Data::Load(std::filesystem::path filepath) {
 	pMFSourceReader->GetCurrentMediaType(static_cast<DWORD>(MF_SOURCE_READER_FIRST_AUDIO_STREAM), &pMFMediaType);
 
 	WAVEFORMATEX* waveFormat{ nullptr };
-	MFCreateWaveFormatExFromMFMediaType(pMFMediaType, &waveFormat, nullptr);
+	hr = MFCreateWaveFormatExFromMFMediaType(pMFMediaType, &waveFormat, nullptr);
+	assert(SUCCEEDED(hr));
 
 	// データ読み込み
 	std::vector<BYTE> bufferData;
@@ -79,6 +82,7 @@ void MP3Data::Load(std::filesystem::path filepath) {
 int MP3Data::Play(IXAudio2* xAudio, bool isLoop) {
 	IXAudio2SourceVoice* pSourceVoice{ nullptr };
 	xAudio->CreateSourceVoice(&pSourceVoice, &wfex_);
+	pSourceVoice->SetVolume(volume_);
 
 	XAUDIO2_BUFFER buffer{ 0 };
 	buffer.pAudioData = pBuffer_;
@@ -89,6 +93,7 @@ int MP3Data::Play(IXAudio2* xAudio, bool isLoop) {
 	// 再生する
 	HRESULT hr = pSourceVoice->SubmitSourceBuffer(&buffer);
 	assert(SUCCEEDED(hr));
+
 
 	hr = pSourceVoice->Start();
 	assert(SUCCEEDED(hr));

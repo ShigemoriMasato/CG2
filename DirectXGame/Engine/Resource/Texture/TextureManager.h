@@ -18,6 +18,7 @@ public:
 
 	void Initialize(DXDevice* device, ID3D12GraphicsCommandList* commandList, SRVManager* srvManager);
 
+	//Assets/Textureの記述が必要
 	int LoadTexture(std::string filePath);
 
 	TextureData* GetTextureData(int handle);

@@ -1,17 +1,26 @@
 #include "MyWindow.h"
+#include <Logger/Logger.h>
 
 std::unordered_map<HWND, std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)>> MyWindow::wndProcMap_;
 
-extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+namespace {
+    std::unordered_map<HWND, std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)>> windowMap;
+}
 
 MyWindow::MyWindow(const int32_t kClientWidth, const int32_t kClientHeight) :
 kClientHeight_(kClientHeight),
 kClientWidth_(kClientWidth) {
+    
 }
 
 MyWindow::~MyWindow() {
     //ウィンドウを破棄
-    CloseWindow(hwnd_);
+    if (hwnd_) {
+        auto a = Logger();
+        a.RegistLogFile("WindowDestroy");
+        DestroyWindow(hwnd_);
+        hwnd_ = nullptr;
+    }
 }
 
 HWND MyWindow::GetHwnd() {
@@ -56,28 +65,17 @@ void MyWindow::CreateWindowForApp(std::wstring windowName, std::wstring windowCl
         nullptr);					//オプション
 
     ShowWindow(hwnd_, SW_SHOW);	    //ウィンドウを表示する
+
 }
 
 void MyWindow::SetWindowProc(std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)> windowProc) {
-	wndProcMap_[hwnd_] = windowProc;
+	windowMap[hwnd_] = windowProc;
 }
 
 LRESULT MyWindow::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
-    //imguiのウィンドウプロシージャを呼ぶ
-    if (ImGui_ImplWin32_WndProcHandler(hwnd, msg, wparam, lparam)) {
-        return true;
-    }
-
-    if(msg == WM_DESTROY) {
-        PostQuitMessage(0);	//OSに対して、アプリの終了を伝える
-        return 0;
-	}
-
-    auto it = wndProcMap_.find(hwnd);
-    if (it != wndProcMap_.end()) {
-        //登録されているウィンドウプロシージャを呼ぶ
-        return (hwnd, msg, wparam, lparam);
-    }
+	auto it = windowMap.find(hwnd);
+    if (it != windowMap.end())
+        return windowMap[hwnd](hwnd, msg, wparam, lparam);
 
     //標準のメッセージ
     return DefWindowProc(hwnd, msg, wparam, lparam);

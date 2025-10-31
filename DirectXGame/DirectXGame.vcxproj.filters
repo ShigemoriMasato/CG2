@@ -129,9 +129,6 @@
     <ClCompile Include="Engine\Resource\OffScreen\OffScreenData.cpp">
       <Filter>MyEngine\Resource</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Render\Resource\ModelResource.cpp">
-      <Filter>MyEngine\Resource</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Resource\Model\ModelManager.cpp">
       <Filter>MyEngine\Resource</Filter>
     </ClCompile>
@@ -153,16 +150,10 @@
     <ClCompile Include="Engine\Tools\Binary\Data\BinaryOutput.cpp">
       <Filter>MyEngine\Tools\Binary</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Render\Resource\DrawResource.cpp">
-      <Filter>MyEngine\Render\Resource</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Render\Resource\ParticleResource.cpp">
-      <Filter>MyEngine\Render\Resource</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Scene\SceneManager.cpp">
       <Filter>MyEngine\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Scene\TitleScene.cpp">
+    <ClCompile Include="AppSource\Game\Scene\TitleScene.cpp">
       <Filter>MyEngine\Scene</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Core\DXCommonFunction.cpp">
@@ -192,9 +183,6 @@
     <ClCompile Include="Engine\Core\PSO\PSOManager.cpp">
       <Filter>MyEngine\Core\PSO</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Tools\Grid\GridMaker.cpp">
-      <Filter>MyEngine\Tools\Grid</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Render\ImGuiWrapper.cpp">
       <Filter>MyEngine\Render</Filter>
     </ClCompile>
@@ -219,15 +207,6 @@
     <ClCompile Include="Engine\Tools\FPS\FPSObserver.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="AppSource\Game\Emitter\DefaultEmitter.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Render\Resource\PostEffectResource.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Render\Resource\Data\BaseResource.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="externals\imgui\ImGuizmo.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -243,22 +222,16 @@
     <ClCompile Include="Engine\Resource\Audio\Data\MP3Data.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Tools\KeyConfig\KeyManager.cpp">
+    <ClCompile Include="AppSource\Common\KeyConfig\KeyManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="AppSource\Game\Tetris\Block.cpp">
+    <ClCompile Include="AppSource\Common\InitializeScene\InitializeScene.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="AppSource\Game\Tetris\Mino\Tetrimino.cpp">
+    <ClCompile Include="Engine\Render\Resource\ResourceGenerator.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="AppSource\Game\Tetris\Score\LevelManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="AppSource\Game\Tetris\Score\ScoreManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="AppSource\Game\Tetris\Field\Field.cpp">
+    <ClCompile Include="Engine\Resource\Model\ModelAnimation.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -323,9 +296,6 @@
     <ClInclude Include="Engine\Resource\Model\ModelManager.h">
       <Filter>MyEngine\Resource</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Render\Resource\ModelResource.h">
-      <Filter>MyEngine\Resource</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Resource\OffScreen\OffScreenData.h">
       <Filter>MyEngine\Resource</Filter>
     </ClInclude>
@@ -350,16 +320,10 @@
     <ClInclude Include="Engine\Tools\Binary\BinaryManager.h">
       <Filter>MyEngine\Tools\Binary</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Render\Resource\ParticleResource.h">
-      <Filter>MyEngine\Render\Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Render\Resource\DrawResource.h">
-      <Filter>MyEngine\Render\Resource</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Scene\SceneManager.h">
       <Filter>MyEngine\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Scene\TitleScene.h">
+    <ClInclude Include="AppSource\Game\Scene\TitleScene.h">
       <Filter>MyEngine\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Core\DXCommonFunction.h">
@@ -395,9 +359,6 @@
     <ClInclude Include="Engine\Core\PSO\PSOManager.h">
       <Filter>MyEngine\Core\PSO</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Tools\Grid\GridMaker.h">
-      <Filter>MyEngine\Tools\Grid</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Render\ImGuiWrapper.h">
       <Filter>MyEngine\Render</Filter>
     </ClInclude>
@@ -422,15 +383,6 @@
     <ClInclude Include="Engine\Tools\FPS\FPSObserver.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="AppSource\Game\Emitter\DefaultEmitter.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Render\Resource\PostEffectResource.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Render\Resource\Data\BaseResource.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="externals\imgui\ImGuizmo.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -446,22 +398,22 @@
     <ClInclude Include="Engine\Resource\Audio\Data\MP3Data.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Tools\KeyConfig\KeyManager.h">
+    <ClInclude Include="Engine\Scene\Data\SceneTools.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="AppSource\Game\Tetris\Block.h">
+    <ClInclude Include="AppSource\Common\KeyConfig\KeyManager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="AppSource\Game\Tetris\Mino\Tetrimino.h">
+    <ClInclude Include="AppSource\Common\InitializeScene\InitializeScene.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="AppSource\Game\Tetris\Score\LevelManager.h">
+    <ClInclude Include="Engine\Render\Resource\ResourceGenerator.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="AppSource\Game\Tetris\Score\ScoreManager.h">
+    <ClInclude Include="Engine\Render\Resource\Data\PostEffectData.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="AppSource\Game\Tetris\Field\Field.h">
+    <ClInclude Include="Engine\Resource\Model\ModelAnimation.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

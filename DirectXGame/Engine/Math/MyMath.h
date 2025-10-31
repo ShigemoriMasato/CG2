@@ -4,6 +4,7 @@
 #include <string>
 #include <array>
 #include <cmath>
+#include <numbers>
 #include "../Transform/Vector.h"
 #include "../Transform/Matrix.h"
 #include "../Transform/Transform.h"
@@ -120,6 +121,7 @@ namespace MyMath {
 	/// <returns></returns>
 	uint32_t lerp(uint32_t a, uint32_t b, float t);
 	Vector3 lerp(const Vector3& a, const Vector3& b, float t);
+	Quaternion lerp(const Quaternion& a, const Quaternion& b, float t);
 
 	float EaseIn(float a, float b, float t);
 	Vector3 EaseIn(Vector3 a, Vector3 b, float t);
@@ -140,11 +142,13 @@ namespace MyMath {
 
 	Vector3 cross(const Vector3& a, const Vector3& b);
 	float dot(const Vector3& a, const Vector3& b);
+	float Length(const Vector3& vec);
 }
 
-class Object;
-bool CollisionChecker(Object* a, Object* b);
+class BaseObject;
+bool CollisionChecker(BaseObject* a, BaseObject* b);
 
 std::vector<Vector3> GetSplinePoints(const std::vector<Vector3>& controlPoints, int segment);
 std::vector<Vector3> GetCatmullPoints(const std::vector<Vector3>& points, int segmentsPerCurve);
 Vector3 GetCatmullPoint(const std::vector<Vector3>& points, float t);
+float CalculateAngle(const Vector3& a, const Vector3& b);

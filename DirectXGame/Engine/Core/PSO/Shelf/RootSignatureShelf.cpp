@@ -17,6 +17,13 @@ RootSignatureShelf::RootSignatureShelf(ID3D12Device* device) {
     textureDescriptor[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
     textureDescriptor[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
+	//画像8枚用のDescriptorRange
+    D3D12_DESCRIPTOR_RANGE multiTexDescriptor[1] = {};
+    multiTexDescriptor[0].BaseShaderRegister = 1;
+    multiTexDescriptor[0].NumDescriptors = 8;
+    multiTexDescriptor[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+    multiTexDescriptor[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
 	//ParticleDataのDescriptorRange
 	D3D12_DESCRIPTOR_RANGE instancingDescriptor[1] = {};
     instancingDescriptor[0].BaseShaderRegister = 0;
@@ -35,6 +42,17 @@ RootSignatureShelf::RootSignatureShelf(ID3D12Device* device) {
     staticSampler[0].MaxLOD = D3D12_FLOAT32_MAX;    //ありったけのMipmapを使う
     staticSampler[0].ShaderRegister = 0;    //レジスタ番号0
     staticSampler[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;    //PixelShaderで使う
+
+    // PostEffect用のCLAMPモードサンプラー
+    D3D12_STATIC_SAMPLER_DESC clampSampler[1] = {};
+    clampSampler[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
+    clampSampler[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;  // CLAMPに変更
+    clampSampler[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;  // CLAMPに変更
+    clampSampler[0].AddressW = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;  // CLAMPに変更
+    clampSampler[0].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
+    clampSampler[0].MaxLOD = D3D12_FLOAT32_MAX;
+    clampSampler[0].ShaderRegister = 0;
+    clampSampler[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
     //ありあり
     {
@@ -142,6 +160,42 @@ RootSignatureShelf::RootSignatureShelf(ID3D12Device* device) {
         CreateRootSignature(descriptionRootSignature, RootSignatureID::Particle, device);
     }
 
+    //LightingParticle
+    {
+        //RootSignature作成
+        D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
+        descriptionRootSignature.Flags =
+            D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+
+        //RootParameter作成
+        D3D12_ROOT_PARAMETER rootParameters[3] = {};
+
+        //Matrix
+        rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;       //CBVを使う
+        rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;                //VertexShaderで使う
+        rootParameters[0].DescriptorTable.pDescriptorRanges = instancingDescriptor;         //テーブルの中身
+        rootParameters[0].DescriptorTable.NumDescriptorRanges = _countof(instancingDescriptor); //テーブルの数
+
+        //Texture
+        rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;	//テーブルを使う
+        rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;	//PixelShaderで使う
+        rootParameters[1].DescriptorTable.pDescriptorRanges = textureDescriptor;	//テーブルの中身
+        rootParameters[1].DescriptorTable.NumDescriptorRanges = _countof(textureDescriptor);	//テーブルの数
+
+        //DirectionalLight
+        rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;	//CBVを使う
+        rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;	//PixelShaderで使う
+        rootParameters[2].Descriptor.ShaderRegister = 0;	//レジスタ番号1とバインド
+
+        descriptionRootSignature.pParameters = rootParameters;                  //ルートパラメータ配列へのポインタ
+        descriptionRootSignature.NumParameters = _countof(rootParameters);      //配列の長さ
+
+        descriptionRootSignature.pStaticSamplers = staticSampler;              //StaticSamplerの配列へのポインタ
+        descriptionRootSignature.NumStaticSamplers = _countof(staticSampler);   //配列の長さ
+
+        CreateRootSignature(descriptionRootSignature, RootSignatureID::LightParticle, device);
+    }
+
     //Model
     {
         //RootSignature作成
@@ -172,6 +226,76 @@ RootSignatureShelf::RootSignatureShelf(ID3D12Device* device) {
         descriptionRootSignature.NumStaticSamplers = _countof(staticSampler);   //配列の長さ
 
         CreateRootSignature(descriptionRootSignature, RootSignatureID::Model, device);
+    }
+
+    //ModelParticle
+    {
+        //RootSignature作成
+        D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
+        descriptionRootSignature.Flags =
+            D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+
+        //RootParameter作成
+        D3D12_ROOT_PARAMETER rootParameters[4] = {};
+
+        //Matrix
+        rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;       //CBVを使う
+        rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;                //VertexShaderで使う
+        rootParameters[0].DescriptorTable.pDescriptorRanges = instancingDescriptor;         //テーブルの中身
+        rootParameters[0].DescriptorTable.NumDescriptorRanges = _countof(instancingDescriptor); //テーブルの数
+
+        //Texture
+        rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;	//テーブルを使う
+        rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;	//PixelShaderで使う
+        rootParameters[1].DescriptorTable.pDescriptorRanges = multiTexDescriptor;	//テーブルの中身
+        rootParameters[1].DescriptorTable.NumDescriptorRanges = _countof(multiTexDescriptor);	//テーブルの数
+        //Texture
+        rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;	//テーブルを使う
+        rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;	//PixelShaderで使う
+        rootParameters[2].DescriptorTable.pDescriptorRanges = textureDescriptor;	//テーブルの中身
+        rootParameters[2].DescriptorTable.NumDescriptorRanges = _countof(textureDescriptor);	//テーブルの数
+
+        rootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+        rootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+        rootParameters[3].Descriptor.ShaderRegister = 0;
+
+
+        descriptionRootSignature.pParameters = rootParameters;                  //ルートパラメータ配列へのポインタ
+        descriptionRootSignature.NumParameters = _countof(rootParameters);      //配列の長さ
+
+        descriptionRootSignature.pStaticSamplers = staticSampler;              //StaticSamplerの配列へのポインタ
+        descriptionRootSignature.NumStaticSamplers = _countof(staticSampler);   //配列の長さ
+
+        CreateRootSignature(descriptionRootSignature, RootSignatureID::MP, device);
+    }
+
+    {
+        //RootSignature作成
+        D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
+        descriptionRootSignature.Flags =
+            D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+
+        //RootParameter作成
+        D3D12_ROOT_PARAMETER rootParameters[2] = {};
+
+        //InfoForGPU
+		rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;   //CBVを使う
+		rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;     //PixelShaderで使う
+		rootParameters[0].Descriptor.ShaderRegister = 0;        //レジスタ番号0とバインド
+
+        //Texture
+     rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;	//テーブルを使う
+  rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;	//PixelShaderで使う
+        rootParameters[1].DescriptorTable.pDescriptorRanges = textureDescriptor;	//テーブルの中身
+        rootParameters[1].DescriptorTable.NumDescriptorRanges = _countof(textureDescriptor);	//テーブルの数
+
+  descriptionRootSignature.pParameters = rootParameters;    //ルートパラメータ配列へのポインタ
+        descriptionRootSignature.NumParameters = _countof(rootParameters);      //配列の長さ
+
+      descriptionRootSignature.pStaticSamplers = clampSampler;        // CLAMPサンプラーを使用
+        descriptionRootSignature.NumStaticSamplers = _countof(clampSampler);   //配列の長さ
+
+        CreateRootSignature(descriptionRootSignature, RootSignatureID::PostEffect, device);
     }
 }
 

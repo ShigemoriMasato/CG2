@@ -23,8 +23,6 @@ private:
 	uint32_t readCountCPU_ = 0;
 	uint32_t readCountGPU_ = 0;
 
-	const int maxTextureCount;
+	const uint32_t maxCount;
 
 };
-
- 

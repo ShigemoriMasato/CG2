@@ -1,6 +1,7 @@
 #include "DrawResource.h"
 #include <Core/DXCommonFunction.h>
 #include <Math/MyMath.h>
+#include <numbers>
 
 using namespace Matrix;
 
@@ -18,6 +19,7 @@ void DrawResource::Initialize(uint32_t vertexNum, uint32_t indexNum, bool useMat
 	localPos_.resize(vertexNum);
 	texcoord_.resize(vertexNum);
 	normal_.resize(vertexNum);
+	index_.resize(indexNum);
 
 	//頂点のバッファビューを作成する
 	//リソースの先頭のアドレスから使う
@@ -58,6 +60,150 @@ void DrawResource::Initialize(uint32_t vertexNum, uint32_t indexNum, bool useMat
 		psoConfig_.rootID = RootSignatureID::NonMatrix;
 		psoConfig_.vs = "NonMatrix3d.VS.hlsl";
 	}
+
+	//defaultでWhite1x1をセット
+	SetTextureHandle(0);
+}
+
+void DrawResource::Initialize(ShapeType type) {
+#pragma region 球の設定
+	int vertexCount = 0;
+	int indexCount = 0;
+
+	int vertical = 8;
+	int horizontal = 16;
+	float radius = 0.5f;
+
+	float theta;
+	float phi;
+
+	float sinTheta;
+	float cosTheta;
+
+	float sinPhi;
+	float cosPhi;
+#pragma endregion
+
+	switch (type) {
+	case ShapeType::Plane:
+		Initialize(4, 6);
+		localPos_ = {
+			{-0.5f, 0.5f, 0.0f},
+			{0.5f, 0.5f, 0.0f},
+			{-0.5f, -0.5f, 0.0f},
+			{0.5f, -0.5f, 0.0f}
+		};
+		texcoord_ = {
+			{0.0f, 0.0f},
+			{1.0f, 0.0f},
+			{0.0f, 1.0f},
+			{1.0f, 1.0f}
+		};
+		normal_ = {
+			{0.0f, 1.0f, 0.0f},
+			{0.0f, 1.0f, 0.0f},
+			{0.0f, 1.0f, 0.0f},
+			{0.0f, 1.0f, 0.0f}
+		};
+		index_ = {
+			0, 1, 2,
+			2, 1, 3
+		};
+
+		break;
+
+	case ShapeType::Cube:
+
+		Initialize(8, 36);
+
+		localPos_ = {
+			{-0.5f, 0.5f, -0.5f}, {0.5f, 0.5f, -0.5f},
+			{-0.5f, -0.5f, -0.5f}, {0.5f, -0.5f, -0.5f},
+			{-0.5f, 0.5f, 0.5f}, {0.5f, 0.5f, 0.5f},
+			{-0.5f, -0.5f, 0.5f}, {0.5f, -0.5f, 0.5f}
+		};
+		texcoord_ = {
+			{0.0f, 0.0f}, {1.0f, 0.0f},
+			{0.0f, 1.0f}, {1.0f, 1.0f},
+			{1.0f, 0.0f}, {0.0f, 0.0f},
+			{1.0f, 1.0f}, {0.0f, 1.0f}
+		};
+		normal_ = {
+			{0.0f, 0.0f, -1.0f}, {0.0f, 0.0f, -1.0f},
+			{0.0f, 0.0f, -1.0f}, {0.0f, 0.0f, -1.0f},
+			{0.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 1.0f},
+			{1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f}
+		};
+		index_ = {
+			//前
+			2, 3, 1,
+			2, 1, 0,
+			//後
+			4, 5, 7,
+			4, 7, 6,
+			//左
+			6, 7, 3,
+			6, 3, 2,
+			//右
+			1, 5, 4,
+			1, 4, 0,
+			//上
+			0, 4, 6,
+			0, 6, 2,
+			//下
+			3, 7, 5,
+			3, 5, 1
+		};
+
+		break;
+
+	case ShapeType::Sphere:
+		Initialize(561, 3072);
+
+		for (int i = 0; i < vertical + 1; ++i) {
+			theta = i * std::numbers::pi_v<float> / vertical; // 緯度
+
+			sinTheta = std::sin(theta);
+			cosTheta = std::cos(theta);
+
+			for (int j = 0; j < horizontal + 1; ++j) {
+				phi = j * std::numbers::pi_v<float> * 2.0f / horizontal;
+
+				sinPhi = std::sin(phi);
+				cosPhi = std::cos(phi);
+
+				// 球の頂点座標を計算
+				localPos_[vertexCount].x = radius * cosPhi * sinTheta;
+				localPos_[vertexCount].y = radius * cosTheta;
+				localPos_[vertexCount].z = radius * sinPhi * sinTheta;
+
+				texcoord_[vertexCount].x = static_cast<float>(j) / horizontal;
+				texcoord_[vertexCount].y = static_cast<float>(i) / vertical;
+
+				normal_[vertexCount].x = cosPhi * sinTheta;
+				normal_[vertexCount].y = cosTheta;
+				normal_[vertexCount].z = sinPhi * sinTheta;
+
+				++vertexCount;
+			}
+		}
+
+		for (int i = 0; i < vertical; ++i) {
+			for (int j = 0; j < horizontal; ++j) {
+
+				index_[indexCount++] = i * (horizontal + 1) + j;
+				index_[indexCount++] = i * (horizontal + 1) + j + 1;
+				index_[indexCount++] = (i + 1) * (horizontal + 1) + j;
+
+				index_[indexCount++] = i * (horizontal + 1) + j + 1;
+				index_[indexCount++] = (i + 1) * (horizontal + 1) + j + 1;
+				index_[indexCount++] = (i + 1) * (horizontal + 1) + j;
+
+			}
+		}
+
+		break;
+	}
 }
 
 void DrawResource::DrawReady() {
@@ -84,12 +230,9 @@ void DrawResource::DrawReady() {
 		((color_ >> 8) & 0xff) / 255.0f,
 		((color_ >> 0) & 0xff) / 255.0f
 	};
-	material_->uvTransform = {
-		textureScale_.x * cosf(textureRotate_), -textureScale_.y * sinf(textureRotate_), 0.0f, 0.0f,
-		textureScale_.x * sinf(textureRotate_), textureScale_.y * cosf(textureRotate_), 0.0f, 0.0f,
-		0.0f, 0.0f, 1.0f, 0.0f,
-		texturePos_.x, texturePos_.y, 0.0f, 1.0f,
-	};
+	material_->uvTransform = MakeScaleMatrix(Vector3(textureScale_.x, textureScale_.y, 1.0f)) *
+		MakeRotationMatrix(Vector3(0.0f, 0.0f, textureRotate_)) *
+		MakeTranslationMatrix(Vector3(texturePos_.x, texturePos_.y, 0.0f));
 
 	//Matrix
 	Matrix4x4 worldMat = GetWorldMatrix(scale_, rotate_, position_);
@@ -157,4 +300,17 @@ ID3D12Resource* DrawResource::GetParticleDataResource() const {
 		return matrixResource.Get();
 	}
 	return nullptr;
+}
+
+void DrawResource::SetTextureHandle(int handle) {
+	textureHandle_ = textureManager_->GetTextureData(handle)->GetTextureGPUHandle();
+}
+
+void DrawResource::SetTextureHandle(std::string filePath) {
+	int handle = textureManager_->LoadTexture(filePath);
+	textureHandle_ = textureManager_->GetTextureData(handle)->GetTextureGPUHandle();
+}
+
+void DrawResource::SetTextureHandle(D3D12_GPU_DESCRIPTOR_HANDLE handle) {
+	textureHandle_ = handle;
 }

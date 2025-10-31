@@ -1,6 +1,9 @@
 #include "EngineTerminal.h"
-#include <Scene/TitleScene.h>
 #include <Scene/Engine/ShaderEditScene.h>
+#include <Common/InitializeScene/InitializeScene.h>
+#include <Scene/SceneManager.h>
+
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 EngineTerminal::EngineTerminal(BootMode mode) {
 	mode_ = mode;
@@ -11,8 +14,11 @@ EngineTerminal::~EngineTerminal() {
 }
 
 bool EngineTerminal::IsLoop() {
-	while (msg.message != WM_QUIT) {
+	if (sceneManager_->commonData_->isPushClose_) {
+		return false;
+	}
 
+	while (true) {
 		//メッセージがあれば処理する
 		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
 			TranslateMessage(&msg);
@@ -21,50 +27,35 @@ bool EngineTerminal::IsLoop() {
 			//メッセージがなければ処理を始める
 			return true;
 		}
-
 	}
-	//ウィンドウのxボタンが押されたらfalseを返す
-	return false;
 }
 
 void EngineTerminal::Initialize(int32_t windowWidth, int32_t windowHeight) {
 	dxDevice_ = std::make_unique<DXDevice>(windowWidth, windowHeight);
+	dxDevice_->Initialize();
 
-	//WindowProc
-	std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)> windowProc =
-		[this](HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) -> LRESULT {
+	dxDevice_->SetWindowProc([this](HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) -> LRESULT {
+
+		//imguiのウィンドウプロシージャを呼ぶ
+		if (ImGui_ImplWin32_WndProcHandler(hwnd, msg, wparam, lparam)) {
+			return true;
+		}
 
 		switch (msg) {
-		case WM_DESTROY:
-
-			PostQuitMessage(0);
-
+		case WM_CLOSE:
+			sceneManager_->commonData_->isPushClose_ = true;
 			return 0;
-
-		case WM_KEYDOWN:
-
-			//ESCで終了
-			if (wparam == VK_ESCAPE) {
-				PostQuitMessage(0);
-				return 0;
-			}
-
-			break;
+		case WM_DESTROY:
+			PostQuitMessage(0);
+			return 0;
 		}
 
 		return DefWindowProc(hwnd, msg, wparam, lparam);
-		};
 
-	dxDevice_->SetWindowProc(windowProc);
-
-	dxDevice_->Initialize();
+	});
 
 	render_ = std::make_unique<Render>(dxDevice_.get());
-	srvManager_ = std::make_unique<SRVManager>(dxDevice_.get(), 256);
-
-	BaseResource::StaticInitialize(dxDevice_.get(), srvManager_.get());
-	ParticleResource::StaticInitialize(dxDevice_.get(), srvManager_.get());
-	ModelResource::StaticInitialize(dxDevice_.get(), srvManager_.get());
+	srvManager_ = std::make_unique<SRVManager>(dxDevice_.get(), 4096);
 
 	textureManager_ = std::make_unique<TextureManager>();
 	textureManager_->Initialize(dxDevice_.get(), render_->GetCommandList(), srvManager_.get());
@@ -82,17 +73,16 @@ void EngineTerminal::Initialize(int32_t windowWidth, int32_t windowHeight) {
 
 	textureManager_->LoadTexture("Assets/Texture/white1x1.png");
 
+	fpsObserver_ = std::make_unique<FPSObserver>(true, 60.0);
+
 	switch (mode_) {
 	case BootMode::Game:
-		sceneManager_ = std::make_unique<SceneManager>(std::make_unique<TitleScene>(), this);
+		sceneManager_ = std::make_unique<SceneManager>(std::make_unique<InitializeScene>(), this);
 		break;
 	case BootMode::ShaderEdit:
 		sceneManager_ = std::make_unique<SceneManager>(std::make_unique<ShaderEditScene>(), this);
 		break;
 	}
-
-
-	fpsObserver_ = std::make_unique<FPSObserver>(true, 60.0);
 }
 
 // =========================- MainLoop -===============================
@@ -104,6 +94,7 @@ void EngineTerminal::Run() {
 		sceneManager_->Update();
 
 		sceneManager_->Draw();
+
 		PostDraw();
 	}
 }
@@ -116,6 +107,7 @@ void EngineTerminal::Update() {
 	ImGuiOperator::StartFrame(static_cast<float>(windowSize.first), static_cast<float>(windowSize.second));
 
 	fpsObserver_->TimeAdjustment();
+	Logger().Log("Deltatime: " + std::to_string(fpsObserver_->GetDeltatime()));
 }
 
 void EngineTerminal::PreDraw() {

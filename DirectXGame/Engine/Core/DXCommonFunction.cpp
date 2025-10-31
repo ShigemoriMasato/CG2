@@ -113,7 +113,7 @@ DirectX::ScratchImage CreateMipImages(const std::string& filePath) {
     DirectX::ScratchImage image{};
     std::wstring filePathW = ConvertString(filePath);
     HRESULT hr = DirectX::LoadFromWICFile(filePathW.c_str(), DirectX::WIC_FLAGS_FORCE_SRGB, nullptr, image);
-    assert(SUCCEEDED(hr));
+    assert(SUCCEEDED(hr) && "Failed to Open TextureFile");
 
     DirectX::ScratchImage mipImages{};
     //ミニマップの作成(画像サイズが最小の場合、作成手順を飛ばす)

@@ -19,11 +19,11 @@ SamplerState gSampler : register(s0);
 
 PixelShaderOutput main(VertexShaderOutput input)
 {
-    PixelShaderOutput output;
     float4 transformedUV = mul(float4(input.texcoord, 0.0f, 1.0f), gMaterial.uvTransform);
     float4 textureColor = gTexture.Sample(gSampler, input.texcoord);
     
-    output.color = textureColor * gMaterial.color;
+    PixelShaderOutput output;
+    output.color = gMaterial.color * textureColor;
     
     if (output.color.w < 0.02f)
     {

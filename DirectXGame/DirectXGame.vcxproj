@@ -15,19 +15,18 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AppSource\Game\Tetris\Block.cpp" />
-    <ClCompile Include="AppSource\Game\Tetris\Mino\Tetrimino.cpp" />
+    <ClCompile Include="AppSource\Common\InitializeScene\InitializeScene.cpp" />
+    <ClCompile Include="AppSource\Common\KeyConfig\KeyManager.cpp" />
     <ClCompile Include="Engine\Resource\Audio\Data\AudioData.cpp" />
     <ClCompile Include="Engine\Resource\Audio\AudioManager.cpp" />
-    <ClCompile Include="Engine\Render\Resource\Data\BaseResource.cpp" />
     <ClCompile Include="Engine\Core\EngineTerminal.cpp" />
+    <ClCompile Include="Engine\Resource\Model\ModelAnimation.cpp" />
     <ClCompile Include="Engine\Tools\Binary\BinaryManager.cpp" />
     <ClCompile Include="Engine\Tools\Binary\Data\BinaryInput.cpp" />
     <ClCompile Include="Engine\Tools\Binary\Data\BinaryOutput.cpp" />
     <ClCompile Include="Engine\Scene\Data\BaseScene.cpp" />
     <ClCompile Include="Engine\Scene\Data\CommonData.cpp" />
     <ClCompile Include="Engine\Core\DXCommonFunction.cpp" />
-    <ClCompile Include="Engine\Render\Resource\DrawResource.cpp" />
     <ClCompile Include="Engine\Core\DXDevice.cpp" />
     <ClCompile Include="Engine\Core\PSO\Shelf\DepthStencilShelf.cpp" />
     <ClCompile Include="Engine\Core\PSO\Shelf\BlendStateShelf.cpp" />
@@ -35,11 +34,9 @@
     <ClCompile Include="Engine\Camera\DebugCamera.cpp" />
     <ClCompile Include="Engine\Core\PSO\PSOManager.cpp" />
     <ClCompile Include="Engine\Core\MyWindow.cpp" />
-    <ClCompile Include="Engine\Tools\Grid\GridMaker.cpp" />
     <ClCompile Include="Engine\Input\Input.cpp" />
     <ClCompile Include="Engine\Logger\Logger.cpp" />
     <ClCompile Include="Engine\Math\MyMath.cpp" />
-    <ClCompile Include="Engine\Tools\KeyConfig\KeyManager.cpp" />
     <ClCompile Include="externals\imgui\imgui.cpp" />
     <ClCompile Include="externals\imgui\ImGuizmo.cpp" />
     <ClCompile Include="externals\imgui\imgui_demo.cpp" />
@@ -51,8 +48,6 @@
     <ClCompile Include="Engine\Core\PSO\Shelf\InputLayoutShelf.cpp" />
     <ClCompile Include="Engine\Render\ImGuiWrapper.cpp" />
     <ClCompile Include="Engine\Tools\FPS\FPSObserver.cpp" />
-    <ClCompile Include="AppSource\Game\Tetris\Score\LevelManager.cpp" />
-    <ClCompile Include="AppSource\Game\Tetris\Field\Field.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Engine\Core\PSO\Shelf\RasterizerShelf.cpp" />
     <ClCompile Include="Engine\Core\PSO\Shelf\RootSignatureShelf.cpp" />
@@ -64,34 +59,31 @@
     <ClCompile Include="Engine\Resource\Texture\TextureData.cpp" />
     <ClCompile Include="Engine\Resource\OffScreen\OffScreenData.cpp" />
     <ClCompile Include="Engine\Resource\Model\ModelData.cpp" />
-    <ClCompile Include="Engine\Render\Resource\ModelResource.cpp" />
     <ClCompile Include="Engine\Resource\Model\ModelManager.cpp" />
     <ClCompile Include="Engine\Scene\SceneManager.cpp" />
-    <ClCompile Include="Engine\Scene\TitleScene.cpp" />
+    <ClCompile Include="AppSource\Game\Scene\TitleScene.cpp" />
     <ClCompile Include="Engine\Resource\SRVManager.cpp" />
     <ClCompile Include="Engine\Scene\Engine\ShaderEditScene.cpp" />
     <ClCompile Include="Engine\Math\MyString.cpp" />
-    <ClCompile Include="Engine\Render\Resource\ParticleResource.cpp" />
-    <ClCompile Include="AppSource\Game\Emitter\DefaultEmitter.cpp" />
-    <ClCompile Include="Engine\Render\Resource\PostEffectResource.cpp" />
     <ClCompile Include="Engine\Resource\Audio\Data\MP3Data.cpp" />
     <ClCompile Include="Engine\Resource\Audio\Data\WAVData.cpp" />
-    <ClCompile Include="AppSource\Game\Tetris\Score\ScoreManager.cpp" />
+    <ClCompile Include="Engine\Render\Resource\ResourceGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AppSource\Game\Tetris\Block.h" />
-    <ClInclude Include="AppSource\Game\Tetris\Mino\Tetrimino.h" />
+    <ClInclude Include="AppSource\Common\InitializeScene\InitializeScene.h" />
+    <ClInclude Include="AppSource\Common\KeyConfig\KeyManager.h" />
+    <ClInclude Include="Engine\Render\Resource\Data\PostEffectData.h" />
     <ClInclude Include="Engine\Resource\Audio\Data\AudioData.h" />
     <ClInclude Include="Engine\Resource\Audio\AudioManager.h" />
-    <ClInclude Include="Engine\Render\Resource\Data\BaseResource.h" />
     <ClInclude Include="Engine\Core\EngineTerminal.h" />
+    <ClInclude Include="Engine\Resource\Model\ModelAnimation.h" />
+    <ClInclude Include="Engine\Scene\Data\SceneTools.h" />
     <ClInclude Include="Engine\Tools\Binary\BinaryManager.h" />
     <ClInclude Include="Engine\Tools\Binary\Data\BinaryInput.h" />
     <ClInclude Include="Engine\Tools\Binary\Data\BinaryOutput.h" />
     <ClInclude Include="Engine\Scene\Data\BaseScene.h" />
     <ClInclude Include="Engine\Scene\Data\CommonData.h" />
     <ClInclude Include="Engine\Core\DXCommonFunction.h" />
-    <ClInclude Include="Engine\Render\Resource\DrawResource.h" />
     <ClInclude Include="Engine\Core\DXDevice.h" />
     <ClInclude Include="Engine\Core\PSO\PSOConfig.h" />
     <ClInclude Include="Engine\Core\PSO\Shelf\DepthStencilShelf.h" />
@@ -100,8 +92,6 @@
     <ClInclude Include="Engine\Camera\DebugCamera.h" />
     <ClInclude Include="Engine\Core\PSO\PSOManager.h" />
     <ClInclude Include="Engine\Core\MyWindow.h" />
-    <ClInclude Include="Engine\Tools\Grid\GridMaker.h" />
-    <ClInclude Include="Engine\Tools\KeyConfig\KeyManager.h" />
     <ClInclude Include="Engine\Transform\Matrix.h" />
     <ClInclude Include="Engine\Transform\Transform.h" />
     <ClInclude Include="Engine\Tools\Binary\Data\Value.h" />
@@ -130,30 +120,19 @@
     <ClInclude Include="Engine\Resource\Texture\TextureData.h" />
     <ClInclude Include="Engine\Resource\OffScreen\OffScreenData.h" />
     <ClInclude Include="Engine\Resource\Model\ModelData.h" />
-    <ClInclude Include="Engine\Render\Resource\ModelResource.h" />
     <ClInclude Include="Engine\Resource\Model\ModelManager.h" />
     <ClInclude Include="Engine\Scene\SceneManager.h" />
-    <ClInclude Include="Engine\Scene\TitleScene.h" />
+    <ClInclude Include="AppSource\Game\Scene\TitleScene.h" />
     <ClInclude Include="Engine\Resource\SRVManager.h" />
     <ClInclude Include="Engine\Scene\Engine\ShaderEditScene.h" />
     <ClInclude Include="Engine\Math\MyString.h" />
-    <ClInclude Include="Engine\Render\Resource\ParticleResource.h" />
     <ClInclude Include="Engine\Tools\FPS\FPSObserver.h" />
-    <ClInclude Include="AppSource\Game\Emitter\DefaultEmitter.h" />
-    <ClInclude Include="Engine\Render\Resource\PostEffectResource.h" />
     <ClInclude Include="Engine\Resource\Audio\Data\MP3Data.h" />
     <ClInclude Include="Engine\Resource\Audio\Data\WAVData.h" />
-    <ClInclude Include="AppSource\Game\Tetris\Score\LevelManager.h" />
-    <ClInclude Include="AppSource\Game\Tetris\Score\ScoreManager.h" />
-    <ClInclude Include="AppSource\Game\Tetris\Field\Field.h" />
+    <ClInclude Include="Engine\Render\Resource\ResourceGenerator.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">
-      <Project>{371b9fa9-4c90-4ac6-a123-aced756d6c77}</Project>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="AppSource\Game\Emitter\ReadMe.md" />
@@ -217,7 +196,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_WINDOWS;SH_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NOMINMAX;_DEBUG;_WINDOWS;SH_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
@@ -231,8 +210,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalOptions>/ignore:4049 %(AdditionalOptions)</AdditionalOptions>
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
-      <AdditionalLibraryDirectories>$(ProjectDir)externals\assimp\lib\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)externals\DirectXTex\lib\Debug;$(ProjectDir)externals\assimp\lib\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>DirectXTex.lib;assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
@@ -246,7 +225,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_WINDOWS;SH_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NOMINMAX;NDEBUG;_WINDOWS;SH_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
@@ -260,8 +239,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir)externals/assimp/lib/Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)externals/assimp/lib/Release;$(ProjectDir)externals/DirectXTex/lib/Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>DirectXTex.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
@@ -275,7 +254,7 @@ xcopy /E /I /Y "$(ProjectDir)Assets\*" "$(TargetDir)Assets\"</Command>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;SH_DEVELOP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NOMINMAX;WIN32;_WINDOWS;SH_DEVELOP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
@@ -292,8 +271,8 @@ xcopy /E /I /Y "$(ProjectDir)Assets\*" "$(TargetDir)Assets\"</Command>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <LinkTimeCodeGeneration />
-      <AdditionalLibraryDirectories>$(ProjectDir)externals/assimp/lib/Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)externals/assimp/lib/Release;$(ProjectDir)externals/DirectXTex/lib/Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>DirectXTex.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"

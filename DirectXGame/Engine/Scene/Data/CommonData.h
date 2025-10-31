@@ -1,6 +1,5 @@
 #pragma once
-#include <Tools/KeyConfig/KeyManager.h>
-#include <random>
+#include <Common/KeyConfig/KeyManager.h>
 
 class CommonData {
 public:
@@ -8,8 +7,11 @@ public:
 	CommonData();
 	~CommonData();
 
-	std::unique_ptr<KeyManager> keyManager = nullptr;
-	std::random_device rd;
+	std::shared_ptr<KeyManager> keyManager_ = nullptr;
+
+	bool isPushClose_ = false;
+
+	int bgmPlayHandle_ = -1;
 
 private:
 

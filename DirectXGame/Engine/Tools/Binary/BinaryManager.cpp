@@ -10,15 +10,18 @@ BinaryManager::~BinaryManager() {
 }
 
 void BinaryManager::Write(std::string fileName) {
-	// 書き出し専用の一時バッファを使う
-	std::vector<std::shared_ptr<ValueBase>> buffer = std::move(values);
-	values.clear();
 
 	std::ofstream file(basePath + fileName, std::ios::binary);
 
-	for (auto v : buffer) {
+	if (!file.is_open()) {
+		return;
+	}
+
+	for (auto v : values) {
 		output->WriteBinary(file, v.get());
 	}
+
+	values.clear();
 
 	file.close();
 }

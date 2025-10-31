@@ -4,7 +4,6 @@
 #include <vector>
 
 enum class BlendStateID : uint8_t {
-	NonBlend,
 	Normal,
 	Add,
 	Subtract,

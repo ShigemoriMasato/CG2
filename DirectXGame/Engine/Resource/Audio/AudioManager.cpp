@@ -33,6 +33,12 @@ void AudioManager::Initialize() {
 }
 
 int AudioManager::Load(fs::path filePath) {
+	for (int i = 0; i < audioNames_.size(); ++i) {
+		if(audioNames_[i] == filePath.string()) {
+			return i;
+		}
+	}
+
 	//拡張子を取り出す
 	std::string extension = filePath.extension().string();
 
@@ -45,6 +51,7 @@ int AudioManager::Load(fs::path filePath) {
 
 	//読み込み
 	audioData_.back()->Load(basePath + filePath.string());
+	audioNames_.emplace_back(filePath.string());
 
 	return static_cast<int>(audioData_.size() - 1);
 }

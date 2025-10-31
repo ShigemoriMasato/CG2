@@ -21,6 +21,11 @@ public:
 		values.push_back(std::make_shared<Value<T>>(value, name));
 	};
 
+	template<typename T>
+	static T Reverse(std::shared_ptr<ValueBase> value) {
+		return static_cast<Value<T>*>(value.get())->value;
+	}
+
 	/// <summary>
 	/// 実行後RegistしたValueはflushします
 	/// </summary>

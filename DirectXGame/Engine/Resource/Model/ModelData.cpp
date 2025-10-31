@@ -6,6 +6,20 @@
 
 #include <assimp/postprocess.h>
 
+namespace {
+    void AnimationNullChecker(Animation& animation, const Node& node) {
+        if (animation.nodeAnimations.find(node.name) == animation.nodeAnimations.end()) {
+            animation.nodeAnimations[node.name].scale.push_back({ 0.0f, {1.0f, 1.0f, 1.0f} });
+            animation.nodeAnimations[node.name].rotate.push_back({ 0.0f, {0.0f, 0.0f, 0.0f} });
+            animation.nodeAnimations[node.name].translate.push_back({ 0.0f, {0.0f, 0.0f, 0.0f} });
+        }
+
+        for(const auto& child : node.children) {
+            AnimationNullChecker(animation, child);
+		}
+    }
+}
+
 void ModelData::LoadModel(const std::string& directoryPath, const std::string& filename, TextureManager* textureManager, DXDevice* device) {
     Assimp::Importer importer;
     std::string path = (directoryPath + "/" + filename);
@@ -15,6 +29,19 @@ void ModelData::LoadModel(const std::string& directoryPath, const std::string& f
 	LoadMaterial(scene, directoryPath, textureManager);
 
 	rootNode_ = LoadNode(scene->mRootNode, scene);
+
+    //頂点が0だったらデータを削除する
+    for (int i = 0; i < material_.size(); ++i) {
+        if (vertices_[material_[i].name].empty()) {
+			vertices_.erase(material_[i].name);
+			indices_.erase(material_[i].name);
+            material_.erase(material_.begin() + i--);
+        }
+    }
+
+	animation_ = LoadAnimationFile(directoryPath, filename);
+
+	AnimationNullChecker(animation_, rootNode_);
 
 	CreateID3D12Resource(device->GetDevice());
 }
@@ -50,7 +77,7 @@ Node ModelData::LoadNode(aiNode* node, const aiScene* scene) {
 	}
 
     for (unsigned int i = 0; i < node->mNumMeshes; i++) {
-        aiMesh* mesh = scene->mMeshes[i];
+        aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
 
         for (uint32_t v = 0; v < mesh->mNumVertices; ++v) {
             aiVector3D pos = mesh->mVertices[v];
@@ -82,7 +109,7 @@ Node ModelData::LoadNode(aiNode* node, const aiScene* scene) {
     }//node
 
     nodeCount_++;
-
+    
     // --- 子ノードを再帰的に処理する ---
     for (unsigned int i = 0; i < node->mNumChildren; i++) {
         result.children.push_back(LoadNode(node->mChildren[i], scene));

@@ -7,8 +7,9 @@
 #include <Resource/Audio/AudioManager.h>
 #include <Input/Input.h>
 #include <Render/ImGuiWrapper.h>
-#include <Scene/SceneManager.h>
 #include <Tools/FPS/FPSObserver.h>
+
+class SceneManager;
 
 struct D3DResourceLeakChecker {
 	~D3DResourceLeakChecker() {
@@ -44,6 +45,7 @@ public:
 	FPSObserver* GetFPSObserver() { return fpsObserver_.get(); }
 	Input* GetInput() { return input_.get(); }
 	AudioManager* GetAudioManager() { return audioManager_.get(); }
+	OffScreenManager* GetOffScreenManager() { return offScreenManager_.get(); }
 
 private:
 

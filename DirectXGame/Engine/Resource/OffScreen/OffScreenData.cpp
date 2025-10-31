@@ -55,7 +55,7 @@ OffScreenData::OffScreenData(int width, int height, float* clearColor, DXDevice*
 
     // SRV用ディスクリプタ位置を確保
     D3D12_CPU_DESCRIPTOR_HANDLE textureSrvHandleCPU = srvManager->GetCPUHandle();
-	gpuHandle_ = srvManager->GetGPUHandle();
+	textureGPUHandle_ = srvManager->GetGPUHandle();
 
     // SRVを作成
     device->GetDevice()->CreateShaderResourceView(textureResource_.Get(), &srvDesc, textureSrvHandleCPU);
@@ -80,7 +80,7 @@ void OffScreenData::EditBarrier(ID3D12GraphicsCommandList* commandlist, D3D12_RE
 	InsertBarrier(commandlist, stateAfter, resourceState_, textureResource_.Get(), type, flags);
 }
 
-void OffScreenData::DrawReady(ID3D12GraphicsCommandList* commandList) {
+void OffScreenData::DrawReady(ID3D12GraphicsCommandList* commandList, bool isClear) {
     D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart();
 
     //バリアを変更
@@ -89,31 +89,32 @@ void OffScreenData::DrawReady(ID3D12GraphicsCommandList* commandList) {
     //RenderTargetの切り替え
     commandList->OMSetRenderTargets(1, &rtvHandle_, false, &dsvHandle);
 
-    //指定した色で画面全体をクリアする
-    commandList->ClearRenderTargetView(rtvHandle_, clearColor_, 0, nullptr);
+    if (isClear) {
+        //指定した色で画面全体をクリアする
+        commandList->ClearRenderTargetView(rtvHandle_, clearColor_, 0, nullptr);
 
-    //深度バッファをクリアする
-    commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+        //深度バッファをクリアする
+        commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
-    //ビューポート
-    D3D12_VIEWPORT viewport{};
-    //クライアント領域のサイズと一緒にして画面全体に表示
-    viewport.Width = static_cast<float>(width_);
-    viewport.Height = static_cast<float>(height_);
-    viewport.TopLeftX = 0;
-    viewport.TopLeftY = 0;
-    viewport.MinDepth = 0.0f;
-    viewport.MaxDepth = 1.0f;
+        //ビューポート
+        D3D12_VIEWPORT viewport{};
+        //クライアント領域のサイズと一緒にして画面全体に表示
+        viewport.Width = static_cast<float>(width_);
+        viewport.Height = static_cast<float>(height_);
+        viewport.TopLeftX = 0;
+        viewport.TopLeftY = 0;
+        viewport.MinDepth = 0.0f;
+        viewport.MaxDepth = 1.0f;
 
-    //シザー矩形
-    D3D12_RECT scissorRect{};
-    //基本的にビューポートと同じく刑が構成されるようにする
-    scissorRect.left = 0;
-    scissorRect.right = width_;
-    scissorRect.top = 0;
-    scissorRect.bottom = height_;
+        //シザー矩形
+        D3D12_RECT scissorRect{};
+        //基本的にビューポートと同じく刑が構成されるようにする
+        scissorRect.left = 0;
+        scissorRect.right = width_;
+        scissorRect.top = 0;
+        scissorRect.bottom = height_;
 
-    commandList->RSSetViewports(1, &viewport);
-    commandList->RSSetScissorRects(1, &scissorRect);
-
+        commandList->RSSetViewports(1, &viewport);
+        commandList->RSSetScissorRects(1, &scissorRect);
+    }
 }

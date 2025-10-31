@@ -18,7 +18,7 @@ public:
 
     void SetIsFix(bool isfix) { isFix_ = isfix; };
     void SetTargetFPS(double targetfps);
-    static float GetDeltatime() { return deltatime_; }
+    float GetDeltatime() { return deltatime_; }
 
     // FPSを固定するため処理時間に余裕がある場合その分待つ
     void TimeAdjustment();

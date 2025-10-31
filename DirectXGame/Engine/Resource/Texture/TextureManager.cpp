@@ -21,7 +21,10 @@ int TextureManager::LoadTexture(std::string filePath) {
 	}
 	
 	textures_.emplace_back(std::make_unique<TextureData>(filePath, device_, commandList_, srvManager_));
-	return static_cast<int>(textures_.size() - 1);
+
+	int handle = static_cast<int>(textures_.size() - 1);
+	textureHandleMap_[filePath] = handle;
+	return handle;
 }
 
 TextureData* TextureManager::GetTextureData(int handle) {

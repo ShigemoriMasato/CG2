@@ -82,6 +82,10 @@ std::shared_ptr<ValueBase> BinaryInput::ReadBinary(std::istream& in) {
 	{
 		return ValueDeserialize<Vector4>(name, in);
 	}
+	case TypeID::PSOConfig:
+	{
+		return ValueDeserialize<PSOConfig>(name, in);
+	}
 	// 他の型も同様に追加
 	default:
 		assert(false && "Unknown TypeID in File");

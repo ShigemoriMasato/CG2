@@ -17,7 +17,7 @@ DXDevice::~DXDevice() {
 
 void DXDevice::Initialize() {
 	//ウィンドウの作成
-	window_->CreateWindowForApp(L"CG");
+	window_->CreateWindowForApp(L"2108_チェインロープ");
 
     CreateDevice();
 }

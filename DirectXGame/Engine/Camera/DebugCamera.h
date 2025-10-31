@@ -13,6 +13,10 @@ public:
 	Vector3 GetPosition() const override;
 	Vector3 GetCenter() const;
 
+	void SetCenter(const Vector3& center) {
+		center_ = center;
+	}
+
 private:
 
 	//カメラの親座標

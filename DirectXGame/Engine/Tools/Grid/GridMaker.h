@@ -6,13 +6,13 @@
 #include <Render/Render.h>
 #define GRID_LINE_LENGTH 200.0f
 
-enum class ShapeType {
-	kLine,
-	kThickLine
-};
-
 class GridLine {
 public:
+
+	enum class ShapeType {
+		kLine,
+		kThickLine
+	};
 
 	enum LineType {
 		kHorizontal,

@@ -90,6 +90,12 @@ void ImGuiWrapper::GuizmoUpdate() {
 
     for(auto& data : guizmoDataMap_) {
         UseGuizmo(operationType_, data);
+
+        if (ImGuizmo::IsOver()) {
+            ImGuizmo::Enable(true);
+        } else {
+            ImGuizmo::Enable(false);
+        }
 	}
 }
 

@@ -9,7 +9,10 @@ enum class RootSignatureID : uint8_t {
 	Default,
 	NonMatrix,
 	Particle,
+	LightParticle,
 	Model,
+	MP,
+	PostEffect,
 
 	Count
 };

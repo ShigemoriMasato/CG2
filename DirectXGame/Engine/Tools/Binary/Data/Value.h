@@ -7,7 +7,7 @@
 #include <istream>
 #include <ostream>
 #include <Transform/Transform.h>
-#include <Core/PSO/Shelf/ShaderShelf.h>
+#include <Core/PSO/PSOConfig.h>
 
 enum class TypeID : uint8_t {
 	kUnknown = 0x00,	//不明な型
@@ -31,6 +31,8 @@ enum class TypeID : uint8_t {
 
 	//構造体とか
 	Custom = 0x80,
+	PSOConfig,
+
 };
 
 template<typename T>
@@ -50,6 +52,7 @@ template<> struct TypeIDResolver<uint32_t> { static constexpr TypeID id = TypeID
 template<> struct TypeIDResolver<Vector2> { static constexpr TypeID id = TypeID::Vector2; };
 template<> struct TypeIDResolver<Vector3> { static constexpr TypeID id = TypeID::Vector3; };
 template<> struct TypeIDResolver<Vector4> { static constexpr TypeID id = TypeID::Vector4; };
+template<> struct TypeIDResolver<PSOConfig> { static constexpr TypeID id = TypeID::PSOConfig; };
 
 class ValueBase {
 public:

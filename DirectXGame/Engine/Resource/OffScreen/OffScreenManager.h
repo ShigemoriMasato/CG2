@@ -6,9 +6,20 @@
 #include <Resource/SRVManager.h>
 
 enum class OffScreenIndex {
-	None = -1,
+	SwapChain = -1,
 	ImGuiDocking,
-	PostEffect,
+	PostPing,
+	PostPong,
+	GameWindow,
+	Title,
+	Select,  // セレクトシーン用
+
+	//ステージのスクショ
+	Level1,
+	Level2,
+	Level3,
+	Level4,
+	Level5,
 
 	MaxCount
 };
@@ -27,7 +38,7 @@ public:
 	/// </summary>
 	void Initialize(DXDevice* device, ID3D12GraphicsCommandList* commandList, SRVManager* srvManager);
 
-	OffScreenData* GetOffScreenData(int handle);
+	OffScreenData* GetOffScreenData(OffScreenIndex index);
 
 private:
 
@@ -42,6 +53,6 @@ private:
 	SRVManager* srvManager_ = nullptr;
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> rtvDescriptorHeap_ = nullptr;
 
-	const int maxOffScreenCount_ = 32;
+	const int maxOffScreenCount_ = static_cast<int>(OffScreenIndex::MaxCount);
 };
 

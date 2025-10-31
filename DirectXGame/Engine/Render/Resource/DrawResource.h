@@ -6,7 +6,15 @@
 #include <Transform/Transform.h>
 #include <Core/PSO/PSOConfig.h>
 #include <Camera/Camera.h>
-#include "Data/BaseResource.h"
+#include <Resource/Texture/TextureManager.h>
+
+enum class ShapeType {
+	Plane,
+	Cube,
+	Sphere,	
+
+	Count
+};
 
 /// <summary>
 /// CG2で作成した基本的(?)な描画情報
@@ -18,6 +26,7 @@ public:
 	~DrawResource();
 
 	void Initialize(uint32_t vertexNum, uint32_t indexNum = 0, bool useMatrix = true);
+	void Initialize(ShapeType type);
 
 	/// <summary>
 	/// 描画前準備(Render内で呼ばれるため、プログラム時に呼ぶ必要はない)
@@ -32,11 +41,10 @@ public:
 	ID3D12Resource* GetMaterialResource() const { return materialResource.Get(); }
 	ID3D12Resource* GetParticleDataResource() const;
 	ID3D12Resource* GetLightResource() const { return lightResource.Get(); }
+	D3D12_GPU_DESCRIPTOR_HANDLE GetTextureHandle() const { return textureHandle_; }
 
 	uint32_t GetVertexNum() const { return vertexNum_; }
 	uint32_t GetIndexNum() const { return indexNum_; }
-
-	int textureHandle_ = 0;
 
 	std::vector<uint32_t> index_{};
 
@@ -57,6 +65,10 @@ public:
 
 	Camera* camera_ = nullptr;
 
+	void SetTextureHandle(int handle);
+	void SetTextureHandle(std::string filePath);
+	void SetTextureHandle(D3D12_GPU_DESCRIPTOR_HANDLE handle);
+
 private:
 
 	uint32_t* indices_ = nullptr;
@@ -70,6 +82,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12Resource> lightResource = nullptr;
 
 	D3D12_INDEX_BUFFER_VIEW indexBufferView{};
+	D3D12_GPU_DESCRIPTOR_HANDLE textureHandle_{};
 
 	uint32_t indexNum_ = 0;
 
