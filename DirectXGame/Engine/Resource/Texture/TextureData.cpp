@@ -27,8 +27,8 @@ TextureData::TextureData(std::string filePath, DXDevice* device, ID3D12GraphicsC
 
     //SRVを作成するDescriptorHeapの場所を決める
     //先頭はImGuiが使っているのでその次を使う
-	D3D12_CPU_DESCRIPTOR_HANDLE textureSrvHandleCPU = srvManager->GetCPUHandle();
-	textureGpuHandle_ = srvManager->GetGPUHandle();
+	D3D12_CPU_DESCRIPTOR_HANDLE textureSrvHandleCPU = srvManager->GetCPUHandle(textureResource_.Get());
+	textureGpuHandle_ = srvManager->GetGPUHandle(textureResource_.Get());
 
     //SRVを作成する
     device->GetDevice()->CreateShaderResourceView(textureResource_.Get(), &srvDesc, textureSrvHandleCPU);

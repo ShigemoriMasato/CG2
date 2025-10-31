@@ -11,8 +11,8 @@ public:
 
 	ID3D12DescriptorHeap* GetHeap() { return srvDescriptorHeap.Get(); }
 
-	D3D12_CPU_DESCRIPTOR_HANDLE GetCPUHandle();
-	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle();
+	D3D12_CPU_DESCRIPTOR_HANDLE GetCPUHandle(void* res);
+	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle(void* res);
 
 private:
 
@@ -20,8 +20,9 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> srvDescriptorHeap = nullptr;
 
 	uint32_t descriptorSizeSRV = 0;
-	uint32_t readCountCPU_ = 0;
-	uint32_t readCountGPU_ = 0;
+
+	std::vector<void*> cpuMap_;
+	std::vector<void*> gpuMap_;
 
 	const uint32_t maxCount;
 

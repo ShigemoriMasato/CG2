@@ -54,8 +54,8 @@ OffScreenData::OffScreenData(int width, int height, float* clearColor, DXDevice*
     srvDesc.Texture2D.MipLevels = 1;
 
     // SRV用ディスクリプタ位置を確保
-    D3D12_CPU_DESCRIPTOR_HANDLE textureSrvHandleCPU = srvManager->GetCPUHandle();
-	textureGPUHandle_ = srvManager->GetGPUHandle();
+    D3D12_CPU_DESCRIPTOR_HANDLE textureSrvHandleCPU = srvManager->GetCPUHandle(textureResource_.Get());
+	textureGPUHandle_ = srvManager->GetGPUHandle(textureResource_.Get());
 
     // SRVを作成
     device->GetDevice()->CreateShaderResourceView(textureResource_.Get(), &srvDesc, textureSrvHandleCPU);

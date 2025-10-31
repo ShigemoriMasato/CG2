@@ -337,8 +337,8 @@ ImGui_ImplDX12_InitInfo Render::GetImGuiInitInfo(SRVManager* srv) {
 	info.RTVFormat = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 	info.CommandQueue = commandQueue.Get();
 	info.SrvDescriptorHeap = srv->GetHeap();
-	info.LegacySingleSrvCpuDescriptor = srv->GetCPUHandle();
-    info.LegacySingleSrvGpuDescriptor = srv->GetGPUHandle();
+	info.LegacySingleSrvCpuDescriptor = srv->GetCPUHandle(this);
+    info.LegacySingleSrvGpuDescriptor = srv->GetGPUHandle(this);
 	return info;
 }
 

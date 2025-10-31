@@ -62,7 +62,7 @@ StyleCopReport.xml
 *.meta
 *.iobj
 *.pch
-*.pdb
+#*.pdb
 *.ipdb
 *.pgc
 *.pgd
