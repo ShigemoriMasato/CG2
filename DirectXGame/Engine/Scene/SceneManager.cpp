@@ -4,12 +4,8 @@
 
 SceneManager::SceneManager(std::unique_ptr<BaseScene> firstScene, EngineTerminal* engine) {
 	tools_ = SceneTools{
-		engine->GetModelManager(),
-		engine->GetTextureManager(),
 		engine->GetRender(),
 		engine->GetInput(),
-		engine->GetAudioManager(),
-		engine->GetOffScreenManager(),
 		engine->GetFPSObserver()
 	};
 

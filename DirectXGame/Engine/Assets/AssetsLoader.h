@@ -10,6 +10,11 @@ class AssetsLoader;
 struct AssetsID {
 public:
 	uint32_t get() { return id; }
+
+	bool operator<(const AssetsID& other) const {
+		return this->id < other.id;
+	}
+
 private:
 	friend class AssetsLoader;
 	uint32_t id;

@@ -59,17 +59,11 @@ void EngineTerminal::Initialize(int32_t windowWidth, int32_t windowHeight) {
 	render_ = std::make_unique<Render>(dxDevice_.get());
 	srvManager_ = std::make_unique<SRVManager>(dxDevice_.get(), 4096);
 
-	textureManager_ = std::make_unique<TextureManager>();
-	textureManager_->Initialize(dxDevice_.get(), render_->GetCommandList(), srvManager_.get());
-	modelManager_ = std::make_unique<ModelManager>(textureManager_.get(), dxDevice_.get());
-	offScreenManager_ = std::make_unique<OffScreenManager>();
-	offScreenManager_->Initialize(dxDevice_.get(), srvManager_.get());
 	input_ = std::make_unique<Input>(dxDevice_->GetWndClass().hInstance, dxDevice_->GetHwnd());
 	input_->Initialize();
-	audioManager_ = std::make_unique<AudioManager>();
-	audioManager_->Initialize();
 
-	render_->Initialize(textureManager_.get(), offScreenManager_.get(), srvManager_.get());
+	assetsLoader_ = std::make_unique<AssetsLoader>();
+	assetsLoader_->Initialize(dxDevice_.get(), srvManager_.get(), render_->GetCommandList());
 
 	ImGuiOperator::Initialize(dxDevice_.get(), render_.get(), srvManager_.get());
 
