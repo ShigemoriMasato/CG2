@@ -3,6 +3,22 @@
 #include <d3d12.h>
 #include <Core/DXDevice.h>
 
+class SRVManager;
+
+class SRVHandle final {
+public:
+	SRVHandle(SRVManager* manager);
+	~SRVHandle();
+
+	const D3D12_CPU_DESCRIPTOR_HANDLE CPU;
+	const D3D12_GPU_DESCRIPTOR_HANDLE GPU;
+
+private:
+
+	SRVManager* manager_;
+	const int offset_;
+};
+
 class SRVManager {
 public:
 
@@ -11,21 +27,20 @@ public:
 
 	ID3D12DescriptorHeap* GetHeap() { return srvDescriptorHeap.Get(); }
 
-	D3D12_CPU_DESCRIPTOR_HANDLE GetCPUHandle(void* res);
-	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle(void* res);
+	std::unique_ptr<SRVHandle> GetHandle(bool unBreakable = false);
+
+	uint32_t GetNextOffset();
 
 private:
+
+	friend class SRVHandle;
 
 	//SRVHeap
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> srvDescriptorHeap = nullptr;
 
-	uint32_t descriptorSizeSRV = 0;
+	std::vector<bool> isUsed_;
 
-	std::vector<void*> cpuMap_;
-	uint32_t cpuReadCount_ = 0;
-	std::vector<void*> gpuMap_;
-	uint32_t gpuReadCount_ = 0;
-
+	const uint32_t descriptorSizeSRV = 0;
 	const uint32_t maxCount;
 
 };

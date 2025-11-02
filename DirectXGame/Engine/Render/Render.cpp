@@ -29,7 +29,7 @@ Render::Render(DXDevice* device) {
 Render::~Render() {
 }
 
-void Render::Initialize(TextureManager* textureManager, OffScreenManager* offScreenManager, SRVManager* srvManager) {
+void Render::Initialize(SRVManager* srvManager) {
     
 	auto windowSize = device_->GetWindowSize();
 

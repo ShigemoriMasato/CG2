@@ -1,41 +1,31 @@
 #include "SRVManager.h"
 #include <Core/DXCommonFunction.h>
 
-SRVManager::SRVManager(DXDevice* device, int num) : maxCount(num) {
+SRVManager::SRVManager(DXDevice* device, int num) : maxCount(num), descriptorSizeSRV(device->GetDescriptorSizeSRV()) {
 
-	ID3D12DescriptorHeap* rawHeap = nullptr;
-	rawHeap = CreateDescriptorHeap(device->GetDevice(), D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, maxCount, true);
-	srvDescriptorHeap.Attach(rawHeap);
+	srvDescriptorHeap.Attach(CreateDescriptorHeap(device->GetDevice(), D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, maxCount, true));
 
-	descriptorSizeSRV = device->GetDescriptorSizeSRV();
-
-	cpuMap_.resize(maxCount, nullptr);
-	gpuMap_.resize(maxCount, nullptr);
+	isUsed_.resize(maxCount, false);
 }
 
-SRVManager::~SRVManager() {
-}
-
-D3D12_CPU_DESCRIPTOR_HANDLE SRVManager::GetCPUHandle(void* res) {
-	while (true) {
-		for (uint32_t i = cpuReadCount_; i < maxCount; ++i) {
-			if (!cpuMap_[i]) {
-				cpuMap_[i] = res;
-				i = cpuReadCount_;
-				return GetCPUDesscriptorHandle(srvDescriptorHeap.Get(), descriptorSizeSRV, i);
-			}
+uint32_t SRVManager::GetNextOffset() {
+	for (uint32_t i = 0; i < maxCount; ++i) {
+		if (!isUsed_[i]) {
+			return i;
 		}
 	}
 }
 
-D3D12_GPU_DESCRIPTOR_HANDLE SRVManager::GetGPUHandle(void* res) {
-	while (true) {
-		for (uint32_t i = gpuReadCount_; i < maxCount; ++i) {
-			if (!gpuMap_[i]) {
-				gpuMap_[i] = res;
-				i = gpuReadCount_;
-				return GetGPUDesscriptorHandle(srvDescriptorHeap.Get(), descriptorSizeSRV, i);
-			}
-		}
-	}
+SRVHandle::SRVHandle(SRVManager* manager) :
+	offset_(manager->GetNextOffset()),
+	manager_(manager),
+	CPU(GetCPUDesscriptorHandle(manager->GetHeap(), manager->descriptorSizeSRV, offset_)),
+	GPU(GetGPUDesscriptorHandle(manager->GetHeap(), manager->descriptorSizeSRV, offset_)) {
+
+	manager_->isUsed_[offset_] = true;
+
+}
+
+SRVHandle::~SRVHandle() {
+	manager_->isUsed_[offset_] = false;
 }

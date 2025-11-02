@@ -62,6 +62,8 @@ void EngineTerminal::Initialize(int32_t windowWidth, int32_t windowHeight) {
 	input_ = std::make_unique<Input>(dxDevice_->GetWndClass().hInstance, dxDevice_->GetHwnd());
 	input_->Initialize();
 
+	render_->Initialize();
+
 	assetsLoader_ = std::make_unique<AssetsLoader>();
 	assetsLoader_->Initialize(dxDevice_.get(), srvManager_.get(), render_->GetCommandList());
 

@@ -12,7 +12,7 @@ public:
 	Render(DXDevice* device);
 	~Render();
 
-	void Initialize(TextureManager* textureManager, OffScreenManager* offScreenManager, SRVManager* srvManager);
+	void Initialize(SRVManager* srvManager);
 
 	void PreDraw(OffScreenIndex index = OffScreenIndex::SwapChain, bool isClear = true);
 	//void Draw(DrawResource* resource);
