@@ -4,8 +4,8 @@
 #include <dxgidebug.h>
 #include <wrl.h>
 #include <memory>
-#include <Logger/Logger.h>
 #include "MyWindow.h"
+#include <Logger/Logger.h>
 
 /// <summary>
 /// Window呼び出しとDevice作成
@@ -40,13 +40,13 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12Device> device = nullptr;
 	std::unique_ptr<MyWindow> window_ = nullptr;
 
-	std::unique_ptr<Logger> logger = nullptr;
-
 	uint32_t descriptorSizeSRV;
 	uint32_t descriptorSizeRTV;
 	uint32_t descriptorSizeDSV;
 
 	int32_t windowWidth_;
 	int32_t windowHeight_;
+
+	std::shared_ptr<spdlog::logger> logger_;
 };
 

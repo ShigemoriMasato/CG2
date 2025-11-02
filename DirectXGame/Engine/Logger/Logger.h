@@ -1,24 +1,15 @@
 #pragma once
-#include <iostream>
-#include <fstream>
-#include <format>
-#include <vector>
-#include <Math/MyString.h>
+#include <spdlog/spdlog.h>
+#include <string>
 
-class Logger {
-public:
-	//初期設定はmaster.log
-	Logger();
-	//ログファイルを登録する
-	void RegistLogFile(std::string logName);
-	//ログを出力する
-	void Log(const std::string &message);
-	
-private:
+namespace Logger {
 
-	int logStreamHandle = 0;
+	enum LoggerFlag : uint32_t {
+		None = 0,
+		MakeFile = 1 << 0,
+		UseConsole = 1 << 1,
+	};
 
-	static std::vector<std::ofstream> logStreams; //ログファイル一覧
-	static std::vector<std::string> logStreamNames; //ログファイル名一覧
+	std::shared_ptr<spdlog::logger> getLogger(const std::string& name, uint32_t flug = MakeFile | UseConsole);
 
-};
+}

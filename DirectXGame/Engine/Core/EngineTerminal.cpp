@@ -2,11 +2,13 @@
 #include <Scene/Engine/ShaderEditScene.h>
 #include <Common/InitializeScene/InitializeScene.h>
 #include <Scene/SceneManager.h>
+#include <spdlog/spdlog.h>
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 EngineTerminal::EngineTerminal(BootMode mode) {
 	mode_ = mode;
+	spdlog::info("EngineTerminal Constructor");
 }
 
 EngineTerminal::~EngineTerminal() {
@@ -61,7 +63,7 @@ void EngineTerminal::Initialize(int32_t windowWidth, int32_t windowHeight) {
 	textureManager_->Initialize(dxDevice_.get(), render_->GetCommandList(), srvManager_.get());
 	modelManager_ = std::make_unique<ModelManager>(textureManager_.get(), dxDevice_.get());
 	offScreenManager_ = std::make_unique<OffScreenManager>();
-	offScreenManager_->Initialize(dxDevice_.get(), render_->GetCommandList(), srvManager_.get());
+	offScreenManager_->Initialize(dxDevice_.get(), srvManager_.get());
 	input_ = std::make_unique<Input>(dxDevice_->GetWndClass().hInstance, dxDevice_->GetHwnd());
 	input_->Initialize();
 	audioManager_ = std::make_unique<AudioManager>();
@@ -70,8 +72,6 @@ void EngineTerminal::Initialize(int32_t windowWidth, int32_t windowHeight) {
 	render_->Initialize(textureManager_.get(), offScreenManager_.get(), srvManager_.get());
 
 	ImGuiOperator::Initialize(dxDevice_.get(), render_.get(), srvManager_.get());
-
-	textureManager_->LoadTexture("Assets/Texture/white1x1.png");
 
 	fpsObserver_ = std::make_unique<FPSObserver>(true, 60.0);
 
@@ -107,12 +107,11 @@ void EngineTerminal::Update() {
 	ImGuiOperator::StartFrame(static_cast<float>(windowSize.first), static_cast<float>(windowSize.second));
 
 	fpsObserver_->TimeAdjustment();
-	Logger().Log("Deltatime: " + std::to_string(fpsObserver_->GetDeltatime()));
 }
 
 void EngineTerminal::PreDraw() {
 }
 
 void EngineTerminal::PostDraw() {
-	render_->PostDraw(imgui_.get());
+	render_->PostDraw();
 }

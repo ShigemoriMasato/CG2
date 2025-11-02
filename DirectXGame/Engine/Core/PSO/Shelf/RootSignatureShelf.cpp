@@ -1,12 +1,12 @@
 #include "RootSignatureShelf.h"
 #include <cassert>
 
+using namespace Logger;
+
 RootSignatureShelf::RootSignatureShelf(ID3D12Device* device) {
 
-	logger_ = std::make_unique<Logger>();
-	logger_->RegistLogFile("RootSignature");
-
 	rootSignatures_.resize(int(RootSignatureID::Count));
+	logger_ = getLogger("RootSignature");
 
 #pragma region DescriptorTable
 
@@ -324,8 +324,8 @@ void RootSignatureShelf::CreateRootSignature(D3D12_ROOT_SIGNATURE_DESC& desc, Ro
     HRESULT hr = D3D12SerializeRootSignature(&desc,
         D3D_ROOT_SIGNATURE_VERSION_1, &signatureBlob, &errorBlob);
     if (FAILED(hr)) {
-        logger_->Log(std::format("RootSignatureID : {}", int(id)));
-        logger_->Log(reinterpret_cast<char*>(errorBlob->GetBufferPointer()));
+        logger_->error(std::format("RootSignatureID : {}", int(id)));
+        logger_->error(reinterpret_cast<char*>(errorBlob->GetBufferPointer()));
         assert(false);
     }
 

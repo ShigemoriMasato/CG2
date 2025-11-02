@@ -1,8 +1,8 @@
 #pragma once
 #include <Core/DXDevice.h>
 #include <Core/PSO/PSOEditor.h>
-#include <Resource/Texture/TextureManager.h>
-#include <Resource/OffScreen/OffScreenManager.h>
+#include <Assets/Texture/TextureManager.h>
+#include <Assets/OffScreen/OffScreenManager.h>
 #include <Render/ImGuiWrapper.h>
 #include <imgui/imgui_impl_dx12.h>
 
@@ -17,7 +17,7 @@ public:
 	void PreDraw(OffScreenIndex index = OffScreenIndex::SwapChain, bool isClear = true);
 	//void Draw(DrawResource* resource);
 	//void Draw(PostEffectResource* resource);
-	void PostDraw(ImGuiWrapper* imguiRap);
+	void PostDraw();
 
 	void EndFrame(bool swapchainPresent);
 
@@ -34,12 +34,9 @@ public:
 private:
 
 	void PreDrawSwapChain(bool isClear);
-	void PreDrawOffScreen(OffScreenData* offScreen, bool isClear);
+	void PreDrawOffScreen(bool isClear);
 
 	void ResetResourceBarrier();
-
-	//Logger
-	std::unique_ptr<Logger> logger_ = nullptr;
 
 	//Device
 	DXDevice* device_ = nullptr;

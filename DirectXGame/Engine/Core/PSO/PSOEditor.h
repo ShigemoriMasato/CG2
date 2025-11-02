@@ -8,7 +8,7 @@ public:
 	PSOEditor(ID3D12Device* device);
 	~PSOEditor() = default;
 
-	void Initialize(ID3D12Device* device);
+	void Initialize();
 
 	void SetPixcelShader(const std::string& name);
 
@@ -46,8 +46,6 @@ private:
 	
 	PSOConfig nextConfig_{};
 	PSOConfig nowConfig_{};
-
-	std::shared_ptr<Logger> logger_;
 
 	bool isFirst_ = true;
 

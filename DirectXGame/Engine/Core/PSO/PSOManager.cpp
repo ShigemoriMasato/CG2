@@ -3,7 +3,7 @@
 
 std::unordered_map<D3D12_PRIMITIVE_TOPOLOGY, D3D12_PRIMITIVE_TOPOLOGY_TYPE> PSOManager::topologyMap_{};
 
-PSOManager::PSOManager(ID3D12Device* device, Logger* logger) {
+PSOManager::PSOManager(ID3D12Device* device) {
 	shaderShelf_ = std::make_unique<ShaderShelf>();
 	depthStencilShelf_ = std::make_unique<DepthStencilShelf>();
 	blendStateShelf_ = std::make_unique<BlendStateShelf>();
@@ -11,8 +11,6 @@ PSOManager::PSOManager(ID3D12Device* device, Logger* logger) {
 	rootSignatureShelf_ = std::make_unique<RootSignatureShelf>(device);
 	inputLayoutShelf_ = std::make_unique<InputLayoutShelf>();
 	binaryManager_ = std::make_unique<BinaryManager>();
-
-	logger_ = logger;
 
 	device_ = device;
 
@@ -81,8 +79,6 @@ void PSOManager::Initialize() {
 }
 
 void PSOManager::CreatePSO(PSOConfig config) {
-	config.Validate(*shaderShelf_.get(), *inputLayoutShelf_.get(), *rootSignatureShelf_.get(), logger_);
-
 	//defaultとして設定したPSOを持ってくる
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc = {};
 	//あんまり変わらないやつ

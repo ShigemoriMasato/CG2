@@ -69,8 +69,6 @@ void Input::Update() {
 
 	if (dwResult == ERROR_SUCCESS) {
 		// コントローラーが接続されている
-		SHORT lx = xBoxState_.Gamepad.sThumbLX; // 左スティックX軸
-		SHORT ly = xBoxState_.Gamepad.sThumbLY; // 左スティックY軸
 		xBoxButtonFlug_[int(XC::kLeftTrigger)] = xBoxState_.Gamepad.bLeftTrigger; // 左トリガー
 		xBoxButtonFlug_[int(XC::kRightTrigger)] = xBoxState_.Gamepad.bRightTrigger; // 右トリガー
 

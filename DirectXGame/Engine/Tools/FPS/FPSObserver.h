@@ -38,8 +38,8 @@ private:
     // 計測周波数
     LARGE_INTEGER timeFreq_{};
 
+	std::shared_ptr<spdlog::logger> logger_;
+
     // より精密な時間待機
     void PreciseSleep(double seconds);
-
-    Logger logger_;
 };

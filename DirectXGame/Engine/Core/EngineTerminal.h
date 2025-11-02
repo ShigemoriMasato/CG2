@@ -1,10 +1,10 @@
 #pragma once
 #include <Core/DXDevice.h>
 #include <Render/Render.h>
-#include <Resource/Texture/TextureManager.h>
-#include <Resource/Model/ModelManager.h>
-#include <Resource/OffScreen/OffScreenManager.h>
-#include <Resource/Audio/AudioManager.h>
+#include <Assets/Texture/TextureManager.h>
+#include <Assets/Model/ModelManager.h>
+#include <Assets/OffScreen/OffScreenManager.h>
+#include <Assets/Audio/AudioManager.h>
 #include <Input/Input.h>
 #include <Render/ImGuiWrapper.h>
 #include <Tools/FPS/FPSObserver.h>

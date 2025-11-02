@@ -5,11 +5,11 @@
 #include <vector>
 #include <array>
 #include <wrl.h>
-#include <Logger/Logger.h>
 #include <unordered_map>
 #include <filesystem>
 #include "InputLayoutShelf.h"
 #include "RootSignatureShelf.h"
+#include <Logger/Logger.h>
 
 enum class ShaderType {
 	VERTEX_SHADER,
@@ -55,5 +55,5 @@ private:
 
 	std::array<std::unordered_map<std::string, D3D12_SHADER_BYTECODE>, static_cast<size_t>(ShaderType::Count)> shaderBytecodes_;
 
-	std::unique_ptr<Logger> logger_ = nullptr;
+	std::shared_ptr<spdlog::logger> logger_;
 };

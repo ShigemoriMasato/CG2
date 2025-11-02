@@ -43,7 +43,6 @@ void ImGuiOperator::StartFrame(float kClientWidth, float kClientHeight) {
         ImGuiWindowFlags_NoBackground | // 背景なし（必要に応じて）
         ImGuiWindowFlags_NoSavedSettings);
 
-    ImGuiViewport* viewport = ImGui::GetMainViewport();
     ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
 
     ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_PassthruCentralNode);

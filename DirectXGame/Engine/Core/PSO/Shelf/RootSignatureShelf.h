@@ -32,6 +32,5 @@ private:
 
 	std::vector<ID3D12RootSignature*> rootSignatures_;
 
-	std::unique_ptr<Logger> logger_ = nullptr;
-
+	std::shared_ptr<spdlog::logger> logger_;
 };

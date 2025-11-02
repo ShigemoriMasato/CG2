@@ -1,5 +1,4 @@
 #include "MyWindow.h"
-#include <Logger/Logger.h>
 
 std::unordered_map<HWND, std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)>> MyWindow::wndProcMap_;
 
@@ -16,8 +15,6 @@ kClientWidth_(kClientWidth) {
 MyWindow::~MyWindow() {
     //ウィンドウを破棄
     if (hwnd_) {
-        auto a = Logger();
-        a.RegistLogFile("WindowDestroy");
         DestroyWindow(hwnd_);
         hwnd_ = nullptr;
     }

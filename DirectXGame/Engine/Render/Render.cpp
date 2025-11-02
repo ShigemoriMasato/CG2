@@ -4,8 +4,6 @@
 
 Render::Render(DXDevice* device) {
     device_ = device;
-    logger_ = std::make_unique<Logger>();
-	logger_->RegistLogFile("Render");
     psoEditor_ = std::make_unique<PSOEditor>(device_->GetDevice());
 
 	// ============================================
@@ -15,19 +13,16 @@ Render::Render(DXDevice* device) {
     HRESULT hr = device_->GetDevice()->CreateCommandQueue(&commandQueueDesc, IID_PPV_ARGS(&commandQueue));
     //コマンドキューの生成がうまくいかなかったので起動できない
     assert(SUCCEEDED(hr));
-    logger_->Log("Complete create CommandQueue\n");
 
     //CommandAllocator
     hr = device_->GetDevice()->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&commandAllocator));
     //コマンドアロケータの生成がうまくいかなかったので起動できない
     assert(SUCCEEDED(hr));
-    logger_->Log("Complete create CommandAllocator\n");
 
     //CommandList
     hr = device_->GetDevice()->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, commandAllocator.Get(), nullptr, IID_PPV_ARGS(&commandList));
     //コマンドリストの生成がうまくいかなかったので起動できない
     assert(SUCCEEDED(hr));
-    logger_->Log("Complete create CommandList\n");
 
 }
 
@@ -57,7 +52,6 @@ void Render::Initialize(TextureManager* textureManager, OffScreenManager* offScr
         nullptr,			    		        //出力の設定
         reinterpret_cast<IDXGISwapChain1**>(swapChain.GetAddressOf()));	//スワップチェーンのポインタ
     assert(SUCCEEDED(hr));
-    logger_->Log("Complete create SwapChain\n");
 
     //SwapChainからResourceを取得する
     hr = swapChain->GetBuffer(0, IID_PPV_ARGS(&swapChainResources[0]));
@@ -71,7 +65,6 @@ void Render::Initialize(TextureManager* textureManager, OffScreenManager* offScr
 	ID3D12DescriptorHeap* rawHeap = nullptr;
     rawHeap = CreateDescriptorHeap(device_->GetDevice(), D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 2, false);
 	rtvDescriptorHeap.Attach(rawHeap);
-    logger_->Log("Complete create DescriptorHeap\n");
 
     //RTVの設定
     D3D12_RENDER_TARGET_VIEW_DESC rtvDesc{};
@@ -86,7 +79,6 @@ void Render::Initialize(TextureManager* textureManager, OffScreenManager* offScr
     rtvHandles[1].ptr = rtvHandles[0].ptr + device_->GetDescriptorSizeRTV();
     //二つ目を作る
     device_->GetDevice()->CreateRenderTargetView(swapChainResources[1].Get(), &rtvDesc, rtvHandles[1]);
-    logger_->Log("Complete create RenderTargetView\n");
 
 #pragma endregion
 
@@ -117,7 +109,7 @@ void Render::Initialize(TextureManager* textureManager, OffScreenManager* offScr
     device_->GetDevice()->CreateDepthStencilView(depthStencilResource.Get(), &dsvDesc, dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
 
     //PSOの初期化
-    psoEditor_->Initialize(device_->GetDevice());
+    psoEditor_->Initialize();
 
 	textureManager_ = textureManager;
 	offScreenManager_ = offScreenManager;
@@ -167,8 +159,7 @@ void Render::PreDraw(OffScreenIndex index, bool isClear) {
 
     //描画する画面が指定されている場合はそちらにする
     if (offScreenHandle_ != OffScreenIndex::SwapChain) {
-		auto offscreen = offScreenManager_->GetOffScreenData(offScreenHandle_);
-		PreDrawOffScreen(offscreen, isClear);
+		PreDrawOffScreen(isClear);
         return;
     }
 
@@ -268,7 +259,7 @@ void Render::PreDraw(OffScreenIndex index, bool isClear) {
 //    PreDraw(preOffScreenIndex, false);
 //}
 
-void Render::PostDraw(ImGuiWrapper* imguiRap) {
+void Render::PostDraw() {
     if (offScreenHandle_ != OffScreenIndex::SwapChain) {
         ResetResourceBarrier();
         PreDraw(OffScreenIndex::SwapChain, false);
@@ -298,11 +289,6 @@ void Render::EndFrame(bool swapchainPresent) {
     if (swapchainPresent) {
         //GPUとOSに画面の交換を行うよう通知する
         hr = swapChain->Present(1, 0);
-
-        if (true) {
-            // ログに hr を出す (8桁16進などで)
-            logger_->Log(std::format("Failed to Present. hr = 0x{}\n", hr));
-        }
     }
 
     //presentするとBarrierが自動でCommonになる。
@@ -383,7 +369,7 @@ void Render::PreDrawSwapChain(bool isClear) {
     }
 }
 
-void Render::PreDrawOffScreen(OffScreenData* offScreen, bool isClear) {
+void Render::PreDrawOffScreen(bool isClear) {
 	offScreenManager_->GetOffScreenData(offScreenHandle_)->DrawReady(commandList.Get(), isClear);
 }
 

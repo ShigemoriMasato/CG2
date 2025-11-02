@@ -1,5 +1,5 @@
 #pragma once
-#include "../Math/MyMath.h"
+#include "../Function/MyMath.h"
 #include <memory>
 
 using namespace Matrix;

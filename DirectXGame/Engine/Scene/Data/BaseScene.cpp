@@ -10,7 +10,7 @@ void BaseScene::MoveScene(SceneTools sceneTools, CommonData* commonData) {
 	offScreenManager_ = sceneTools.offScreenManager_;
 	fpsObserver_ = sceneTools.fpsObserver_;
 
-	this->commonData = commonData;
+	this->commonData_ = commonData;
 }
 
 SceneTools BaseScene::CreateEngineTools() {

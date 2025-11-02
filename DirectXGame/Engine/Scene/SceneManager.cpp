@@ -28,7 +28,7 @@ SceneManager::~SceneManager() {
 }
 
 void SceneManager::SetCommonData(CommonData* commonData) {
-	commonData_ = commonData_;
+	*commonData_ = *commonData;
 }
 
 void SceneManager::Update() {

@@ -2,11 +2,11 @@
 #include <d3d12.h>
 #include <dxcapi.h>
 #include <string>
-#include <Logger/Logger.h>
 #include <DirectXTex/DirectXTex.h>
 #include <DirectXTex/d3dx12.h>
+#include <Logger/Logger.h>
 
-IDxcBlob* CompileShader(const std::wstring& filePath, const wchar_t* profile, IDxcUtils* dxcUtils, IDxcCompiler3* dxcCompiler, IDxcIncludeHandler* includeHandler, Logger* logger);
+IDxcBlob* CompileShader(const std::wstring& filePath, const wchar_t* profile, IDxcUtils* dxcUtils, IDxcCompiler3* dxcCompiler, IDxcIncludeHandler* includeHandler, spdlog::logger* logger);
 
 ID3D12Resource* CreateBufferResource(ID3D12Device* device, size_t sizeInBytes);
 

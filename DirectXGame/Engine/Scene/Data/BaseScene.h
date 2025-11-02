@@ -17,7 +17,7 @@ public:
 
 protected:
 
-	CommonData* commonData = nullptr;
+	CommonData* commonData_ = nullptr;
 
 	ModelManager* modelManager_ = nullptr;
 	TextureManager* textureManager_ = nullptr;

@@ -1,6 +1,6 @@
 #include "ShaderEditScene.h"
 #include <imgui/imgui.h>
-#include <Math/MyString.h>
+#include <Function/MyString.h>
 
 bool ComboGetter(void* data, int idx, const char** out_text) {
 	const auto& vec = *static_cast<std::vector<std::string>*>(data);

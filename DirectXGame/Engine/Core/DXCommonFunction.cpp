@@ -1,4 +1,5 @@
 #include "DXCommonFunction.h"
+#include <Function/MyString.h>
 #include <cassert>
 
 IDxcBlob* CompileShader(
@@ -10,9 +11,9 @@ IDxcBlob* CompileShader(
     IDxcUtils* dxcUtils,
     IDxcCompiler3* dxcCompiler,
     IDxcIncludeHandler* includeHandler,
-    Logger* logger) {
+    spdlog::logger* logger) {
 
-    logger->Log(ConvertString(std::format(L"Begin CompileShader, path: {}, profile: {}\n", filePath, profile)));
+    logger->info(ConvertString(std::format(L"Begin CompileShader, path: {}, profile: {}", filePath, profile)));
 
     //hlslファイルを読む
     IDxcBlobEncoding* shaderSource = nullptr;
@@ -47,9 +48,12 @@ IDxcBlob* CompileShader(
 
     //警告・エラーが出てたらログに出して止める
     IDxcBlobUtf8* shaderError = nullptr;
-    shaderResult->GetOutput(DXC_OUT_ERRORS, IID_PPV_ARGS(&shaderError), nullptr);
+    IDxcBlobWide* errorName = nullptr;
+    hr = shaderResult->GetOutput(DXC_OUT_ERRORS, IID_PPV_ARGS(&shaderError), &errorName);
     if (shaderError != nullptr && shaderError->GetStringLength() != 0) {
-        logger->Log(shaderError->GetStringPointer());
+        logger->error("Error in shader file: {}", ConvertString(errorName->GetStringPointer()));
+        logger->error(shaderError->GetStringPointer());
+        logger->error("{}", hr);
         //警告・エラーが起きている状態なので止める
         assert(false);
     }
@@ -59,7 +63,7 @@ IDxcBlob* CompileShader(
     hr = shaderResult->GetOutput(DXC_OUT_OBJECT, IID_PPV_ARGS(&shaderBlob), nullptr);
     assert(SUCCEEDED(hr));
     //成功したログを出す
-    logger->Log(ConvertString(std::format(L"Compile Successd, path: {}, profile: {}\n", filePath, profile)));
+    logger->info(ConvertString(std::format(L"Compile Successd, path: {}, profile: {}\n", filePath, profile)));
     //もう使わないリソースを開放
     shaderSource->Release();
     shaderResult->Release();
@@ -86,9 +90,10 @@ ID3D12Resource* CreateBufferResource(ID3D12Device* device, size_t sizeInBytes) {
 
     ID3D12Resource* bufferResource = nullptr;
 
-    HRESULT reason = device->GetDeviceRemovedReason();
+    HRESULT hr = device->GetDeviceRemovedReason();
+	assert(SUCCEEDED(hr));
 
-    HRESULT hr = device->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAG_NONE,
+    hr = device->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAG_NONE,
         &bufferResourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
         IID_PPV_ARGS(&bufferResource));
     assert(SUCCEEDED(hr));

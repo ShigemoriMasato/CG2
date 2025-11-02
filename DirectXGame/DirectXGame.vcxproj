@@ -17,10 +17,11 @@
   <ItemGroup>
     <ClCompile Include="AppSource\Common\InitializeScene\InitializeScene.cpp" />
     <ClCompile Include="AppSource\Common\KeyConfig\KeyManager.cpp" />
-    <ClCompile Include="Engine\Resource\Audio\Data\AudioData.cpp" />
-    <ClCompile Include="Engine\Resource\Audio\AudioManager.cpp" />
+    <ClCompile Include="Engine\Assets\AssetsLoader.cpp" />
+    <ClCompile Include="Engine\Assets\Audio\Data\AudioData.cpp" />
+    <ClCompile Include="Engine\Assets\Audio\AudioManager.cpp" />
     <ClCompile Include="Engine\Core\EngineTerminal.cpp" />
-    <ClCompile Include="Engine\Resource\Model\ModelAnimation.cpp" />
+    <ClCompile Include="Engine\Assets\Model\ModelAnimation.cpp" />
     <ClCompile Include="Engine\Tools\Binary\BinaryManager.cpp" />
     <ClCompile Include="Engine\Tools\Binary\Data\BinaryInput.cpp" />
     <ClCompile Include="Engine\Tools\Binary\Data\BinaryOutput.cpp" />
@@ -35,8 +36,7 @@
     <ClCompile Include="Engine\Core\PSO\PSOManager.cpp" />
     <ClCompile Include="Engine\Core\MyWindow.cpp" />
     <ClCompile Include="Engine\Input\Input.cpp" />
-    <ClCompile Include="Engine\Logger\Logger.cpp" />
-    <ClCompile Include="Engine\Math\MyMath.cpp" />
+    <ClCompile Include="Engine\Function\MyMath.cpp" />
     <ClCompile Include="externals\imgui\imgui.cpp" />
     <ClCompile Include="externals\imgui\ImGuizmo.cpp" />
     <ClCompile Include="externals\imgui\imgui_demo.cpp" />
@@ -48,35 +48,37 @@
     <ClCompile Include="Engine\Core\PSO\Shelf\InputLayoutShelf.cpp" />
     <ClCompile Include="Engine\Render\ImGuiWrapper.cpp" />
     <ClCompile Include="Engine\Tools\FPS\FPSObserver.cpp" />
+    <ClCompile Include="Engine\Logger\Logger.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Engine\Core\PSO\Shelf\RasterizerShelf.cpp" />
     <ClCompile Include="Engine\Core\PSO\Shelf\RootSignatureShelf.cpp" />
     <ClCompile Include="Engine\Core\PSO\PSOEditor.cpp" />
     <ClCompile Include="Engine\Core\PSO\Shelf\ShaderShelf.cpp" />
     <ClCompile Include="Engine\Render\Render.cpp" />
-    <ClCompile Include="Engine\Resource\OffScreen\OffScreenManager.cpp" />
-    <ClCompile Include="Engine\Resource\Texture\TextureManager.cpp" />
-    <ClCompile Include="Engine\Resource\Texture\TextureData.cpp" />
-    <ClCompile Include="Engine\Resource\OffScreen\OffScreenData.cpp" />
-    <ClCompile Include="Engine\Resource\Model\ModelData.cpp" />
-    <ClCompile Include="Engine\Resource\Model\ModelManager.cpp" />
+    <ClCompile Include="Engine\Assets\OffScreen\OffScreenManager.cpp" />
+    <ClCompile Include="Engine\Assets\Texture\TextureManager.cpp" />
+    <ClCompile Include="Engine\Assets\Texture\TextureData.cpp" />
+    <ClCompile Include="Engine\Assets\OffScreen\OffScreenData.cpp" />
+    <ClCompile Include="Engine\Assets\Model\ModelData.cpp" />
+    <ClCompile Include="Engine\Assets\Model\ModelManager.cpp" />
     <ClCompile Include="Engine\Scene\SceneManager.cpp" />
     <ClCompile Include="AppSource\Game\Scene\TitleScene.cpp" />
-    <ClCompile Include="Engine\Resource\SRVManager.cpp" />
+    <ClCompile Include="Engine\Core\SRVManager.cpp" />
     <ClCompile Include="Engine\Scene\Engine\ShaderEditScene.cpp" />
-    <ClCompile Include="Engine\Math\MyString.cpp" />
-    <ClCompile Include="Engine\Resource\Audio\Data\MP3Data.cpp" />
-    <ClCompile Include="Engine\Resource\Audio\Data\WAVData.cpp" />
+    <ClCompile Include="Engine\Function\MyString.cpp" />
+    <ClCompile Include="Engine\Assets\Audio\Data\MP3Data.cpp" />
+    <ClCompile Include="Engine\Assets\Audio\Data\WAVData.cpp" />
     <ClCompile Include="Engine\Render\Resource\ResourceGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AppSource\Common\InitializeScene\InitializeScene.h" />
     <ClInclude Include="AppSource\Common\KeyConfig\KeyManager.h" />
+    <ClInclude Include="Engine\Assets\AssetsLoader.h" />
     <ClInclude Include="Engine\Render\Resource\Data\PostEffectData.h" />
-    <ClInclude Include="Engine\Resource\Audio\Data\AudioData.h" />
-    <ClInclude Include="Engine\Resource\Audio\AudioManager.h" />
+    <ClInclude Include="Engine\Assets\Audio\Data\AudioData.h" />
+    <ClInclude Include="Engine\Assets\Audio\AudioManager.h" />
     <ClInclude Include="Engine\Core\EngineTerminal.h" />
-    <ClInclude Include="Engine\Resource\Model\ModelAnimation.h" />
+    <ClInclude Include="Engine\Assets\Model\ModelAnimation.h" />
     <ClInclude Include="Engine\Scene\Data\SceneTools.h" />
     <ClInclude Include="Engine\Tools\Binary\BinaryManager.h" />
     <ClInclude Include="Engine\Tools\Binary\Data\BinaryInput.h" />
@@ -97,8 +99,7 @@
     <ClInclude Include="Engine\Tools\Binary\Data\Value.h" />
     <ClInclude Include="Engine\Transform\Vector.h" />
     <ClInclude Include="Engine\Input\Input.h" />
-    <ClInclude Include="Engine\Logger\Logger.h" />
-    <ClInclude Include="Engine\Math\MyMath.h" />
+    <ClInclude Include="Engine\Function\MyMath.h" />
     <ClInclude Include="externals\imgui\imconfig.h" />
     <ClInclude Include="externals\imgui\imgui.h" />
     <ClInclude Include="externals\imgui\ImGuizmo.h" />
@@ -115,21 +116,22 @@
     <ClInclude Include="Engine\Core\PSO\Shelf\ShaderShelf.h" />
     <ClInclude Include="Engine\Render\ImGuiWrapper.h" />
     <ClInclude Include="Engine\Render\Render.h" />
-    <ClInclude Include="Engine\Resource\OffScreen\OffScreenManager.h" />
-    <ClInclude Include="Engine\Resource\Texture\TextureManager.h" />
-    <ClInclude Include="Engine\Resource\Texture\TextureData.h" />
-    <ClInclude Include="Engine\Resource\OffScreen\OffScreenData.h" />
-    <ClInclude Include="Engine\Resource\Model\ModelData.h" />
-    <ClInclude Include="Engine\Resource\Model\ModelManager.h" />
+    <ClInclude Include="Engine\Assets\OffScreen\OffScreenManager.h" />
+    <ClInclude Include="Engine\Assets\Texture\TextureManager.h" />
+    <ClInclude Include="Engine\Assets\Texture\TextureData.h" />
+    <ClInclude Include="Engine\Assets\OffScreen\OffScreenData.h" />
+    <ClInclude Include="Engine\Assets\Model\ModelData.h" />
+    <ClInclude Include="Engine\Assets\Model\ModelManager.h" />
     <ClInclude Include="Engine\Scene\SceneManager.h" />
     <ClInclude Include="AppSource\Game\Scene\TitleScene.h" />
-    <ClInclude Include="Engine\Resource\SRVManager.h" />
+    <ClInclude Include="Engine\Core\SRVManager.h" />
     <ClInclude Include="Engine\Scene\Engine\ShaderEditScene.h" />
-    <ClInclude Include="Engine\Math\MyString.h" />
+    <ClInclude Include="Engine\Function\MyString.h" />
     <ClInclude Include="Engine\Tools\FPS\FPSObserver.h" />
-    <ClInclude Include="Engine\Resource\Audio\Data\MP3Data.h" />
-    <ClInclude Include="Engine\Resource\Audio\Data\WAVData.h" />
+    <ClInclude Include="Engine\Assets\Audio\Data\MP3Data.h" />
+    <ClInclude Include="Engine\Assets\Audio\Data\WAVData.h" />
     <ClInclude Include="Engine\Render\Resource\ResourceGenerator.h" />
+    <ClInclude Include="Engine\Logger\Logger.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />
@@ -208,10 +210,10 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalOptions>/ignore:4049 %(AdditionalOptions)</AdditionalOptions>
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
       <AdditionalLibraryDirectories>$(ProjectDir)externals\DirectXTex\lib\Debug;$(ProjectDir)externals\assimp\lib\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>DirectXTex.lib;assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/ignore:4049 %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
@@ -241,6 +243,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)externals/assimp/lib/Release;$(ProjectDir)externals/DirectXTex/lib/Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>DirectXTex.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/ignore:4049 %(AdditionalOptions)</AdditionalOptions>
+      <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
@@ -273,6 +277,8 @@ xcopy /E /I /Y "$(ProjectDir)Assets\*" "$(TargetDir)Assets\"</Command>
       <LinkTimeCodeGeneration />
       <AdditionalLibraryDirectories>$(ProjectDir)externals/assimp/lib/Release;$(ProjectDir)externals/DirectXTex/lib/Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>DirectXTex.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/ignore:4049 %(AdditionalOptions)</AdditionalOptions>
+      <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
