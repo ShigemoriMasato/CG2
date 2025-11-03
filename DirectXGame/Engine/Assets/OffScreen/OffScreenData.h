@@ -17,13 +17,13 @@ public:
 	void DrawReady(ID3D12GraphicsCommandList* commandlist, bool isClear);
 
 	ID3D12Resource* GetResource() const { return textureResource_.Get(); }
-	D3D12_GPU_DESCRIPTOR_HANDLE GetTextureGPUHandle() const { return textureGPUHandle_; }
+	D3D12_GPU_DESCRIPTOR_HANDLE GetTextureGPUHandle() const { return srvHandle_.GPU; }
 	D3D12_CPU_DESCRIPTOR_HANDLE GetRTVHandle() const { return rtvHandle_; }
 
 private:
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> textureResource_;
-	D3D12_GPU_DESCRIPTOR_HANDLE textureGPUHandle_;
+	SRVHandle srvHandle_;
 	float clearColor_[4] = { 0.0f,0.0f,0.0f,1.0f };
 	int width_ = 0;
 	int height_ = 0;

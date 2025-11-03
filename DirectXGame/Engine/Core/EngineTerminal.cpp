@@ -2,13 +2,12 @@
 #include <Scene/Engine/ShaderEditScene.h>
 #include <Common/InitializeScene/InitializeScene.h>
 #include <Scene/SceneManager.h>
-#include <spdlog/spdlog.h>
+#include <Render/Resource/ResourceGenerator.h>
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 EngineTerminal::EngineTerminal(BootMode mode) {
 	mode_ = mode;
-	spdlog::info("EngineTerminal Constructor");
 }
 
 EngineTerminal::~EngineTerminal() {
@@ -62,7 +61,7 @@ void EngineTerminal::Initialize(int32_t windowWidth, int32_t windowHeight) {
 	input_ = std::make_unique<Input>(dxDevice_->GetWndClass().hInstance, dxDevice_->GetHwnd());
 	input_->Initialize();
 
-	render_->Initialize();
+	render_->Initialize(srvManager_.get());
 
 	assetsLoader_ = std::make_unique<AssetsLoader>();
 	assetsLoader_->Initialize(dxDevice_.get(), srvManager_.get(), render_->GetCommandList());
@@ -70,6 +69,8 @@ void EngineTerminal::Initialize(int32_t windowWidth, int32_t windowHeight) {
 	ImGuiOperator::Initialize(dxDevice_.get(), render_.get(), srvManager_.get());
 
 	fpsObserver_ = std::make_unique<FPSObserver>(true, 60.0);
+
+	ResourceGenerator::StaticInitialize(dxDevice_->GetDevice(), srvManager_.get(), assetsLoader_.get());
 
 	switch (mode_) {
 	case BootMode::Game:

@@ -111,8 +111,6 @@ void Render::Initialize(SRVManager* srvManager) {
     //PSOの初期化
     psoEditor_->Initialize();
 
-	textureManager_ = textureManager;
-	offScreenManager_ = offScreenManager;
 	srvManager_ = srvManager;
 
 	//初期化の段階で一度コマンドリストの中身をすべて実行する
@@ -323,8 +321,9 @@ ImGui_ImplDX12_InitInfo Render::GetImGuiInitInfo(SRVManager* srv) {
 	info.RTVFormat = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 	info.CommandQueue = commandQueue.Get();
 	info.SrvDescriptorHeap = srv->GetHeap();
-	info.LegacySingleSrvCpuDescriptor = srv->GetCPUHandle(this);
-    info.LegacySingleSrvGpuDescriptor = srv->GetGPUHandle(this);
+	imguiSrvHandle_.UpdateHandle(srv);
+	info.LegacySingleSrvCpuDescriptor = imguiSrvHandle_.CPU;
+    info.LegacySingleSrvGpuDescriptor = imguiSrvHandle_.GPU;
 	return info;
 }
 

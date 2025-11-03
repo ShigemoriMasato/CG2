@@ -34,9 +34,11 @@ public:
 private:
 
 	enum class AssetType {
+		Unknown,
 		Texture,
 		Audio,
-		Model
+		Model,
+		MaxCount
 	};
 
 	std::map<AssetsID, AssetType> assetTypeMap_;

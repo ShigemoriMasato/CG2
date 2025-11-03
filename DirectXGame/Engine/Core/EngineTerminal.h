@@ -50,9 +50,11 @@ private:
 	void PostDraw();
 
 	D3DResourceLeakChecker leakChecker_;
+
+	std::unique_ptr<SRVManager> srvManager_ = nullptr;
+
 	std::unique_ptr<DXDevice> dxDevice_ = nullptr;
 	std::unique_ptr<Render> render_ = nullptr;
-	std::unique_ptr<SRVManager> srvManager_ = nullptr;
 	std::unique_ptr<Input> input_ = nullptr;
 	std::unique_ptr<AssetsLoader> assetsLoader_ = nullptr;
 	std::unique_ptr<ImGuiWrapper> imgui_ = nullptr;

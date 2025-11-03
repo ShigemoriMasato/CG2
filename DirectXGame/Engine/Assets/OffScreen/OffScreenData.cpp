@@ -54,11 +54,10 @@ OffScreenData::OffScreenData(int width, int height, float* clearColor, DXDevice*
     srvDesc.Texture2D.MipLevels = 1;
 
     // SRV用ディスクリプタ位置を確保
-    D3D12_CPU_DESCRIPTOR_HANDLE textureSrvHandleCPU = srvManager->GetCPUHandle(textureResource_.Get());
-	textureGPUHandle_ = srvManager->GetGPUHandle(textureResource_.Get());
+	srvHandle_.UpdateHandle(srvManager);
 
     // SRVを作成
-    device->GetDevice()->CreateShaderResourceView(textureResource_.Get(), &srvDesc, textureSrvHandleCPU);
+    device->GetDevice()->CreateShaderResourceView(textureResource_.Get(), &srvDesc, srvHandle_.CPU);
 
     //バリアの初期状態を設定
     resourceState_ = D3D12_RESOURCE_STATE_RENDER_TARGET;

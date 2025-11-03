@@ -77,4 +77,7 @@ private:
 
 	//SRV
 	SRVManager* srvManager_ = nullptr;
+
+	//ImGui
+	SRVHandle imguiSrvHandle_;
 };

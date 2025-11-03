@@ -16,7 +16,7 @@ public:
 
 	int GetWidth() const { return width_; }
 	int GetHeight() const { return height_; }
-	D3D12_GPU_DESCRIPTOR_HANDLE GetTextureGPUHandle() const { return srvHandle_->gpu; }
+	D3D12_GPU_DESCRIPTOR_HANDLE GetTextureGPUHandle() const { return srvHandle_.GPU; }
 	ID3D12Resource* GetTextureResource() const { return textureResource_.Get(); }
 
 private:
@@ -25,7 +25,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12Resource> intermadiateResource_;
 	int width_ = 0;
 	int height_ = 0;
-	std::shared_ptr<SRVHandle> srvHandle_;
+	SRVHandle srvHandle_;
 
 	static int readTextureCount_;
 };

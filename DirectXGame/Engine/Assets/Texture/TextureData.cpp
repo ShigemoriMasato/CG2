@@ -26,8 +26,8 @@ TextureData::TextureData(std::string filePath, DXDevice* device, ID3D12GraphicsC
     srvDesc.Texture2D.MipLevels = UINT(metadata.mipLevels);
 
     //SRVを作成するDescriptorHeapの場所を決める
-    srvHandle_ = srvManager->GetHandle();
+    srvHandle_.UpdateHandle(srvManager);
 
     //SRVを作成する
-    device->GetDevice()->CreateShaderResourceView(textureResource_.Get(), &srvDesc, srvHandle_->cpu);
+    device->GetDevice()->CreateShaderResourceView(textureResource_.Get(), &srvDesc, srvHandle_.CPU);
 }

@@ -14,18 +14,19 @@ uint32_t SRVManager::GetNextOffset() {
 			return i;
 		}
 	}
-}
 
-SRVHandle::SRVHandle(SRVManager* manager) :
-	offset_(manager->GetNextOffset()),
-	manager_(manager),
-	CPU(GetCPUDesscriptorHandle(manager->GetHeap(), manager->descriptorSizeSRV, offset_)),
-	GPU(GetGPUDesscriptorHandle(manager->GetHeap(), manager->descriptorSizeSRV, offset_)) {
-
-	manager_->isUsed_[offset_] = true;
-
+	throw std::runtime_error("No available SRV descriptor slots.");
 }
 
 SRVHandle::~SRVHandle() {
-	manager_->isUsed_[offset_] = false;
+	if (manager_)
+		manager_->isUsed_[offset_] = false;
+}
+
+void SRVHandle::UpdateHandle(SRVManager* manager) {
+	offset_ = manager->GetNextOffset();
+	manager_ = manager;
+	CPU = GetCPUDesscriptorHandle(manager->GetHeap(), manager->descriptorSizeSRV, offset_);
+	GPU = GetGPUDesscriptorHandle(manager->GetHeap(), manager->descriptorSizeSRV, offset_);
+	manager_->isUsed_[offset_] = true;
 }
