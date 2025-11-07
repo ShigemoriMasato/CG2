@@ -1,5 +1,6 @@
 #include "PSOManager.h"
 #include <cassert>
+#include <Render/Resource/ResourceGenerator.h>
 
 std::unordered_map<D3D12_PRIMITIVE_TOPOLOGY, D3D12_PRIMITIVE_TOPOLOGY_TYPE> PSOManager::topologyMap_{};
 
@@ -17,10 +18,12 @@ PSOManager::PSOManager(ID3D12Device* device) {
 	topologyMap_[D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST] = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 	topologyMap_[D3D_PRIMITIVE_TOPOLOGY_LINELIST] = D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE;
 	topologyMap_[D3D_PRIMITIVE_TOPOLOGY_POINTLIST] = D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT;
+
+	ResourceGenerator::SetRootSignatureShelf(rootSignatureShelf_.get());
 }
 
 PSOManager::~PSOManager() {
-#ifdef SH_RELEASE
+#ifdef 今RootSignatureID壊れてるので使用禁止/*SH_RELEASE*/
 	//ここを変更する場合はverを変更し、読み込みのコードは削除せず新しく追加すること
 	binaryManager_->RegistOutput(float(1.0f), "ver");
 	for (const auto& [config, pso] : psoMap_) {
@@ -65,7 +68,7 @@ void PSOManager::Initialize() {
 			PSOConfig config;
 			config.ps = binaryManager_->Reverse<std::string>(data[i++]);
 			config.vs = binaryManager_->Reverse<std::string>(data[i++]);
-			config.rootID = (RootSignatureID)binaryManager_->Reverse<int>(data[i++]);
+			config.rootID.id = binaryManager_->Reverse<int>(data[i++]);
 			config.inputLayoutID = (InputLayoutID)binaryManager_->Reverse<int>(data[i++]);
 			config.blendID = (BlendStateID)binaryManager_->Reverse<int>(data[i++]);
 			config.depthStencilID = (DepthStencilID)binaryManager_->Reverse<int>(data[i++]);

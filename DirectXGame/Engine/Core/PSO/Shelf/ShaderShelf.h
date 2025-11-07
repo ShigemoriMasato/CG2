@@ -8,7 +8,6 @@
 #include <unordered_map>
 #include <filesystem>
 #include "InputLayoutShelf.h"
-#include "RootSignatureShelf.h"
 #include <Logger/Logger.h>
 
 enum class ShaderType {
@@ -16,13 +15,6 @@ enum class ShaderType {
 	PIXEL_SHADER,
 
 	Count
-};
-
-struct ShaderData {
-	std::string ps;
-	std::string vs;
-	InputLayoutID inputLayoutID;
-	RootSignatureID rootSignatureID;
 };
 
 class ShaderShelf {

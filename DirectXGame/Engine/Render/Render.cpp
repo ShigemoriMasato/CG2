@@ -164,98 +164,48 @@ void Render::PreDraw(OffScreenIndex index, bool isClear) {
 	//そうでない場合はスワップチェーンのバッファに描画する
     PreDrawSwapChain(isClear);
 }
-//
-//void Render::Draw(DrawResource* resource) {
-//
-//	resource->DrawReady();
-//
-//    auto vertexBufferView = resource->GetVertexBufferView();
-//    commandList->IASetVertexBuffers(0, 1, &vertexBufferView);
-//	uint32_t indexNum = resource->GetIndexNum();
-//    if (indexNum != 0) {
-//        auto indexBufferView = resource->GetIndexBufferView();
-//		commandList->IASetIndexBuffer(&indexBufferView);
-//    }
-//
-//    psoEditor_->SetPSOConfig(resource->psoConfig_);
-//    psoEditor_->Setting(commandList.Get());
-//
-//    //マテリアルのポインタを設定
-//    commandList->SetGraphicsRootConstantBufferView(0, resource->GetMaterialResource()->GetGPUVirtualAddress());
-//
-//    //Matrixのポインタを設定
-//    if (resource->GetParticleDataResource()) {
-//        commandList->SetGraphicsRootConstantBufferView(1, resource->GetParticleDataResource()->GetGPUVirtualAddress());
-//        //Texture
-//        commandList->SetGraphicsRootDescriptorTable(2, resource->GetTextureHandle());
-//        //Lightのポインタを設定
-//        commandList->SetGraphicsRootConstantBufferView(3, resource->GetLightResource()->GetGPUVirtualAddress());
-//    } else {
-//        //Texture
-//        commandList->SetGraphicsRootDescriptorTable(1, resource->GetTextureHandle());
-//        //Lightのポインタを設定
-//        commandList->SetGraphicsRootConstantBufferView(2, resource->GetLightResource()->GetGPUVirtualAddress());
-//    }
-//
-//    if (indexNum != 0) {
-//        //インデックスがある場合は、インデックスを設定して描画
-//        commandList->DrawIndexedInstanced(indexNum, 1, 0, 0, 0);
-//    } else {
-//        //インデックスがない場合は、インデックスなしで描画
-//        commandList->DrawInstanced(resource->GetVertexNum(), 1, 0, 0);
-//    }
-//
-//}
-//
-//void Render::Draw(PostEffectResource* resource) {
-//
-//    OffScreenIndex nextWindow = OffScreenIndex::PostPing;
-//    OffScreenIndex preOffScreenIndex = offScreenHandle_;
-//    OffScreenIndex inputIndex = resource->input_;
-//    resource->psoConfig_.isSwapChain = false;
-//
-//    //描画関数
-//    auto draw = [&resource, this](OffScreenIndex to, OffScreenIndex in) {
-//        PreDraw(to);
-//
-//        auto vertexBufferView = resource->GetVertexBufferView();
-//        commandList->IASetVertexBuffers(0, 1, &vertexBufferView);
-//
-//        psoEditor_->SetPSOConfig(resource->psoConfig_);
-//        psoEditor_->Setting(commandList.Get());
-//
-//        commandList->SetGraphicsRootConstantBufferView(0, resource->GetInfoResource()->GetGPUVirtualAddress());
-//        commandList->SetGraphicsRootDescriptorTable(1, offScreenManager_->GetOffScreenData(in)->GetTextureGPUHandle());
-//
-//        commandList->DrawInstanced(3, 1, 0, 0);
-//        };
-//
-//    //Pingに移す
-//    resource->SimpleDrawReady();
-//    draw(nextWindow, inputIndex);
-//
-//    //PingPong描画する
-//    while (resource->IsContinue()) {
-//        inputIndex = nextWindow;
-//        nextWindow == OffScreenIndex::PostPing ?
-//            nextWindow = OffScreenIndex::PostPong :
-//            nextWindow = OffScreenIndex::PostPing;
-//        resource->DrawReady();
-//        draw(nextWindow, inputIndex);
-//    }
-//
-//	resource->DrawFinish();
-//
-//    //outputに持ってくる
-//    inputIndex = nextWindow;
-//    nextWindow = resource->output_;
-//    resource->psoConfig_.isSwapChain = nextWindow == OffScreenIndex::SwapChain;
-//    resource->SimpleDrawReady();
-//    draw(nextWindow, inputIndex);
-//
-//    //RTVをもともと設定されていたものに戻す
-//    PreDraw(preOffScreenIndex, false);
-//}
+
+void Render::Draw(ResourceGenerator* resource) {
+    
+	auto cbvs = resource->GetCBVAddresses();
+	auto srvs = resource->GetSRVAddresses();
+    auto uavs = resource->GetUAVAddresses();
+
+	//VBV
+    auto vertexBufferView = resource->GetVBV();
+	commandList->IASetVertexBuffers(0, 1, &vertexBufferView);
+
+    //IBV
+	auto indexBufferView = resource->GetIBV();
+    if (indexBufferView.SizeInBytes != 0) {
+        commandList->IASetIndexBuffer(&indexBufferView);
+    }
+
+    //PSO
+    psoEditor_->SetPSOConfig(resource->psoConfig_);
+	psoEditor_->Setting(commandList.Get());
+
+	//CBVの設定
+    int rootIndex = 0;
+    for (const auto& cbv : cbvs) {
+        commandList->SetGraphicsRootConstantBufferView(rootIndex++, cbv.first);
+	}
+    //SRVの設定
+    for (const auto& srv : srvs) {
+        commandList->SetGraphicsRootDescriptorTable(rootIndex++, srv.first);
+	}
+	//UAVの設定
+    for (const auto& uav : uavs) {
+        commandList->SetGraphicsRootDescriptorTable(rootIndex++, uav.first);
+    }
+
+    //DrawCall
+    if(indexBufferView.SizeInBytes != 0) {
+        commandList->DrawIndexedInstanced(UINT(resource->indices_.size()), 1, 0, 0, 0);
+    } else {
+        commandList->DrawInstanced(UINT(resource->vertices_.size()), 1, 0, 0);
+	}
+}
 
 void Render::PostDraw() {
     if (offScreenHandle_ != OffScreenIndex::SwapChain) {

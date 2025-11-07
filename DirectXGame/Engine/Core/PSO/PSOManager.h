@@ -38,7 +38,6 @@ private:
 
 	std::unique_ptr<BinaryManager> binaryManager_ = nullptr;
 	const std::string shaderDataFile = "ShaderEditData.bin";
-	std::vector<ShaderData> shaderData_{};
 
 	static std::unordered_map<D3D12_PRIMITIVE_TOPOLOGY, D3D12_PRIMITIVE_TOPOLOGY_TYPE> topologyMap_;
 };

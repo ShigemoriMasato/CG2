@@ -195,9 +195,6 @@
     <ClCompile Include="Engine\Core\EngineTerminal.cpp">
       <Filter>MyEngine\Core</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Scene\Engine\ShaderEditScene.cpp">
-      <Filter>MyEngine\Scene\Engine</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Function\MyString.cpp">
       <Filter>MyEngine\Math</Filter>
     </ClCompile>
@@ -374,9 +371,6 @@
     <ClInclude Include="Engine\Core\EngineTerminal.h">
       <Filter>MyEngine\Core</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Scene\Engine\ShaderEditScene.h">
-      <Filter>MyEngine\Scene\Engine</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Function\MyString.h">
       <Filter>MyEngine\Math</Filter>
     </ClInclude>
@@ -420,6 +414,9 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Logger\Logger.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\ECS\EntityID.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

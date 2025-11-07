@@ -10,24 +10,6 @@ public:
 
 	void Initialize();
 
-	void SetPixcelShader(const std::string& name);
-
-	void SetVertexShader(const std::string& name);
-
-	void SetBlendState(BlendStateID blendID);
-
-	void SetDepthStencilState(DepthStencilID depthStencilID);
-
-	void SetRasterizerState(RasterizerID rasterizerID);
-
-	void SetRootSignature(RootSignatureID rootID);
-
-	void SetInputLayout(InputLayoutID inputLayoutID);
-
-	void SetPrimitiveTopology(D3D12_PRIMITIVE_TOPOLOGY topology);
-
-	void SetOffScreen(bool isOffScreen);
-
 	void SetPSOConfig(const PSOConfig& config) { nextConfig_ = config; }
 
 	PSOManager* GetPSOManager() { return psoManager_.get(); }

@@ -23,6 +23,8 @@ private:
 	Matrix4x4 worldMatrix_ = Matrix::MakeIdentity4x4();
 	Transform gizmoTransform_;
 
+	std::unique_ptr<ResourceGenerator> res_ = nullptr;
+
 	int mp3Handle;
 	int wavHandle;
 

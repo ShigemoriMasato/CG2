@@ -11,7 +11,6 @@ public:
 
 private:
 
-	void CreateStageTexture();
 	void LoadAllResources();
 
 	std::vector<std::unique_ptr<SceneManager>> sceneList_;

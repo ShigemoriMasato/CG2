@@ -64,7 +64,6 @@
     <ClCompile Include="Engine\Scene\SceneManager.cpp" />
     <ClCompile Include="AppSource\Game\Scene\TitleScene.cpp" />
     <ClCompile Include="Engine\Core\SRVManager.cpp" />
-    <ClCompile Include="Engine\Scene\Engine\ShaderEditScene.cpp" />
     <ClCompile Include="Engine\Function\MyString.cpp" />
     <ClCompile Include="Engine\Assets\Audio\Data\MP3Data.cpp" />
     <ClCompile Include="Engine\Assets\Audio\Data\WAVData.cpp" />
@@ -74,6 +73,7 @@
     <ClInclude Include="AppSource\Common\InitializeScene\InitializeScene.h" />
     <ClInclude Include="AppSource\Common\KeyConfig\KeyManager.h" />
     <ClInclude Include="Engine\Assets\AssetsLoader.h" />
+    <ClInclude Include="Engine\Core\ECS\EntityID.h" />
     <ClInclude Include="Engine\Render\Resource\Data\PostEffectData.h" />
     <ClInclude Include="Engine\Assets\Audio\Data\AudioData.h" />
     <ClInclude Include="Engine\Assets\Audio\AudioManager.h" />
@@ -125,7 +125,6 @@
     <ClInclude Include="Engine\Scene\SceneManager.h" />
     <ClInclude Include="AppSource\Game\Scene\TitleScene.h" />
     <ClInclude Include="Engine\Core\SRVManager.h" />
-    <ClInclude Include="Engine\Scene\Engine\ShaderEditScene.h" />
     <ClInclude Include="Engine\Function\MyString.h" />
     <ClInclude Include="Engine\Tools\FPS\FPSObserver.h" />
     <ClInclude Include="Engine\Assets\Audio\Data\MP3Data.h" />

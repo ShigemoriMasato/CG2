@@ -1,10 +1,10 @@
 #pragma once
 #include <Core/DXDevice.h>
 #include <Core/PSO/PSOEditor.h>
-#include <Assets/Texture/TextureManager.h>
 #include <Assets/OffScreen/OffScreenManager.h>
 #include <Render/ImGuiWrapper.h>
 #include <imgui/imgui_impl_dx12.h>
+#include <Render/Resource/ResourceGenerator.h>
 
 class Render {
 public:
@@ -15,8 +15,7 @@ public:
 	void Initialize(SRVManager* srvManager);
 
 	void PreDraw(OffScreenIndex index = OffScreenIndex::SwapChain, bool isClear = true);
-	//void Draw(DrawResource* resource);
-	//void Draw(PostEffectResource* resource);
+	void Draw(ResourceGenerator* resource);
 	void PostDraw();
 
 	void EndFrame(bool swapchainPresent);

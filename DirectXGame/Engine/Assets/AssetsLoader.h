@@ -1,5 +1,6 @@
 #pragma once
 #include <unordered_map>
+#include <Core/ECS/EntityID.h>
 #include "Texture/TextureManager.h"
 #include "Audio/AudioManager.h"
 #include "Model/ModelManager.h"
@@ -7,17 +8,7 @@
 
 class AssetsLoader;
 
-struct AssetsID {
-public:
-	uint32_t get() { return id; }
-
-	bool operator<(const AssetsID& other) const {
-		return this->id < other.id;
-	}
-
-private:
-	friend class AssetsLoader;
-	uint32_t id;
+struct AssetsID : public EntityID {
 };
 
 class AssetsLoader {

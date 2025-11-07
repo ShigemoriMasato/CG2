@@ -1,5 +1,4 @@
 #include "EngineTerminal.h"
-#include <Scene/Engine/ShaderEditScene.h>
 #include <Common/InitializeScene/InitializeScene.h>
 #include <Scene/SceneManager.h>
 #include <Render/Resource/ResourceGenerator.h>
@@ -70,14 +69,15 @@ void EngineTerminal::Initialize(int32_t windowWidth, int32_t windowHeight) {
 
 	fpsObserver_ = std::make_unique<FPSObserver>(true, 60.0);
 
-	ResourceGenerator::StaticInitialize(dxDevice_->GetDevice(), srvManager_.get(), assetsLoader_.get());
+	ResourceGenerator::StaticInitialize(
+		dxDevice_->GetDevice(),
+		srvManager_.get(),
+		assetsLoader_.get()
+	);
 
 	switch (mode_) {
 	case BootMode::Game:
 		sceneManager_ = std::make_unique<SceneManager>(std::make_unique<InitializeScene>(), this);
-		break;
-	case BootMode::ShaderEdit:
-		sceneManager_ = std::make_unique<SceneManager>(std::make_unique<ShaderEditScene>(), this);
 		break;
 	}
 }
