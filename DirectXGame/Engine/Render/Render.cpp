@@ -33,7 +33,7 @@ Render::Render(DXDevice* device) {
 Render::~Render() {
 }
 
-void Render::Initialize(TextureManager* textureManager, OffScreenManager* offScreenManager, SRVManager* srvManager) {
+void Render::Initialize(OffScreenManager* offScreenManager, SRVManager* srvManager) {
     
 	auto windowSize = device_->GetWindowSize();
 
@@ -118,7 +118,6 @@ void Render::Initialize(TextureManager* textureManager, OffScreenManager* offScr
     //PSOの初期化
     psoEditor_->Initialize(device_->GetDevice());
 
-	textureManager_ = textureManager;
 	offScreenManager_ = offScreenManager;
 	srvManager_ = srvManager;
 
@@ -174,49 +173,50 @@ void Render::PreDraw(ScreenID index, bool isClear) {
 	//そうでない場合はスワップチェーンのバッファに描画する
     PreDrawSwapChain(isClear);
 }
-//
-//void Render::Draw(DrawResource* resource) {
-//
-//	resource->DrawReady();
-//
-//    auto vertexBufferView = resource->GetVertexBufferView();
-//    commandList->IASetVertexBuffers(0, 1, &vertexBufferView);
-//	uint32_t indexNum = resource->GetIndexNum();
-//    if (indexNum != 0) {
-//        auto indexBufferView = resource->GetIndexBufferView();
-//		commandList->IASetIndexBuffer(&indexBufferView);
-//    }
-//
-//    psoEditor_->SetPSOConfig(resource->psoConfig_);
-//    psoEditor_->Setting(commandList.Get());
-//
-//    //マテリアルのポインタを設定
-//    commandList->SetGraphicsRootConstantBufferView(0, resource->GetMaterialResource()->GetGPUVirtualAddress());
-//
-//    //Matrixのポインタを設定
-//    if (resource->GetParticleDataResource()) {
-//        commandList->SetGraphicsRootConstantBufferView(1, resource->GetParticleDataResource()->GetGPUVirtualAddress());
-//        //Texture
-//        commandList->SetGraphicsRootDescriptorTable(2, resource->GetTextureHandle());
-//        //Lightのポインタを設定
-//        commandList->SetGraphicsRootConstantBufferView(3, resource->GetLightResource()->GetGPUVirtualAddress());
-//    } else {
-//        //Texture
-//        commandList->SetGraphicsRootDescriptorTable(1, resource->GetTextureHandle());
-//        //Lightのポインタを設定
-//        commandList->SetGraphicsRootConstantBufferView(2, resource->GetLightResource()->GetGPUVirtualAddress());
-//    }
-//
-//    if (indexNum != 0) {
-//        //インデックスがある場合は、インデックスを設定して描画
-//        commandList->DrawIndexedInstanced(indexNum, 1, 0, 0, 0);
-//    } else {
-//        //インデックスがない場合は、インデックスなしで描画
-//        commandList->DrawInstanced(resource->GetVertexNum(), 1, 0, 0);
-//    }
-//
-//}
-//
+
+void Render::Draw(BaseResource* res) {
+    res->DrawReady();
+
+	auto vbv = res->GetVBV();
+	auto ibv = res->GetIBV();
+
+	bool hasIndex = ibv.SizeInBytes != 0;
+
+	commandList->IASetVertexBuffers(0, static_cast<UINT>(vbv.size()), vbv.data());
+    if (hasIndex) {
+        commandList->IASetIndexBuffer(&ibv);
+    }
+
+    psoEditor_->SetPSOConfig(res->psoConfig_);
+	psoEditor_->Setting(commandList.Get());
+
+	auto cbvAddresses = res->GetCBVAddress();
+    for (size_t i = 0; i < cbvAddresses.size(); i++) {
+        commandList->SetGraphicsRootConstantBufferView(static_cast<UINT>(i), cbvAddresses[i]);
+	}
+
+	auto srvHandles = res->GetSRVHandle();
+    for (size_t i = 0; i < srvHandles.size(); i++) {
+        commandList->SetGraphicsRootDescriptorTable(static_cast<UINT>(cbvAddresses.size() + i), srvHandles[i].GPU);
+	}
+
+	auto textureHandles = res->GetTextureHandle();
+    for (size_t i = 0; i < textureHandles.size(); i++) {
+        commandList->SetGraphicsRootDescriptorTable(static_cast<UINT>(cbvAddresses.size() + srvHandles.size() + i), textureHandles[i]);
+    }
+
+    if (hasIndex) {
+        //インデックスがある場合は、インデックスを設定して描画
+        commandList->DrawIndexedInstanced(res->GetIndexNum(), res->GetInstanceNum(), 0, 0, 0);
+    } else {
+        //インデックスがない場合は、インデックスなしで描画
+        commandList->DrawInstanced(res->GetVertexNum(), res->GetInstanceNum(), 0, 0);
+	}
+}
+
+void Render::CustomDraw(PostEffectResource* res) {
+}
+
 //void Render::Draw(PostEffectResource* resource) {
 //
 //    ScreenID nextWindow = ScreenID::PostPing;

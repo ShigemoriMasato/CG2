@@ -6,17 +6,20 @@
 #include <Render/ImGuiWrapper.h>
 #include <imgui/imgui_impl_dx12.h>
 
+#include <Render/Resource/DrawResource.h>
+#include <Render/Resource/PostEffectResource.h>
+
 class Render {
 public:
 
 	Render(DXDevice* device);
 	~Render();
 
-	void Initialize(TextureManager* textureManager, OffScreenManager* offScreenManager, SRVManager* srvManager);
+	void Initialize(OffScreenManager* offScreenManager, SRVManager* srvManager);
 
 	void PreDraw(ScreenID index = ScreenID::SwapChain, bool isClear = true);
-	//void Draw(DrawResource* resource);
-	//void Draw(PostEffectResource* resource);
+	void Draw(BaseResource* res);
+	void CustomDraw(PostEffectResource* res);
 	void PostDraw(ImGuiWrapper* imguiRap);
 
 	void EndFrame(bool swapchainPresent);

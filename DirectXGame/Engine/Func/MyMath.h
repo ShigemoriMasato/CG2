@@ -92,7 +92,7 @@ namespace Matrix {
 	Matrix4x4 MakeTranslationMatrix(const Vector3& pos);
 	Matrix4x4 MakeRotationMatrix(Vector3 angle);
 	Matrix4x4 MakeScaleMatrix(const Vector3& scale);
-	Matrix4x4 MakeAffineMatrix(const Vector3& pos, const Vector3& angle, const Vector3& scale);
+	Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& angle, const Vector3& pos);
 	Matrix4x4 MakeAffineMatrix(Transform transform);
 
 	Matrix3x3 MakeTranslationMatrix(const Vector2& pos);
@@ -107,6 +107,9 @@ namespace Matrix {
 
 	Matrix3x3 MakeIdentity3x3();
 	Matrix4x4 MakeIdentity4x4();
+
+
+	Matrix4x4 MakeUVMatrix(Vector2 scale, float rotate, Vector2 position);
 }
 
 namespace MyMath {
@@ -145,10 +148,9 @@ namespace MyMath {
 	float Length(const Vector3& vec);
 }
 
-class BaseObject;
-bool CollisionChecker(BaseObject* a, BaseObject* b);
-
 std::vector<Vector3> GetSplinePoints(const std::vector<Vector3>& controlPoints, int segment);
 std::vector<Vector3> GetCatmullPoints(const std::vector<Vector3>& points, int segmentsPerCurve);
 Vector3 GetCatmullPoint(const std::vector<Vector3>& points, float t);
 float CalculateAngle(const Vector3& a, const Vector3& b);
+
+Vector4 ConvertColor(uint32_t color);

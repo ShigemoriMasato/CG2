@@ -32,7 +32,16 @@ namespace {
         }
 
     }
+}
 
+void Logger::Initialize() {
+#ifdef SH_DEBUG
+    spdlog::set_level(spdlog::level::debug);
+#else
+	spdlog::set_level(spdlog::level::info);
+#endif
+
+    spdlog::set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%l] [%n] %v");
 }
 
 std::shared_ptr<spdlog::logger> Logger::getLogger(const std::string& name, uint32_t flug) {
@@ -64,8 +73,6 @@ std::shared_ptr<spdlog::logger> Logger::getLogger(const std::string& name, uint3
     }
 
     auto logger = std::make_shared<spdlog::logger>(name, sinks.begin(), sinks.end());
-    logger->set_level(spdlog::level::debug);
-    logger->set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%l] [%n] %v");
     spdlog::register_logger(logger);
 
     return logger;

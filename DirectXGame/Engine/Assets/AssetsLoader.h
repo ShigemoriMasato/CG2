@@ -4,7 +4,6 @@
 #include "Texture/TextureManager.h"
 #include "Audio/AudioManager.h"
 #include "Model/ModelManager.h"
-#include "OffScreen/OffScreenManager.h"
 
 class AssetsLoader;
 
@@ -38,7 +37,6 @@ private:
 	std::unique_ptr<TextureManager> textureManager_;
 	std::unique_ptr<AudioManager> audioManager_;
 	std::unique_ptr<ModelManager> modelManager_;
-	std::unique_ptr<OffScreenManager> offscreenManager_;
 
 	uint32_t nextID_ = 0;
 };

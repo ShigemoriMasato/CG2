@@ -62,11 +62,16 @@ void EngineTerminal::Initialize(int32_t windowWidth, int32_t windowHeight) {
 	input_ = std::make_unique<Input>(dxDevice_->GetWndClass().hInstance, dxDevice_->GetHwnd());
 	input_->Initialize();
 
-	render_->Initialize(textureManager_.get(), offScreenManager_.get(), srvManager_.get());
+	render_->Initialize(offScreenManager_.get(), srvManager_.get());
 
 	ImGuiOperator::Initialize(dxDevice_.get(), render_.get(), srvManager_.get());
 
 	fpsObserver_ = std::make_unique<FPSObserver>(true, 60.0);
+
+	assetsLoader_ = std::make_unique<AssetsLoader>();
+	assetsLoader_->Initialize(dxDevice_.get(), srvManager_.get(), render_->GetCommandList());
+
+	BaseResource::StaticInitialize(dxDevice_.get(), assetsLoader_.get(), offScreenManager_.get(), srvManager_.get());
 
 	switch (mode_) {
 	case BootMode::Game:

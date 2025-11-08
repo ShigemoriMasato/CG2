@@ -58,10 +58,6 @@ public:
 
 	Camera* camera_ = nullptr;
 
-	void SetTextureHandle(int handle);
-	void SetTextureHandle(std::string filePath);
-	void SetTextureHandle(D3D12_GPU_DESCRIPTOR_HANDLE handle);
-
 private:
 
 	VertexData* vertex_ = nullptr;

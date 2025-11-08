@@ -10,7 +10,7 @@ public:
 	SRVHandle() = default;
 	~SRVHandle();
 
-	void UpdateHandle(SRVManager* manager);
+	void UpdateHandle(SRVManager* manager, bool isTexture = false);
 
 	D3D12_CPU_DESCRIPTOR_HANDLE CPU;
 	D3D12_GPU_DESCRIPTOR_HANDLE GPU;
@@ -31,7 +31,7 @@ public:
 
 	ID3D12DescriptorHeap* GetHeap() { return srvDescriptorHeap.Get(); }
 
-	uint32_t GetNextOffset();
+	uint32_t GetNextOffset(bool isTexture);
 
 private:
 

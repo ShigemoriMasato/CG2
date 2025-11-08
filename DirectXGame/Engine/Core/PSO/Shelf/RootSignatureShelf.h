@@ -17,6 +17,12 @@ enum class RootSignatureID : uint8_t {
 	Count
 };
 
+struct RootSignatureConfig {
+	std::vector<ShaderType> cbv;
+	std::vector<ShaderType> srv;
+	std::vector<ShaderType> uav;
+};
+
 class RootSignatureShelf {
 public:
 

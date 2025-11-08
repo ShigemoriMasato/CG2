@@ -37,12 +37,10 @@ public:
 
 	DXDevice* GetDXDevice() { return dxDevice_.get(); }
 	Render* GetRender() { return render_.get(); }
-	TextureManager* GetTextureManager() { return textureManager_.get(); }
-	ModelManager* GetModelManager() { return modelManager_.get(); }
 	FPSObserver* GetFPSObserver() { return fpsObserver_.get(); }
 	Input* GetInput() { return input_.get(); }
-	AudioManager* GetAudioManager() { return audioManager_.get(); }
 	OffScreenManager* GetOffScreenManager() { return offScreenManager_.get(); }
+	AssetsLoader* GetAssetsLoader() { return assetsLoader_.get(); }
 
 private:
 
@@ -54,16 +52,17 @@ private:
 	void PostDraw();
 
 	D3DResourceLeakChecker leakChecker_;
+
+	std::unique_ptr<SRVManager> srvManager_ = nullptr;
+
 	std::unique_ptr<DXDevice> dxDevice_ = nullptr;
 	std::unique_ptr<Render> render_ = nullptr;
-	std::unique_ptr<SRVManager> srvManager_ = nullptr;
-	std::unique_ptr<TextureManager> textureManager_ = nullptr;
-	std::unique_ptr<ModelManager> modelManager_ = nullptr;
 	std::unique_ptr<OffScreenManager> offScreenManager_ = nullptr;
 	std::unique_ptr<Input> input_ = nullptr;
-	std::unique_ptr<AudioManager> audioManager_ = nullptr;
 	std::unique_ptr<ImGuiWrapper> imgui_ = nullptr;
 	std::unique_ptr<FPSObserver> fpsObserver_ = nullptr;
+
+	std::unique_ptr<AssetsLoader> assetsLoader_ = nullptr;
 
 	std::unique_ptr<SceneManager> sceneManager_ = nullptr;
 

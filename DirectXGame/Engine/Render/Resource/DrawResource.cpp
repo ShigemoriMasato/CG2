@@ -23,24 +23,16 @@ void DrawResource::Initialize(uint32_t vertexNum, uint32_t indexNum) {
 	normal_.resize(vertexNum);
 	index_.resize(indexNum);
 
-	//マテリアル
-	materialResource.Attach(CreateBufferResource(device, sizeof(Material)));
-	materialResource->Map(0, nullptr, (void**)&material_);
-	*material_ = Material{};
+	MakeCBV(matrix_);
+	MakeCBV(material_);
+	MakeCBV(light_);
+	MakeUAV(1);
 
-	lightResource.Attach(CreateBufferResource(device, sizeof(DirectionalLightData)));
-	lightResource->Map(0, nullptr, (void**)&light_);
-
-	matrixResource.Attach(CreateBufferResource(device, sizeof(MatrixData)));
-	matrixResource->Map(0, nullptr, (void**)&matrix_);
 	matrix_->world = Matrix::MakeIdentity4x4();
 	matrix_->wvp = Matrix::MakeIdentity4x4();
 
 	vertexNum_ = vertexNum;
 	indexNum_ = indexNum;
-
-	//defaultでWhite1x1をセット
-	SetTextureHandle(0);
 }
 
 void DrawResource::Initialize(ShapeType type) {
@@ -186,9 +178,7 @@ void DrawResource::Initialize(ShapeType type) {
 
 void DrawResource::DrawReady() {
 	//InputLayout
-	localPos_.resize(vertexNum_);
-	texcoord_.resize(vertexNum_);
-	normal_.resize(vertexNum_);
+
 	for (uint32_t i = 0; i < vertexNum_; ++i) {
 		vertex_[i].position = { localPos_[i].x, localPos_[i].y, localPos_[i].z, 1.0f };
 		vertex_[i].texcoord = texcoord_[i];
@@ -202,64 +192,38 @@ void DrawResource::DrawReady() {
 	}
 
 	//Material
-	material_->color = {
-		((color_ >> 24) & 0xff) / 255.0f,
-		((color_ >> 16) & 0xff) / 255.0f,
-		((color_ >> 8) & 0xff) / 255.0f,
-		((color_ >> 0) & 0xff) / 255.0f
-	};
-	material_->uvTransform = MakeScaleMatrix(Vector3(textureScale_.x, textureScale_.y, 1.0f)) *
-		MakeRotationMatrix(Vector3(0.0f, 0.0f, textureRotate_)) *
-		MakeTranslationMatrix(Vector3(texturePos_.x, texturePos_.y, 0.0f));
+	material_->color = ConvertColor(color_);
+
+	material_->uvTransform = MakeUVMatrix(textureScale_, textureRotate_, texturePos_);
 
 	//Matrix
 	Matrix4x4 worldMat = MakeAffineMatrix(scale_, rotate_, position_);
 
-	if (matrix_) {
-		//初期化
-		matrix_->world = Matrix::MakeIdentity4x4();
+	//初期化
+	matrix_->world = Matrix::MakeIdentity4x4();
 
-		//親の数だけかける
-		for(const auto& mat : parentMatrices_) {
-			matrix_->world *= mat;
-		}
+	//親の数だけかける
+	for (const auto& mat : parentMatrices_) {
+		matrix_->world *= mat;
+	}
+	//親行列クリア
+	parentMatrices_.clear();
 
-		matrix_->world *= worldMat;
-		
-		if (camera_) {
-			matrix_->wvp = matrix_->world * camera_->GetVPMatrix();
-		}
+	matrix_->world *= worldMat;
 
-	} else {
-
-		Matrix4x4 wvpMat = worldMat * camera_->GetVPMatrix();
-
-		//Shaderの代わりに行列計算を受け持つ
-		for (uint32_t i = 0; i < vertexNum_; ++i) {
-			Vector3 prePos = Vector3(vertex_[i].position.x, vertex_[i].position.y, vertex_[i].position.z);
-			Vector3 pos = prePos * wvpMat;
-			vertex_[i].position = { pos.x, pos.y, pos.z, 1.0f };
-			vertex_[i].normal = (normal_[i] * worldMat).Normalize();
-		}
+	if (camera_) {
+		matrix_->wvp = matrix_->world * camera_->GetVPMatrix();
 	}
 
 	light_->enableLighting = static_cast<int32_t>(enableLighting_);
 
 	//Lighting
 	if (enableLighting_) {
-		light_->color = {
-			((lightColor_ >> 24) & 0xff) / 255.0f,
-			((lightColor_ >> 16) & 0xff) / 255.0f,
-			((lightColor_ >> 8) & 0xff) / 255.0f,
-			((lightColor_ >> 0) & 0xff) / 255.0f
-		};
+		light_->color = ConvertColor(lightColor_);
 		light_->intensity = lightIntensity_;
 		lightDirection_ = lightDirection_.Normalize();
 		light_->direction = lightDirection_;
 	}
-
-	parentMatrices_.clear();
-
 }
 
 void DrawResource::AddParentMatrix(const Matrix4x4& parentMatrix) {

@@ -10,6 +10,8 @@ namespace Logger {
 		UseConsole = 1 << 1,
 	};
 
+	void Initialize();
+
 	std::shared_ptr<spdlog::logger> getLogger(const std::string& name, uint32_t flug = MakeFile | UseConsole);
 
 }

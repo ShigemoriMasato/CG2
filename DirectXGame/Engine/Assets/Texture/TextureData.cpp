@@ -8,11 +8,8 @@ TextureData::TextureData(std::string filePath, DXDevice* device, ID3D12GraphicsC
     DirectX::ScratchImage mipImages = CreateMipImages(filePath);
     const DirectX::TexMetadata& metadata = mipImages.GetMetadata();
 
-    ID3D12Resource* rawResource = nullptr;
-    rawResource = CreateTextureResource(device->GetDevice(), metadata);
-	textureResource_.Attach(rawResource);
-	rawResource = UploadTextureData(textureResource_.Get(), mipImages, device->GetDevice(), commandList);
-	intermadiateResource_.Attach(rawResource);
+	textureResource_.Attach(CreateTextureResource(device->GetDevice(), metadata));
+	intermadiateResource_.Attach(UploadTextureData(textureResource_.Get(), mipImages, device->GetDevice(), commandList));
 
     //画像サイズの取得
 	width_ = static_cast<int>(metadata.width);

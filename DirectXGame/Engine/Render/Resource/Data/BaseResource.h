@@ -5,30 +5,78 @@
 #include <Core/DXDevice.h>
 #include <Core/PSO/PSOConfig.h>
 #include <Assets/AssetsLoader.h>
+#include <Assets/OffScreen/OffScreenManager.h>
 #include <Core/DXCommonFunction.h>
 #include <spdlog/logger.h>
 
+//todo SetPSOConfig内でのRootSignatureの作成命令の出力
+
 class BaseResource {
 public:
-	BaseResource() = default;
+
+	static void StaticInitialize(DXDevice* device, AssetsLoader* loader, OffScreenManager* offscreenManager, SRVManager* srvManager) {
+		dxDevice_ = device;
+		loader_ = loader;
+		offscreenManager_ = offscreenManager;
+		srvManager_ = srvManager;
+	}
+
+	BaseResource();
 	BaseResource(const std::string debugName);
 
-	virtual ~BaseResource() = default;
+	virtual ~BaseResource();
 
 	virtual void DrawReady() = 0;
+	
+	std::vector<D3D12_VERTEX_BUFFER_VIEW> GetVBV() const { return vbv_; }
+	D3D12_INDEX_BUFFER_VIEW GetIBV() const { return ibv_; }
+
+	std::vector<D3D12_GPU_VIRTUAL_ADDRESS> GetCBVAddress() const { return cbvAddresses_; }
+	std::vector<SRVHandle> GetSRVHandle() { return srvHandles_; }
+	std::vector<D3D12_GPU_DESCRIPTOR_HANDLE> GetTextureHandle() const { return textureHandle_; }
+
+	uint32_t GetVertexNum() const { return vertexNum_; }
+	uint32_t GetIndexNum() const { return indexNum_; }
+	uint32_t GetInstanceNum() const { return instanceNum_; }
 
 	//使用しないかもだけどいちいち面倒なのでここで宣言する。気になる場合はprivateでオーバーライドすること
-	void SetTextureHandle(AssetsID id, uint32_t index);
-	void SetTextureHandle(ScreenID offScreenIndex, uint32_t textureIndex);
+	/// <summary>
+	/// 画像の設定
+	/// </summary>
+	/// <param name="id">AssetsLoaderから取得したid</param>
+	/// <param name="index">何枚目の画像に設定するか</param>
+	void SetTextureHandle(AssetsID id, uint32_t textureIndex = 0);
 
+	/// <summary>
+	/// 画像の設定
+	/// </summary>
+	/// <param name="offScreenIndex">スクリーンのID</param>
+	/// <param name="textureIndex">何枚目の画像に設定するか</param>
+	void SetTextureHandle(ScreenID offScreenIndex, uint32_t textureIndex = 0);
+
+	PSOConfig psoConfig_{};
+	
 protected:
 
 	template<typename T>
 	void MakeVertex(T*& verPtr, uint32_t vertexNum);
 	void MakeIndex(uint32_t*& indPtr, uint32_t indexNum);
 
+	template<typename T>
+	D3D12_GPU_VIRTUAL_ADDRESS MakeCBV(T*& ptr);
+
+	template<typename T>
+	SRVHandle MakeSRV(T*& ptr, uint32_t num);
+
+	//今はまだテクスチャの配列増やすだけ
+	void MakeUAV(uint32_t textureNum);
+
+protected:
+
 	static DXDevice* dxDevice_;
 	static AssetsLoader* loader_;
+	static OffScreenManager* offscreenManager_;
+	static SRVManager* srvManager_;
 
 	std::shared_ptr<spdlog::logger> logger_ = nullptr;
 
@@ -36,18 +84,35 @@ protected:
 	Microsoft::WRL::ComPtr<ID3D12Resource> indexResource;
 
 	std::vector<D3D12_VERTEX_BUFFER_VIEW> vbv_;
-	std::vector<D3D12_INDEX_BUFFER_VIEW> ibv_;
+	D3D12_INDEX_BUFFER_VIEW ibv_;
 
-	PSOConfig psoConfig_{};
+	uint32_t vertexNum_ = 0;
+	uint32_t indexNum_ = 0;
+	uint32_t instanceNum_ = 1;
 	
 	std::vector<D3D12_GPU_DESCRIPTOR_HANDLE> textureHandle_{};
+
+private:
+
+	struct Resource {
+		Microsoft::WRL::ComPtr<ID3D12Resource> res = nullptr;
+	};
+
+	std::vector<Resource> allResources_{};
+
+	std::vector<D3D12_GPU_VIRTUAL_ADDRESS> cbvAddresses_{};
+	std::vector<SRVHandle> srvHandles_{};
+
+	std::shared_ptr<spdlog::logger> debugLogger_ = nullptr;
 };
+
+
 
 template<typename T>
 inline void BaseResource::MakeVertex(T*& verPtr, uint32_t vertexNum) {
 	//リソースの生成とマップ
 	vertexResource.Attach(CreateBufferResource(dxDevice_->GetDevice(), sizeof(VertexData) * vertexNum));
-	vertexResource->Map(0, nullptr, (void**)verPtr);
+	vertexResource->Map(0, nullptr, (void**)&verPtr);
 
 	//vbvの作成
 	D3D12_VERTEX_BUFFER_VIEW vbv{};
@@ -55,4 +120,46 @@ inline void BaseResource::MakeVertex(T*& verPtr, uint32_t vertexNum) {
 	vbv.SizeInBytes = sizeof(VertexData) * vertexNum;
 	vbv.StrideInBytes = sizeof(VertexData);
 	vbv_.push_back(vbv);
+}
+
+
+
+template<typename T>
+inline D3D12_GPU_VIRTUAL_ADDRESS BaseResource::MakeCBV(T*& ptr) {
+
+	Resource resource;
+	resource.res.Attach(CreateBufferResource(dxDevice_->GetDevice(), sizeof(T)));
+	resource.res->Map(0, nullptr, (void**)&ptr);
+	cbvAddresses_.push_back(resource.res->GetGPUVirtualAddress());
+	allResources_.push_back(resource);
+
+	return resource.res->GetGPUVirtualAddress();
+}
+
+template<typename T>
+inline SRVHandle BaseResource::MakeSRV(T*& ptr, uint32_t num) {
+
+	Resource resource;
+	resource.res.Attach(CreateBufferResource(dxDevice_->GetDevice(), sizeof(T)));
+	resource.res->Map(0, nullptr, (void**)&ptr);
+	allResources_.push_back(resource);
+
+	SRVHandle srvHandle;
+	srvHandle.UpdateHandle();
+
+	//ParticleDataのSRV作成
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+	srvDesc.Format = DXGI_FORMAT_UNKNOWN;
+	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
+	srvDesc.Buffer.FirstElement = 0;
+	srvDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
+	srvDesc.Buffer.NumElements = num;
+	srvDesc.Buffer.StructureByteStride = sizeof(T);
+
+	srvHandles_.push_back(srvHandle);
+
+	dxDevice_->GetDevice()->CreateShaderResourceView(resource.res.Get(), &srvDesc, srvHandle.CPU);
+
+	return srvHandle;
 }

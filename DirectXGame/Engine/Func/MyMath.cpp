@@ -667,6 +667,16 @@ float CalculateAngle(const Vector3& a, const Vector3& b)
 	return std::cos(cosAngle);
 }
 
+Vector4 ConvertColor(uint32_t color) {
+	Vector4 converted = {
+		((color >> 24) & 0xff) / 255.0f,
+		((color >> 16) & 0xff) / 255.0f,
+		((color >> 8) & 0xff) / 255.0f,
+		((color >> 0) & 0xff) / 255.0f
+	};
+	return converted;
+}
+
 float MyMath::lerp(float a, float b, float t)
 {
 	return a + (b - a) * t;
@@ -994,6 +1004,12 @@ Matrix4x4 Matrix::MakeIdentity4x4()
 	};
 }
 
+Matrix4x4 Matrix::MakeUVMatrix(Vector2 scale, float rotate, Vector2 position) {
+	return MakeScaleMatrix(Vector3(scale.x, scale.y, 1.0f)) *
+		MakeRotationMatrix(Vector3(0.0f, 0.0f, rotate)) *
+		MakeTranslationMatrix(Vector3(position.x, position.y, 0.0f));
+}
+
 Matrix4x4 Matrix::MakeTranslationMatrix(const Vector3& pos)
 {
 	return {
@@ -1040,7 +1056,7 @@ Matrix4x4 Matrix::MakeScaleMatrix(const Vector3& scale)
 	};
 }
 
-Matrix4x4 Matrix::MakeAffineMatrix(const Vector3& translation, const Vector3& rotation, const Vector3& scale)
+Matrix4x4 Matrix::MakeAffineMatrix(const Vector3& scale, const Vector3& rotation, const Vector3& translation)
 {
 	return MakeScaleMatrix(scale) *
 		MakeRotationMatrix(rotation) *

@@ -12,9 +12,6 @@ void AssetsLoader::Initialize(DXDevice* device, SRVManager* srvmanager, ID3D12Gr
 
 	modelManager_ = std::make_unique<ModelManager>();
 	modelManager_->Initialize(textureManager_.get(), device);
-
-	offscreenManager_ = std::make_unique<OffScreenManager>();
-	offscreenManager_->Initialize(device, srvmanager);
 }
 
 AssetsID AssetsLoader::Load(std::filesystem::path filePath) {
@@ -48,6 +45,7 @@ AssetsID AssetsLoader::Load(std::filesystem::path filePath) {
 
 	} else {
 		assert(false && "Unsupported asset file extension");
+		return Load("Assets/Texture/Error.png");
 	}
 
 	return id;
