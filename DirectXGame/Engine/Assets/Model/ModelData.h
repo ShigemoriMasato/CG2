@@ -3,8 +3,8 @@
 #include <unordered_map>
 #include <vector>
 #include <Transform/Transform.h>
-#include <Resource/Texture/TextureManager.h>
-#include <Math/MyMath.h>
+#include <Assets/Texture/TextureManager.h>
+#include <Func/MyMath.h>
 #include "ModelAnimation.h"
 
 #include <assimp/Importer.hpp>

@@ -3,7 +3,7 @@
 #include <imgui/imgui.h>
 #include <imgui/imgui_impl_dx12.h>
 #include <Core/DXDevice.h>
-#include <Resource/SRVManager.h>
+#include <Core/SRVManager.h>
 #include <imgui/ImGuizmo.h>
 #include <Camera/Camera.h>
 

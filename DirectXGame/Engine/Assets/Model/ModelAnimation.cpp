@@ -3,7 +3,7 @@
 #include <assimp/scene.h>
 #include <assimp/anim.h>
 #include <cassert>
-#include <Math/MyMath.h>
+#include <Func/MyMath.h>
 #include <assimp/postprocess.h>
 
 using namespace MyMath;

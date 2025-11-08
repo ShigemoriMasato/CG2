@@ -4,7 +4,7 @@
 #include <Xinput.h>
 #include <wrl.h>
 
-#include "../Math/MyMath.h"
+#include "../Func/MyMath.h"
 
 enum class XBoxController {
 	kUnknown = -1,

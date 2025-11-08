@@ -26,10 +26,8 @@ TextureData::TextureData(std::string filePath, DXDevice* device, ID3D12GraphicsC
     srvDesc.Texture2D.MipLevels = UINT(metadata.mipLevels);
 
     //SRVを作成するDescriptorHeapの場所を決める
-    //先頭はImGuiが使っているのでその次を使う
-	D3D12_CPU_DESCRIPTOR_HANDLE textureSrvHandleCPU = srvManager->GetCPUHandle();
-	textureGpuHandle_ = srvManager->GetGPUHandle();
+    srvHandle_.UpdateHandle(srvManager);
 
     //SRVを作成する
-    device->GetDevice()->CreateShaderResourceView(textureResource_.Get(), &srvDesc, textureSrvHandleCPU);
+    device->GetDevice()->CreateShaderResourceView(textureResource_.Get(), &srvDesc, srvHandle_.CPU);
 }

@@ -1,6 +1,6 @@
 #include "DrawResource.h"
 #include <Core/DXCommonFunction.h>
-#include <Math/MyMath.h>
+#include <Func/MyMath.h>
 #include <numbers>
 
 using namespace Matrix;
@@ -8,58 +8,36 @@ using namespace Matrix;
 DrawResource::~DrawResource() {
 }
 
-void DrawResource::Initialize(uint32_t vertexNum, uint32_t indexNum, bool useMatrix) {
+void DrawResource::Initialize(uint32_t vertexNum, uint32_t indexNum) {
 	psoConfig_ = PSOConfig{};
 
 	auto device = dxDevice_->GetDevice();
 
-	//リソースの生成とマップ
-	vertexResource.Attach(CreateBufferResource(device, sizeof(VertexData) * vertexNum));
-	vertexResource->Map(0, nullptr, (void**)&vertex_);
+	MakeVertex(vertex_, vertexNum);
+
+	if (indexNum > 0)
+		MakeIndex(indices_, indexNum);
+
 	localPos_.resize(vertexNum);
 	texcoord_.resize(vertexNum);
 	normal_.resize(vertexNum);
 	index_.resize(indexNum);
 
-	//頂点のバッファビューを作成する
-	//リソースの先頭のアドレスから使う
-	vertexBufferView.BufferLocation = vertexResource->GetGPUVirtualAddress();
-	//使用するリソースのサイズ
-	vertexBufferView.SizeInBytes = sizeof(VertexData) * vertexNum;
-	//1頂点当たりのサイズ
-	vertexBufferView.StrideInBytes = sizeof(VertexData);
-	
 	//マテリアル
 	materialResource.Attach(CreateBufferResource(device, sizeof(Material)));
 	materialResource->Map(0, nullptr, (void**)&material_);
 	*material_ = Material{};
-	
+
 	lightResource.Attach(CreateBufferResource(device, sizeof(DirectionalLightData)));
 	lightResource->Map(0, nullptr, (void**)&light_);
 
-	if (indexNum > 0) {
-		indexResource.Attach(CreateBufferResource(device, sizeof(uint32_t) * indexNum));
-		indexResource->Map(0, nullptr, (void**)&indices_);
-
-		indexBufferView.BufferLocation = indexResource->GetGPUVirtualAddress();
-		indexBufferView.SizeInBytes = sizeof(uint32_t) * indexNum;
-		indexBufferView.Format = DXGI_FORMAT_R32_UINT;
-	}
-
-	if (useMatrix) {
-		matrixResource.Attach(CreateBufferResource(device, sizeof(MatrixData)));
-		matrixResource->Map(0, nullptr, (void**)&matrix_);
-		matrix_->world = Matrix::MakeIdentity4x4();
-		matrix_->wvp = Matrix::MakeIdentity4x4();
-	}
+	matrixResource.Attach(CreateBufferResource(device, sizeof(MatrixData)));
+	matrixResource->Map(0, nullptr, (void**)&matrix_);
+	matrix_->world = Matrix::MakeIdentity4x4();
+	matrix_->wvp = Matrix::MakeIdentity4x4();
 
 	vertexNum_ = vertexNum;
 	indexNum_ = indexNum;
-
-	if (!useMatrix) {
-		psoConfig_.rootID = RootSignatureID::NonMatrix;
-		psoConfig_.vs = "NonMatrix3d.VS.hlsl";
-	}
 
 	//defaultでWhite1x1をセット
 	SetTextureHandle(0);
@@ -235,7 +213,7 @@ void DrawResource::DrawReady() {
 		MakeTranslationMatrix(Vector3(texturePos_.x, texturePos_.y, 0.0f));
 
 	//Matrix
-	Matrix4x4 worldMat = GetWorldMatrix(scale_, rotate_, position_);
+	Matrix4x4 worldMat = MakeAffineMatrix(scale_, rotate_, position_);
 
 	if (matrix_) {
 		//初期化
@@ -288,29 +266,9 @@ void DrawResource::AddParentMatrix(const Matrix4x4& parentMatrix) {
 	parentMatrices_.push_back(parentMatrix);
 }
 
-D3D12_INDEX_BUFFER_VIEW DrawResource::GetIndexBufferView() const {
-	if (!indexResource) {
-		return D3D12_INDEX_BUFFER_VIEW{};
-	}
-	return indexBufferView;
-}
-
 ID3D12Resource* DrawResource::GetParticleDataResource() const {
 	if (matrixResource) {
 		return matrixResource.Get();
 	}
 	return nullptr;
-}
-
-void DrawResource::SetTextureHandle(int handle) {
-	textureHandle_ = textureManager_->GetTextureData(handle)->GetTextureGPUHandle();
-}
-
-void DrawResource::SetTextureHandle(std::string filePath) {
-	int handle = textureManager_->LoadTexture(filePath);
-	textureHandle_ = textureManager_->GetTextureData(handle)->GetTextureGPUHandle();
-}
-
-void DrawResource::SetTextureHandle(D3D12_GPU_DESCRIPTOR_HANDLE handle) {
-	textureHandle_ = handle;
 }

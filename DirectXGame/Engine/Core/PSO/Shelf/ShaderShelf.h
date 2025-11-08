@@ -55,5 +55,5 @@ private:
 
 	std::array<std::unordered_map<std::string, D3D12_SHADER_BYTECODE>, static_cast<size_t>(ShaderType::Count)> shaderBytecodes_;
 
-	std::unique_ptr<Logger> logger_ = nullptr;
+	std::shared_ptr<spdlog::logger> logger_ = nullptr;
 };

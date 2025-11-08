@@ -20,10 +20,13 @@ AudioManager::~AudioManager() {
 
 void AudioManager::Initialize() {
 
+	//Audioの削除
+	audioData_.clear();
+
 	// MediaFoundationの初期化
 	MFStartup(MF_VERSION, MFSTARTUP_NOSOCKET);
 
-	// XAudioエンジンのインスタンスを生成
+	//_ XAudioエンジンのインスタンスを生成
 	HRESULT hr = XAudio2Create(&xAudio2_, 0, XAUDIO2_DEFAULT_PROCESSOR);
 	assert(SUCCEEDED(hr));
 
@@ -32,40 +35,31 @@ void AudioManager::Initialize() {
 	assert(SUCCEEDED(hr));
 }
 
-int AudioManager::Load(fs::path filePath) {
-	for (int i = 0; i < audioNames_.size(); ++i) {
-		if(audioNames_[i] == filePath.string()) {
-			return i;
-		}
-	}
-
+void AudioManager::Load(fs::path filePath, uint32_t id) {
 	//拡張子を取り出す
 	std::string extension = filePath.extension().string();
 
 	//拡張子によって作成する型を変更する
 	if (extension == ".wav") {
-		audioData_.emplace_back(std::make_unique<WAVData>());
+		audioData_[id] = std::make_unique<WAVData>();
 	} else if (extension == ".mp3") {
-		audioData_.emplace_back(std::make_unique<MP3Data>());
+		audioData_[id] = std::make_unique<MP3Data>();
 	}
 
 	//読み込み
-	audioData_.back()->Load(basePath + filePath.string());
-	audioNames_.emplace_back(filePath.string());
-
-	return static_cast<int>(audioData_.size() - 1);
+	audioData_[id]->Load(filePath.string());
 }
 
-int AudioManager::Play(int handle, bool isLoop) {
+uint32_t AudioManager::Play(uint32_t handle, bool isLoop) {
 	if(handle < 0 || handle >= audioData_.size()) {
-		return -1;
+		return 0xffffffff;
 	}
 
-	int playHandle = audioData_[handle]->Play(xAudio2_.Get(), isLoop);
+	uint32_t playHandle = audioData_[handle]->Play(xAudio2_.Get(), isLoop);
 	return handle * 10 + playHandle;
 }
 
-void AudioManager::SetVolume(int soundHandle, float volume) {
+void AudioManager::SetVolume(uint32_t soundHandle, float volume) {
 	if (soundHandle < 0 || soundHandle >= audioData_.size()) {
 		return;
 	}
@@ -73,9 +67,9 @@ void AudioManager::SetVolume(int soundHandle, float volume) {
 	audioData_[soundHandle]->SetVolume(volume);
 }
 
-bool AudioManager::IsPlay(int playHandle) {
-	int soundHandle = playHandle / 10;
-	int handle = playHandle % 10;
+bool AudioManager::IsPlay(uint32_t playHandle) {
+	uint32_t soundHandle = playHandle / 10;
+	uint32_t handle = playHandle % 10;
 	if (soundHandle < 0 || soundHandle >= audioData_.size()) {
 		return false;
 	}
@@ -83,13 +77,20 @@ bool AudioManager::IsPlay(int playHandle) {
 	return audioData_[soundHandle]->IsPlay(handle);
 }
 
-void AudioManager::Stop(int playHandle) {
-	int soundHandle = playHandle / 10;
-	int handle = playHandle % 10;
+void AudioManager::Stop(uint32_t playHandle) {
+	uint32_t soundHandle = playHandle / 10;
+	uint32_t handle = playHandle % 10;
 
 	if (soundHandle < 0 || soundHandle >= audioData_.size()) {
 		return;
 	}
 
 	audioData_[soundHandle]->Stop(handle);
+}
+
+AudioData* AudioManager::GetAudioData(uint32_t id) {
+	if (audioData_.find(id) != audioData_.end()) {
+		return audioData_[id].get();
+	}
+	return nullptr;
 }

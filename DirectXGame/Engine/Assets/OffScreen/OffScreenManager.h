@@ -3,23 +3,14 @@
 #include <unordered_map>
 #include <string>
 #include "OffScreenData.h"
-#include <Resource/SRVManager.h>
+#include <Core/SRVManager.h>
 
-enum class OffScreenIndex {
+enum class ScreenID {
 	SwapChain = -1,
-	ImGuiDocking,
 	PostPing,
 	PostPong,
-	GameWindow,
-	Title,
-	Select,  // セレクトシーン用
 
-	//ステージのスクショ
-	Level1,
-	Level2,
-	Level3,
-	Level4,
-	Level5,
+	GameWindow,
 
 	MaxCount
 };
@@ -36,9 +27,9 @@ public:
 	/// <summary>
 	/// OffScreenを初期化、作成する
 	/// </summary>
-	void Initialize(DXDevice* device, ID3D12GraphicsCommandList* commandList, SRVManager* srvManager);
+	void Initialize(DXDevice* device, SRVManager* srvManager);
 
-	OffScreenData* GetOffScreenData(OffScreenIndex index);
+	OffScreenData* GetOffScreenData(ScreenID index);
 
 private:
 
@@ -47,12 +38,11 @@ private:
 	std::vector<std::unique_ptr<OffScreenData>> offScreens_;
 
 	DXDevice* device_ = nullptr;
-	ID3D12GraphicsCommandList* commandList_ = nullptr;
 
 	//DescriptorHeap
 	SRVManager* srvManager_ = nullptr;
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> rtvDescriptorHeap_ = nullptr;
 
-	const int maxOffScreenCount_ = static_cast<int>(OffScreenIndex::MaxCount);
+	const int maxOffScreenCount_ = static_cast<int>(ScreenID::MaxCount);
 };
 

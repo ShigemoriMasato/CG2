@@ -40,7 +40,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12Device> device = nullptr;
 	std::unique_ptr<MyWindow> window_ = nullptr;
 
-	std::unique_ptr<Logger> logger = nullptr;
+	std::shared_ptr<spdlog::logger> logger = nullptr;
 
 	uint32_t descriptorSizeSRV;
 	uint32_t descriptorSizeRTV;

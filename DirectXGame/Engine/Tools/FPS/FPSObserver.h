@@ -41,5 +41,5 @@ private:
     // より精密な時間待機
     void PreciseSleep(double seconds);
 
-    Logger logger_;
+    std::shared_ptr<spdlog::logger> logger_;
 };

@@ -228,10 +228,16 @@
     <ClCompile Include="AppSource\Common\InitializeScene\InitializeScene.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Render\Resource\ResourceGenerator.cpp">
+    <ClCompile Include="Engine\Resource\Model\ModelAnimation.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Resource\Model\ModelAnimation.cpp">
+    <ClCompile Include="Engine\Render\Resource\Data\BaseResource.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Render\Resource\DrawResource.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Render\Resource\PostEffectResource.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -407,13 +413,19 @@
     <ClInclude Include="AppSource\Common\InitializeScene\InitializeScene.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Render\Resource\ResourceGenerator.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Render\Resource\Data\PostEffectData.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Resource\Model\ModelAnimation.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Render\Resource\Data\BaseResource.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Render\Resource\DrawResource.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Render\Resource\PostEffectResource.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

@@ -47,7 +47,7 @@ private:
 	PSOConfig nextConfig_{};
 	PSOConfig nowConfig_{};
 
-	std::shared_ptr<Logger> logger_;
+	std::shared_ptr<spdlog::logger> logger_;
 
 	bool isFirst_ = true;
 

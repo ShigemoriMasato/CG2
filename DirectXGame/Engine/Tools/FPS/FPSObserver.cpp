@@ -16,8 +16,7 @@ FPSObserver::FPSObserver(bool isfix, double targetfps) : targetFPS_(targetfps), 
 
     isFix_ = isfix;
 
-	logger_ = Logger();
-	logger_.RegistLogFile("FPS");
+    logger_ = Logger::getLogger("FPS");
 }
 
 FPSObserver::~FPSObserver() {
@@ -58,7 +57,7 @@ void FPSObserver::TimeAdjustment() {
 	ImGui::Text("Frame Time: %.2f ms", frameTime * 1000.0);
     ImGui::End();
 
-    logger_.Log(std::format("FPS: {}, Frame Time : {}", 1.0 / frameTime, frameTime * 1000.0f));
+    logger_->info(std::format("FPS: {}, Frame Time : {}", 1.0 / frameTime, frameTime * 1000.0f));
 
     deltatime_ = static_cast<float>(frameTime);
 

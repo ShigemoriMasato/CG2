@@ -4,8 +4,7 @@
 
 Render::Render(DXDevice* device) {
     device_ = device;
-    logger_ = std::make_unique<Logger>();
-	logger_->RegistLogFile("Render");
+	logger_ = Logger::getLogger("Core");
     psoEditor_ = std::make_unique<PSOEditor>(device_->GetDevice());
 
 	// ============================================
@@ -15,19 +14,19 @@ Render::Render(DXDevice* device) {
     HRESULT hr = device_->GetDevice()->CreateCommandQueue(&commandQueueDesc, IID_PPV_ARGS(&commandQueue));
     //コマンドキューの生成がうまくいかなかったので起動できない
     assert(SUCCEEDED(hr));
-    logger_->Log("Complete create CommandQueue\n");
+    logger_->info("Complete create CommandQueue\n");
 
     //CommandAllocator
     hr = device_->GetDevice()->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&commandAllocator));
     //コマンドアロケータの生成がうまくいかなかったので起動できない
     assert(SUCCEEDED(hr));
-    logger_->Log("Complete create CommandAllocator\n");
+    logger_->info("Complete create CommandAllocator\n");
 
     //CommandList
     hr = device_->GetDevice()->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, commandAllocator.Get(), nullptr, IID_PPV_ARGS(&commandList));
     //コマンドリストの生成がうまくいかなかったので起動できない
     assert(SUCCEEDED(hr));
-    logger_->Log("Complete create CommandList\n");
+    logger_->info("Complete create CommandList\n");
 
 }
 
@@ -57,7 +56,7 @@ void Render::Initialize(TextureManager* textureManager, OffScreenManager* offScr
         nullptr,			    		        //出力の設定
         reinterpret_cast<IDXGISwapChain1**>(swapChain.GetAddressOf()));	//スワップチェーンのポインタ
     assert(SUCCEEDED(hr));
-    logger_->Log("Complete create SwapChain\n");
+    logger_->info("Complete create SwapChain\n");
 
     //SwapChainからResourceを取得する
     hr = swapChain->GetBuffer(0, IID_PPV_ARGS(&swapChainResources[0]));
@@ -71,7 +70,7 @@ void Render::Initialize(TextureManager* textureManager, OffScreenManager* offScr
 	ID3D12DescriptorHeap* rawHeap = nullptr;
     rawHeap = CreateDescriptorHeap(device_->GetDevice(), D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 2, false);
 	rtvDescriptorHeap.Attach(rawHeap);
-    logger_->Log("Complete create DescriptorHeap\n");
+    logger_->info("Complete create DescriptorHeap\n");
 
     //RTVの設定
     D3D12_RENDER_TARGET_VIEW_DESC rtvDesc{};
@@ -86,7 +85,7 @@ void Render::Initialize(TextureManager* textureManager, OffScreenManager* offScr
     rtvHandles[1].ptr = rtvHandles[0].ptr + device_->GetDescriptorSizeRTV();
     //二つ目を作る
     device_->GetDevice()->CreateRenderTargetView(swapChainResources[1].Get(), &rtvDesc, rtvHandles[1]);
-    logger_->Log("Complete create RenderTargetView\n");
+    logger_->info("Complete create RenderTargetView\n");
 
 #pragma endregion
 
@@ -150,7 +149,7 @@ void Render::Initialize(TextureManager* textureManager, OffScreenManager* offScr
     commandList->Reset(commandAllocator.Get(), nullptr);
 }
 
-void Render::PreDraw(OffScreenIndex index, bool isClear) {
+void Render::PreDraw(ScreenID index, bool isClear) {
     //PSOとRootSignatureを初期化する
     if (isFrameFirst_) {
         psoEditor_->FrameInitialize(commandList.Get());
@@ -166,7 +165,7 @@ void Render::PreDraw(OffScreenIndex index, bool isClear) {
     offScreenHandle_ = index;
 
     //描画する画面が指定されている場合はそちらにする
-    if (offScreenHandle_ != OffScreenIndex::SwapChain) {
+    if (offScreenHandle_ != ScreenID::SwapChain) {
 		auto offscreen = offScreenManager_->GetOffScreenData(offScreenHandle_);
 		PreDrawOffScreen(offscreen, isClear);
         return;
@@ -220,13 +219,13 @@ void Render::PreDraw(OffScreenIndex index, bool isClear) {
 //
 //void Render::Draw(PostEffectResource* resource) {
 //
-//    OffScreenIndex nextWindow = OffScreenIndex::PostPing;
-//    OffScreenIndex preOffScreenIndex = offScreenHandle_;
-//    OffScreenIndex inputIndex = resource->input_;
+//    ScreenID nextWindow = ScreenID::PostPing;
+//    ScreenID preOffScreenIndex = offScreenHandle_;
+//    ScreenID inputIndex = resource->input_;
 //    resource->psoConfig_.isSwapChain = false;
 //
 //    //描画関数
-//    auto draw = [&resource, this](OffScreenIndex to, OffScreenIndex in) {
+//    auto draw = [&resource, this](ScreenID to, ScreenID in) {
 //        PreDraw(to);
 //
 //        auto vertexBufferView = resource->GetVertexBufferView();
@@ -248,9 +247,9 @@ void Render::PreDraw(OffScreenIndex index, bool isClear) {
 //    //PingPong描画する
 //    while (resource->IsContinue()) {
 //        inputIndex = nextWindow;
-//        nextWindow == OffScreenIndex::PostPing ?
-//            nextWindow = OffScreenIndex::PostPong :
-//            nextWindow = OffScreenIndex::PostPing;
+//        nextWindow == ScreenID::PostPing ?
+//            nextWindow = ScreenID::PostPong :
+//            nextWindow = ScreenID::PostPing;
 //        resource->DrawReady();
 //        draw(nextWindow, inputIndex);
 //    }
@@ -260,7 +259,7 @@ void Render::PreDraw(OffScreenIndex index, bool isClear) {
 //    //outputに持ってくる
 //    inputIndex = nextWindow;
 //    nextWindow = resource->output_;
-//    resource->psoConfig_.isSwapChain = nextWindow == OffScreenIndex::SwapChain;
+//    resource->psoConfig_.isSwapChain = nextWindow == ScreenID::SwapChain;
 //    resource->SimpleDrawReady();
 //    draw(nextWindow, inputIndex);
 //
@@ -269,9 +268,9 @@ void Render::PreDraw(OffScreenIndex index, bool isClear) {
 //}
 
 void Render::PostDraw(ImGuiWrapper* imguiRap) {
-    if (offScreenHandle_ != OffScreenIndex::SwapChain) {
+    if (offScreenHandle_ != ScreenID::SwapChain) {
         ResetResourceBarrier();
-        PreDraw(OffScreenIndex::SwapChain, false);
+        PreDraw(ScreenID::SwapChain, false);
     }
 
     if (isFrameFirst_) {
@@ -301,7 +300,7 @@ void Render::EndFrame(bool swapchainPresent) {
 
         if (true) {
             // ログに hr を出す (8桁16進などで)
-            logger_->Log(std::format("Failed to Present. hr = 0x{}\n", hr));
+            logger_->info(std::format("Failed to Present. hr = 0x{}\n", hr));
         }
     }
 
@@ -337,8 +336,12 @@ ImGui_ImplDX12_InitInfo Render::GetImGuiInitInfo(SRVManager* srv) {
 	info.RTVFormat = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 	info.CommandQueue = commandQueue.Get();
 	info.SrvDescriptorHeap = srv->GetHeap();
-	info.LegacySingleSrvCpuDescriptor = srv->GetCPUHandle();
-    info.LegacySingleSrvGpuDescriptor = srv->GetGPUHandle();
+
+	imguiSrvHandle_.UpdateHandle(srv);
+
+	info.LegacySingleSrvCpuDescriptor = imguiSrvHandle_.CPU;
+	info.LegacySingleSrvGpuDescriptor = imguiSrvHandle_.GPU;
+
 	return info;
 }
 
@@ -388,7 +391,7 @@ void Render::PreDrawOffScreen(OffScreenData* offScreen, bool isClear) {
 }
 
 void Render::ResetResourceBarrier() {
-    if (offScreenHandle_ != OffScreenIndex::SwapChain) {
+    if (offScreenHandle_ != ScreenID::SwapChain) {
         offScreenManager_->GetOffScreenData(offScreenHandle_)->EditBarrier(commandList.Get(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
     } else {
 		int backBufferIndex = swapChain->GetCurrentBackBufferIndex();

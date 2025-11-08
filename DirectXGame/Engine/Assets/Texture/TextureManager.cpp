@@ -12,19 +12,12 @@ void TextureManager::Initialize(DXDevice* device, ID3D12GraphicsCommandList* com
 	device_ = device;
 	commandList_ = commandList;
 	srvManager_ = srvManager;
+
+	textures_.clear();
 }
 
-int TextureManager::LoadTexture(std::string filePath) {
-	//すでに作成済みの場合はそのハンドルを返す
-	if (textureHandleMap_.find(filePath) != textureHandleMap_.end()) {
-		return textureHandleMap_[filePath];
-	}
-	
-	textures_.emplace_back(std::make_unique<TextureData>(filePath, device_, commandList_, srvManager_));
-
-	int handle = static_cast<int>(textures_.size() - 1);
-	textureHandleMap_[filePath] = handle;
-	return handle;
+void TextureManager::LoadTexture(std::string filePath, uint32_t id) {
+	textures_[id] = std::make_unique<TextureData>(filePath, device_, commandList_, srvManager_);
 }
 
 TextureData* TextureManager::GetTextureData(int handle) {

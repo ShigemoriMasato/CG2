@@ -1,8 +1,8 @@
 #pragma once
 #include <Core/DXDevice.h>
 #include <Core/PSO/PSOEditor.h>
-#include <Resource/Texture/TextureManager.h>
-#include <Resource/OffScreen/OffScreenManager.h>
+#include <Assets/Texture/TextureManager.h>
+#include <Assets/OffScreen/OffScreenManager.h>
 #include <Render/ImGuiWrapper.h>
 #include <imgui/imgui_impl_dx12.h>
 
@@ -14,7 +14,7 @@ public:
 
 	void Initialize(TextureManager* textureManager, OffScreenManager* offScreenManager, SRVManager* srvManager);
 
-	void PreDraw(OffScreenIndex index = OffScreenIndex::SwapChain, bool isClear = true);
+	void PreDraw(ScreenID index = ScreenID::SwapChain, bool isClear = true);
 	//void Draw(DrawResource* resource);
 	//void Draw(PostEffectResource* resource);
 	void PostDraw(ImGuiWrapper* imguiRap);
@@ -39,7 +39,7 @@ private:
 	void ResetResourceBarrier();
 
 	//Logger
-	std::unique_ptr<Logger> logger_ = nullptr;
+	std::shared_ptr<spdlog::logger> logger_ = nullptr;
 
 	//Device
 	DXDevice* device_ = nullptr;
@@ -58,7 +58,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12Resource> swapChainResources[2] = { nullptr, nullptr };
 	D3D12_RESOURCE_STATES resourcestates_[2] = { D3D12_RESOURCE_STATE_PRESENT,D3D12_RESOURCE_STATE_PRESENT };
 	float clearColor_[4] = { 0.0f,0.0f,0.0f,1.0f };
-	OffScreenIndex offScreenHandle_ = OffScreenIndex::SwapChain;
+	ScreenID offScreenHandle_ = ScreenID::SwapChain;
 
 	bool isFrameFirst_ = true;	//PreDrawが初回かどうか
 
@@ -80,4 +80,7 @@ private:
 
 	//SRV
 	SRVManager* srvManager_ = nullptr;
+
+	//ImGui
+	SRVHandle imguiSrvHandle_;
 };

@@ -1,80 +1,11 @@
 #include "ShaderShelf.h"
 #include <cassert>
-#include <Math/MyString.h>
+#include <Core/DXCommonFunction.h>
+#include <Func/MyString.h>
 
 #pragma comment(lib, "dxcompiler.lib")
 
 namespace fs = std::filesystem;
-
-namespace {
-
-    IDxcBlob* CompileShader(
-        //CompilerするShaderファイルへのパス
-        const std::wstring& filePath,
-        //Compilerに使用するprofile
-        const wchar_t* profile,
-        //初期化で生成したものを3つ
-        IDxcUtils* dxcUtils,
-        IDxcCompiler3* dxcCompiler,
-        IDxcIncludeHandler* includeHandler,
-        Logger* logger) {
-
-        logger->Log(ConvertString(std::format(L"Begin CompileShader, path: {}, profile: {}", filePath, profile)));
-
-        //hlslファイルを読む
-        IDxcBlobEncoding* shaderSource = nullptr;
-        HRESULT hr = dxcUtils->LoadFile(filePath.c_str(), nullptr, &shaderSource);
-        //読めなかったら止める
-        assert(SUCCEEDED(hr) && "Failed to Open Shader File");
-        //読み込んだファイルの内容を設定する
-        DxcBuffer shaderSourceBuffer;
-        shaderSourceBuffer.Ptr = shaderSource->GetBufferPointer();
-        shaderSourceBuffer.Size = shaderSource->GetBufferSize();
-        shaderSourceBuffer.Encoding = DXC_CP_UTF8;//utf8の文字コードであることを通知
-
-        LPCWSTR arguments[] = {
-            filePath.c_str(),	//コンパイル対象のhlslファイル名
-            L"-E", L"main",     //エントリーポイントの指定。基本的にmain以外には市内
-            L"-T", profile,    //ShaderProfileの設定
-            L"-Zi", L"-Qembed_debug", //デバッグ用の情報を埋め込む
-            L"-Od",     //最適化を行わない
-            L"-Zpr",     //メモリレイアウトは行優先
-        };
-        //実際にShaderをコンパイルする
-        IDxcResult* shaderResult = nullptr;
-        hr = dxcCompiler->Compile(
-            &shaderSourceBuffer,	//読み込んだファイル
-            arguments,			    //コンパイルオプション
-            _countof(arguments),	//コンパイルオプションの数
-            includeHandler,		    //includeが含まれた諸々
-            IID_PPV_ARGS(&shaderResult)		//コンパイル結果
-        );
-        //コンパイルエラーではなくdxcが起動できないなどの致命的な状況
-        assert(SUCCEEDED(hr) && "Super Egui Shader Compile Error");
-
-        //警告・エラーが出てたらログに出して止める
-        IDxcBlobUtf8* shaderError = nullptr;
-        shaderResult->GetOutput(DXC_OUT_ERRORS, IID_PPV_ARGS(&shaderError), nullptr);
-        if (shaderError != nullptr && shaderError->GetStringLength() != 0) {
-            logger->Log(shaderError->GetStringPointer());
-            //警告・エラーが起きている状態なので止める
-            assert(false && "Shader Compile Error!");
-        }
-
-        //コンパイル結果から実行用のバイナリ部分を取得
-        IDxcBlob* shaderBlob = nullptr;
-        hr = shaderResult->GetOutput(DXC_OUT_OBJECT, IID_PPV_ARGS(&shaderBlob), nullptr);
-        assert(SUCCEEDED(hr));
-        //成功したログを出す
-        logger->Log(ConvertString(std::format(L"Compile Successed, path: {}, profile: {}\n", filePath, profile)));
-        //もう使わないリソースを開放
-        shaderSource->Release();
-        shaderResult->Release();
-        //実行用のバイナリを返却
-        return shaderBlob;
-    }
-
-}
 
 ShaderShelf::ShaderShelf() {
 
@@ -88,8 +19,7 @@ ShaderShelf::ShaderShelf() {
     hr = dxcUtils->CreateDefaultIncludeHandler(&includeHandler);
     assert(SUCCEEDED(hr));
 
-	logger_ = std::make_unique<Logger>();
-    logger_->RegistLogFile("Shader");
+	logger_ = Logger::getLogger("Core");
 
 	compileVersions_[0] = L"vs_6_0"; // Vertex Shader
     compileVersions_[1] = L"ps_6_0"; // Pixel Shader
@@ -128,7 +58,7 @@ void ShaderShelf::CompileAllShader() {
 
 		// 登録してない、または名前が間違っているShaderは見つかり次第エラーを出す
         else {
-            logger_->Log(ConvertString(std::format(L"Unknown Shader Type: {}", sn)));
+            logger_->info(ConvertString(std::format(L"Unknown Shader Type: {}", sn)));
 			throw std::runtime_error("Unknown shader type: " + ConvertString(sn));
         }
     }

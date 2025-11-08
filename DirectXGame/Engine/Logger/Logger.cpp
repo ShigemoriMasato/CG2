@@ -1,78 +1,72 @@
 #include "Logger.h"
-#include <chrono>
+#include <spdlog/sinks/basic_file_sink.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
+#include <spdlog/sinks/daily_file_sink.h>
+
 #include <filesystem>
 
 namespace fs = std::filesystem;
 
-std::vector<std::ofstream> Logger::logStreams;
-std::vector<std::string> Logger::logStreamNames;
+namespace {
 
-Logger::Logger() {
-    std::string a = "master";
-    if (logStreams.size() == 0) {
-        RegistLogFile(a);
-    }
-    
-    logStreamHandle = 0;
-}
+    void archiveOldLogs(const std::string& logDir, size_t maxFiles) {
+        namespace fs = std::filesystem;
+        std::vector<fs::directory_entry> logFiles;
 
-void Logger::RegistLogFile(std::string logName) {
-    //既に存在する場合はそのハンドルを返す
-    for(int i = 0; i < logStreamNames.size(); ++i) {
-        if (logStreamNames[i] == logName) {
-            logStreamHandle = i; 
-            return;
+        for (const auto& entry : fs::directory_iterator(logDir)) {
+            if (entry.is_regular_file() && entry.path().extension() == ".log") {
+                logFiles.push_back(entry);
+            }
         }
-	}
 
-#pragma region ファイル名を作成
-    //現在時刻を取得
-    std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
-    //コンマ以下を切り捨てる
-    std::chrono::time_point<std::chrono::system_clock, std::chrono::seconds>
-        nowSec = std::chrono::time_point_cast<std::chrono::seconds>(now);
-    //日本時間に変換
-    std::chrono::zoned_time localTime{ std::chrono::current_zone(), nowSec };
-    //formatを使って年月日_時分秒の文字列型に変換
-    std::string dataString = std::format("{:%Y%m%d_%H.%M.%S}", localTime);
-#pragma endregion
+        std::sort(logFiles.begin(), logFiles.end(),
+            [](const auto& a, const auto& b) {
+                return fs::last_write_time(a) < fs::last_write_time(b);
+            });
 
-#pragma region ディレクトリ検索(作成)
-    std::string path = "Logs";  // 検索対象のディレクトリ
-    
-    //logsディレクトリが存在するか確認
-    if (!fs::exists(path)) {
-        fs::create_directory(path); // 存在しない場合は作成
-    }
-
-    bool isFind = false;
-    for (const auto& entry : fs::directory_iterator(path)) {
-        std::cout << entry.path() << std::endl;
-        if (entry.path() == logName) {
-            isFind = true;
-            break;
+        if (logFiles.size() > maxFiles) {
+            fs::create_directories(logDir + "/archive");
+            for (size_t i = 0; i < logFiles.size() - maxFiles; ++i) {
+                fs::rename(logFiles[i], logDir + "/archive/" + logFiles[i].path().filename().string());
+            }
         }
+
     }
 
-	//ディレクトリが見つからなければ作成
-    if (!isFind) {
-		fs::create_directories("Logs/" + logName);
+}
+
+std::shared_ptr<spdlog::logger> Logger::getLogger(const std::string& name, uint32_t flug) {
+    auto existing = spdlog::get(name);
+    if (existing) return existing;
+
+    std::vector<spdlog::sink_ptr> sinks;
+
+    if (flug & MakeFile) {
+        std::filesystem::create_directories("Logs/" + name);
+
+        auto now = std::chrono::system_clock::now();
+        auto t = std::chrono::system_clock::to_time_t(now);
+        std::tm tm;
+        localtime_s(&tm, &t);
+
+        std::ostringstream fileName;
+        fileName << std::put_time(&tm, "%Y-%m-%d_%H-%M-%S") << ".log";
+
+        std::string logDir = "Logs/" + name + "/" + fileName.str();
+
+        sinks.push_back(std::make_shared<spdlog::sinks::basic_file_sink_mt>(logDir, true));
+
+        archiveOldLogs("Logs/" + name, 5);
     }
 
-#pragma endregion
+    if (flug & UseConsole) {
+        sinks.push_back(std::make_shared<spdlog::sinks::stdout_color_sink_mt>());
+    }
 
-    //ファイル名の決定
-    std::string logFileName = "Logs/" + logName + "/" + dataString + ".log";
-    //ファイルを作成して書き込み準備
-    logStreams.push_back(std::ofstream(logFileName));
+    auto logger = std::make_shared<spdlog::logger>(name, sinks.begin(), sinks.end());
+    logger->set_level(spdlog::level::debug);
+    logger->set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%l] [%n] %v");
+    spdlog::register_logger(logger);
 
-	logStreamNames.push_back(logName);
-
-	logStreamHandle = static_cast<int>(logStreams.size() - 1);
+    return logger;
 }
-
-void Logger::Log(const std::string &message) {
-	//ログファイルに出力
-	this->logStreams[logStreamHandle] << message << std::endl;
-}
-

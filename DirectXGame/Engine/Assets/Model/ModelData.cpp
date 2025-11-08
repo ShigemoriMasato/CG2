@@ -56,7 +56,7 @@ void ModelData::LoadMaterial(const aiScene* scene, std::string directoryPath, Te
         if (material->GetTextureCount(aiTextureType_DIFFUSE) != 0) {
             aiString textureFilePath;
             material->GetTexture(aiTextureType_DIFFUSE, 0, &textureFilePath);
-            this->material_.back().textureHandle = textureManager->LoadTexture(directoryPath + "/" + std::string(textureFilePath.C_Str()));
+            //this->material_.back().textureHandle = textureManager->LoadTexture(directoryPath + "/" + std::string(textureFilePath.C_Str()));
         } else {
             this->material_.back().textureHandle = 0; //テクスチャがなかったら白テクスチャを使う
         }

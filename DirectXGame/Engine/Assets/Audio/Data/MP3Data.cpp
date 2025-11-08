@@ -1,6 +1,6 @@
 #include "MP3Data.h"
 #include <cassert>
-#include <Math/MyString.h>
+#include <Func/MyString.h>
 
 #include <mfapi.h>
 #include <mfidl.h>

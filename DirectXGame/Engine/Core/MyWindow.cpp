@@ -16,8 +16,6 @@ kClientWidth_(kClientWidth) {
 MyWindow::~MyWindow() {
     //ウィンドウを破棄
     if (hwnd_) {
-        auto a = Logger();
-        a.RegistLogFile("WindowDestroy");
         DestroyWindow(hwnd_);
         hwnd_ = nullptr;
     }

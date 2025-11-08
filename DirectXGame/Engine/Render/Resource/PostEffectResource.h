@@ -1,7 +1,7 @@
 #pragma once
 #include "Data/BaseResource.h"
 #include "Data/PostEffectData.h"
-#include <Resource/OffScreen/OffScreenManager.h>
+#include <Assets/OffScreen/OffScreenManager.h>
 
 // 新しいポストエフェクトの追加手順 -================================================================
 //
@@ -48,17 +48,19 @@ public:
 	bool IsContinue() const;
 	void DrawFinish() { task_ = jobs_; };
 
-	D3D12_VERTEX_BUFFER_VIEW GetVertexBufferView() { return vertexBufferView; }
 	ID3D12Resource* GetInfoResource() const { return infoResource_.Get(); }
 
 	//描画したいOffScreenのSRVGPUHandle
-	OffScreenIndex input_;
+	ScreenID input_;
 	//描画先のOffScreenのSRVGPUHandle
-	OffScreenIndex output_;
+	ScreenID output_;
 
 private:
 
-	//最低最悪の構造体です。改善予定はない。ここ以外で使うな。
+
+	VertexData* vertex_ = nullptr;
+
+	//最低最悪の構造体です。改善予定。ここ以外で使うな。
 	struct InfoForGPU {
 		Vector4
 			slot1,

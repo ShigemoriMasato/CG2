@@ -10,7 +10,7 @@
 class PSOManager {
 public:
 
-	PSOManager(ID3D12Device* device, Logger* logger);
+	PSOManager(ID3D12Device* device);
 	~PSOManager();
 
 	void Initialize();
@@ -40,7 +40,7 @@ private:
 	const std::string shaderDataFile = "ShaderEditData.bin";
 	std::vector<ShaderData> shaderData_{};
 
-	Logger* logger_ = nullptr;
+	std::shared_ptr<spdlog::logger> logger_ = nullptr;
 
 	static std::unordered_map<D3D12_PRIMITIVE_TOPOLOGY, D3D12_PRIMITIVE_TOPOLOGY_TYPE> topologyMap_;
 };

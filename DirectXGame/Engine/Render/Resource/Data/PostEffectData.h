@@ -2,7 +2,6 @@
 #include <Transform/Vector.h>
 #include <string>
 
-//今なんか挙動がちょっとおかしい
 struct Blur {
 	const std::string shaderFile = "Blur.PS.hlsl";
 

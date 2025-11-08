@@ -1,4 +1,5 @@
 #include "PostEffectResource.h"
+#include <Core/DXCommonFunction.h>
 
 PostEffectResource::PostEffectResource() {
 }
@@ -6,9 +7,7 @@ PostEffectResource::PostEffectResource() {
 void PostEffectResource::Initialize() {
 	auto windowSize = dxDevice_->GetWindowSize();
 
-	vertexNum_ = 3;
-	vertexResource.Attach(CreateBufferResource(dxDevice_->GetDevice(), sizeof(VertexData) * vertexNum_));
-	vertexResource->Map(0, nullptr, (void**)&vertex_);
+	MakeVertex(vertex_, 3);
 
 	//左上
 	vertex_[0].position = { -1.0f, 1.0f, 1.0f, 1.0f };
@@ -25,13 +24,8 @@ void PostEffectResource::Initialize() {
 	vertex_[2].texcoord = { 0.0f, 2.0f };
 	vertex_[2].normal = { 0.0f, 0.0f, -1.0f };
 
-	vertexBufferView.BufferLocation = vertexResource->GetGPUVirtualAddress();
-	vertexBufferView.SizeInBytes = sizeof(VertexData) * vertexNum_;
-	vertexBufferView.StrideInBytes = sizeof(VertexData);
-
 	infoResource_.Attach(CreateBufferResource(dxDevice_->GetDevice(), sizeof(InfoForGPU)));
 	infoResource_->Map(0, nullptr, (void**)&infoForGPU_);
-
 }
 
 void PostEffectResource::SetJobs(PostEffectJob jobs) {

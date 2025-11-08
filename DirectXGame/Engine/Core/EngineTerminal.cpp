@@ -57,21 +57,14 @@ void EngineTerminal::Initialize(int32_t windowWidth, int32_t windowHeight) {
 	render_ = std::make_unique<Render>(dxDevice_.get());
 	srvManager_ = std::make_unique<SRVManager>(dxDevice_.get(), 4096);
 
-	textureManager_ = std::make_unique<TextureManager>();
-	textureManager_->Initialize(dxDevice_.get(), render_->GetCommandList(), srvManager_.get());
-	modelManager_ = std::make_unique<ModelManager>(textureManager_.get(), dxDevice_.get());
 	offScreenManager_ = std::make_unique<OffScreenManager>();
-	offScreenManager_->Initialize(dxDevice_.get(), render_->GetCommandList(), srvManager_.get());
+	offScreenManager_->Initialize(dxDevice_.get(), srvManager_.get());
 	input_ = std::make_unique<Input>(dxDevice_->GetWndClass().hInstance, dxDevice_->GetHwnd());
 	input_->Initialize();
-	audioManager_ = std::make_unique<AudioManager>();
-	audioManager_->Initialize();
 
 	render_->Initialize(textureManager_.get(), offScreenManager_.get(), srvManager_.get());
 
 	ImGuiOperator::Initialize(dxDevice_.get(), render_.get(), srvManager_.get());
-
-	textureManager_->LoadTexture("Assets/Texture/white1x1.png");
 
 	fpsObserver_ = std::make_unique<FPSObserver>(true, 60.0);
 
@@ -107,7 +100,6 @@ void EngineTerminal::Update() {
 	ImGuiOperator::StartFrame(static_cast<float>(windowSize.first), static_cast<float>(windowSize.second));
 
 	fpsObserver_->TimeAdjustment();
-	Logger().Log("Deltatime: " + std::to_string(fpsObserver_->GetDeltatime()));
 }
 
 void EngineTerminal::PreDraw() {

@@ -1,13 +1,13 @@
 #include "DXDevice.h"
 #include <cassert>
+#include <Func/MyString.h>
 
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
 
 DXDevice::DXDevice(int32_t windowWidth, int32_t windowHeight) {
 	window_ = std::make_unique<MyWindow>(windowWidth, windowHeight);
-    logger = std::make_unique<Logger>();
-    logger->RegistLogFile("DXDevice");
+    logger = Logger::getLogger("Core");
 	windowWidth_ = windowWidth;
 	windowHeight_ = windowHeight;
 }
@@ -62,7 +62,7 @@ void DXDevice::CreateDevice() {
         //ソフトウェアアダプタでなければ採用
         if (!(adapterDesc.Flags & DXGI_ADAPTER_FLAG3_SOFTWARE)) {
             //採用したアダプタの情報をログに出力
-            logger->Log(ConvertString(std::format(L"Use Adapter:{}\n", adapterDesc.Description)));
+            logger->info(ConvertString(std::format(L"Use Adapter:{}\n", adapterDesc.Description)));
 
             break;
         }
@@ -90,14 +90,14 @@ void DXDevice::CreateDevice() {
         //指定した機能レベルでデバイスが生成できたか確認
         if (SUCCEEDED(hr)) {
             //生成できたのでログを出力してループを抜ける
-            logger->Log(std::format("FeatureLevel:{}\n", featureLevelStrings[i]));
+            logger->info(std::format("FeatureLevel:{}\n", featureLevelStrings[i]));
             break;
         }
     }
 
     //デバイスの生成が上手くいかなかったので起動できない
     assert(device != nullptr);
-    logger->Log("Complete create D3D12Device\n");
+    logger->info("Complete create D3D12Device\n");
 
     // DescriptorSizeの取得
 
