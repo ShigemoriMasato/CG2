@@ -1,5 +1,4 @@
 #include "EngineTerminal.h"
-#include <Scene/Engine/ShaderEditScene.h>
 #include <Common/InitializeScene/InitializeScene.h>
 #include <Scene/SceneManager.h>
 
@@ -76,9 +75,6 @@ void EngineTerminal::Initialize(int32_t windowWidth, int32_t windowHeight) {
 	switch (mode_) {
 	case BootMode::Game:
 		sceneManager_ = std::make_unique<SceneManager>(std::make_unique<InitializeScene>(), this);
-		break;
-	case BootMode::ShaderEdit:
-		sceneManager_ = std::make_unique<SceneManager>(std::make_unique<ShaderEditScene>(), this);
 		break;
 	}
 }

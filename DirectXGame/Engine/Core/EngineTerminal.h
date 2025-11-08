@@ -21,7 +21,6 @@ struct D3DResourceLeakChecker {
 
 enum class BootMode {
 	Game,
-	ShaderEdit,
 
 	Count
 };

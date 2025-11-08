@@ -38,7 +38,6 @@ private:
 
 	std::unique_ptr<BinaryManager> binaryManager_ = nullptr;
 	const std::string shaderDataFile = "ShaderEditData.bin";
-	std::vector<ShaderData> shaderData_{};
 
 	std::shared_ptr<spdlog::logger> logger_ = nullptr;
 

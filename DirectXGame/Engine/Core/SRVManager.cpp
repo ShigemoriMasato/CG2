@@ -11,11 +11,11 @@ SRVManager::SRVManager(DXDevice* device, int num) : maxCount(num), descriptorSiz
 uint32_t SRVManager::GetNextOffset(bool isTexture) {
 	uint32_t i = 0;
 
-	if (isTexture) {
+	if (!isTexture) {
 		i = maxCount / 2;
 	}
 
-	for (i = 0; i < maxCount; ++i) {
+	for (i; i < maxCount; ++i) {
 		if (!isUsed_[i]) {
 			return i;
 		}

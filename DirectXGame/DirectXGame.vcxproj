@@ -69,7 +69,6 @@
     <ClCompile Include="Engine\Scene\SceneManager.cpp" />
     <ClCompile Include="AppSource\Game\Scene\TitleScene.cpp" />
     <ClCompile Include="Engine\Core\SRVManager.cpp" />
-    <ClCompile Include="Engine\Scene\Engine\ShaderEditScene.cpp" />
     <ClCompile Include="Engine\Func\MyString.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -134,7 +133,6 @@
     <ClInclude Include="Engine\Scene\SceneManager.h" />
     <ClInclude Include="AppSource\Game\Scene\TitleScene.h" />
     <ClInclude Include="Engine\Core\SRVManager.h" />
-    <ClInclude Include="Engine\Scene\Engine\ShaderEditScene.h" />
     <ClInclude Include="Engine\Func\MyString.h" />
     <ClInclude Include="Engine\Tools\FPS\FPSObserver.h" />
   </ItemGroup>
