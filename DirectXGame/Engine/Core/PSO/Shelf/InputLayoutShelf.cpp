@@ -26,6 +26,7 @@ InputLayoutShelf::InputLayoutShelf() {
         inputElementsList_[int(InputLayoutID::Default)][3].SemanticName = "TEXTURE";
         inputElementsList_[int(InputLayoutID::Default)][3].SemanticIndex = 0;
         inputElementsList_[int(InputLayoutID::Default)][3].Format = DXGI_FORMAT_R32_UINT;
+        inputElementsList_[int(InputLayoutID::Default)][3].InputSlot = 1;
         inputElementsList_[int(InputLayoutID::Default)][3].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
 
         D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
