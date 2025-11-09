@@ -8,7 +8,7 @@ public:
 	ModelManager();
 	~ModelManager();
 
-	void Initialize(TextureManager* textureManager, DXDevice* device);
+	void Initialize(AssetsLoader* textureManager, DXDevice* device);
 
 	void LoadModel(const std::string& directoryPath, uint32_t id);
 
@@ -18,6 +18,6 @@ private:
 
 	std::map<uint32_t, std::unique_ptr<ModelData>> models_;
 
-	TextureManager* textureManager_ = nullptr;
+	AssetsLoader* assetsLoader_ = nullptr;
 	DXDevice* device_ = nullptr;
 };

@@ -53,12 +53,6 @@ PixelShaderOutput main(PixelShaderInput input)
     float4 transformedUV = mul(float4(input.texcoord, 0.0f, 1.0f), gMaterial.uvTransform);
     
     float4 color = gMaterial.color;
-
-    if (input.textureIndex != 0)
-    {
-        input.textureIndex = 0;
-        color = float4(1.0f, 0.0f, 1.0f, 1.0f);
-    }
     
     float4 textureColor = gTexture[input.textureIndex].Sample(gSampler, transformedUV.xy);
     

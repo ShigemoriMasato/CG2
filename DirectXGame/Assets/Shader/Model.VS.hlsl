@@ -6,19 +6,21 @@ struct TransformationMatrix
     float4x4 World;
 };
 
-StructuredBuffer<TransformationMatrix> gTransformMatrix : register(t0);
+ConstantBuffer<TransformationMatrix> gTransformMatrix : register(b0);
 
 struct VertexShaderInput {
     float4 position : POSITION0;
     float2 texcoord : TEXCOORD0;
     float3 normal : NORMAL0;
+    uint textureIndex : TEXTURE0;
     int nodeIndex : NODEINDEX0;
 };
 
 VertexShaderOutput main(VertexShaderInput input) {
     VertexShaderOutput output;
-    output.position = mul(input.position, gTransformMatrix[input.nodeIndex].WVP);
+    output.position = mul(input.position, gTransformMatrix.WVP);
     output.texcoord = input.texcoord;
-    output.normal = normalize(mul(input.normal, (float3x3) gTransformMatrix[input.nodeIndex].World));
+    output.normal = normalize(mul(input.normal, (float3x3) gTransformMatrix.World));
+    output.textureIndex = input.textureIndex;
     return output;
 }

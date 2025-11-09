@@ -48,6 +48,8 @@ protected:
 	void MakeVertex(T*& verPtr, uint32_t vertexNum);
 	void MakeIndex(uint32_t*& indPtr, uint32_t indexNum);
 
+	void SetModelData(AssetsID modelID);
+
 	template<typename T>
 	D3D12_GPU_VIRTUAL_ADDRESS MakeCBV(T*& ptr);
 

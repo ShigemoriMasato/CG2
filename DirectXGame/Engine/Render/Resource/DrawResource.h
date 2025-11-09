@@ -21,6 +21,7 @@ public:
 
 	void Initialize(uint32_t vertexNum, uint32_t indexNum = 0);
 	void Initialize(ShapeType type);
+	void Initialize(AssetsID modelID);
 
 	/// <summary>
 	/// 描画前準備(Render内で呼ばれるため、プログラム時に呼ぶ必要はない)
@@ -76,4 +77,5 @@ private:
 
 	std::vector<Matrix4x4> parentMatrices_{};
 
+	bool isModelResource_ = false;
 };

@@ -1,5 +1,6 @@
 #include "ModelData.h"
 #include <Core/DXCommonFunction.h>
+#include <Assets/AssetsLoader.h>
 #include <cassert>
 #include <fstream>
 #include <sstream>
@@ -20,24 +21,15 @@ namespace {
     }
 }
 
-void ModelData::LoadModel(const std::string& directoryPath, const std::string& filename, TextureManager* textureManager, DXDevice* device) {
+void ModelData::LoadModel(const std::string& directoryPath, const std::string& filename, AssetsLoader* assetsManager, DXDevice* device) {
     Assimp::Importer importer;
     std::string path = (directoryPath + "/" + filename);
     const aiScene* scene = nullptr;
     scene = importer.ReadFile(path.c_str(), aiProcess_MakeLeftHanded | aiProcess_FlipWindingOrder | aiProcess_FlipUVs | aiProcess_Triangulate);
 
-	LoadMaterial(scene, directoryPath, textureManager);
+	LoadMaterial(scene, directoryPath, assetsManager);
 
 	rootNode_ = LoadNode(scene->mRootNode, scene);
-
-    //頂点が0だったらデータを削除する
-    for (int i = 0; i < material_.size(); ++i) {
-        if (vertices_[material_[i].name].empty()) {
-			vertices_.erase(material_[i].name);
-			indices_.erase(material_[i].name);
-            material_.erase(material_.begin() + i--);
-        }
-    }
 
 	animation_ = LoadAnimationFile(directoryPath, filename);
 
@@ -46,7 +38,7 @@ void ModelData::LoadModel(const std::string& directoryPath, const std::string& f
 	CreateID3D12Resource(device->GetDevice());
 }
 
-void ModelData::LoadMaterial(const aiScene* scene, std::string directoryPath, TextureManager* textureManager) {
+void ModelData::LoadMaterial(const aiScene* scene, std::string directoryPath, AssetsLoader* assetsManager) {
     for (uint32_t materialIndex = 0; materialIndex < scene->mNumMaterials; ++materialIndex) {
         aiMaterial* material = scene->mMaterials[materialIndex];
 
@@ -54,11 +46,17 @@ void ModelData::LoadMaterial(const aiScene* scene, std::string directoryPath, Te
         this->material_[materialIndex].name = material->GetName().C_Str();
 
         if (material->GetTextureCount(aiTextureType_DIFFUSE) != 0) {
+
             aiString textureFilePath;
             material->GetTexture(aiTextureType_DIFFUSE, 0, &textureFilePath);
-            //this->material_.back().textureHandle = textureManager->LoadTexture(directoryPath + "/" + std::string(textureFilePath.C_Str()));
+
+            this->material_.back().textureHandle = 
+                assetsManager->Load(std::filesystem::path(directoryPath + "/" + std::string(textureFilePath.C_Str()))).id;
+
         } else {
-            this->material_.back().textureHandle = 0; //テクスチャがなかったら白テクスチャを使う
+
+            this->material_.back().textureHandle = {}; //テクスチャがなかったら白テクスチャを使う
+
         }
     }
 
@@ -89,19 +87,19 @@ Node ModelData::LoadNode(aiNode* node, const aiScene* scene) {
             vertexData.normal = { normal.x,normal.y,normal.z };
             vertexData.texcoord = { tex.x,tex.y };
 
+            vertexData.textureIndex_ = material_[mesh->mMaterialIndex].textureHandle;
 			vertexData.nodeIndex = result.nodeIndex;
 
-            vertices_[scene->mMaterials[mesh->mMaterialIndex]->GetName().C_Str()].push_back(vertexData);
+            vertices_.push_back(vertexData);
         }
 
         for (uint32_t faceIndex = 0; faceIndex < mesh->mNumFaces; ++faceIndex) {
 			aiFace& face = mesh->mFaces[faceIndex];
-			int indexOffset = static_cast<int>(vertices_[scene->mMaterials[mesh->mMaterialIndex]->GetName().C_Str()].size()) - static_cast<int>(mesh->mNumVertices);
-            assert(face.mNumIndices == 3); //三角形以外は非対応
+			assert(face.mNumIndices == 3); //三角形以外は非対応
 
             for (unsigned int v = 0; v < face.mNumIndices; v++) {
-                int localIndex = face.mIndices[v] + indexOffset;
-				indices_[scene->mMaterials[mesh->mMaterialIndex]->GetName().C_Str()].push_back(localIndex);
+                int localIndex = face.mIndices[v];
+				indices_.push_back(localIndex);
             }//vertex
 
         }//mesh
@@ -119,51 +117,33 @@ Node ModelData::LoadNode(aiNode* node, const aiScene* scene) {
 }
 
 void ModelData::CreateID3D12Resource(ID3D12Device* device) {
-    for (auto& [material, vertex] : vertices_) {
-        VertexResource res{};
-        //超点数
-        res.vertexNum = static_cast<int>(vertex.size());
+	//VertexBufferView
+    vbv_.resource.Attach(CreateBufferResource(device, sizeof(ModelVertexData) * vertices_.size()));
 
-        //頂点リソースの作成
-        res.resource.Attach(CreateBufferResource(device, sizeof(ModelVertexData) * res.vertexNum));
+	ModelVertexData* vertexData = nullptr;
 
-        //データの読み込み
-		ModelVertexData* mappedData = nullptr;
-        res.resource->Map(0, nullptr, (void**)&mappedData);
-        memcpy(mappedData, vertex.data(), sizeof(ModelVertexData) * res.vertexNum);
-		res.resource->Unmap(0, nullptr);
+	vbv_.resource->Map(0, nullptr, (void**)&vertexData);
+	std::memcpy(vertexData, vertices_.data(), sizeof(ModelVertexData) * vertices_.size());
+	vbv_.resource->Unmap(0, nullptr);
 
-        //BufferViewの作成
-		res.bufferView = std::make_shared<D3D12_VERTEX_BUFFER_VIEW>();
-        res.bufferView->BufferLocation = res.resource->GetGPUVirtualAddress();
-        res.bufferView->SizeInBytes = sizeof(ModelVertexData) * res.vertexNum;
-        res.bufferView->StrideInBytes = sizeof(ModelVertexData);
+	vbv_.bufferView.BufferLocation = vbv_.resource->GetGPUVirtualAddress();
+	vbv_.bufferView.SizeInBytes = sizeof(ModelVertexData) * static_cast<UINT>(vertices_.size());
+	vbv_.bufferView.StrideInBytes = sizeof(ModelVertexData);
 
-		//登録
-		vertexBufferViews_[material] = res;
-    }
+    vbv_.vertexNum = static_cast<int>(vertices_.size());
 
-    for (auto& [material, index] : indices_) {
-        IndexResource res{};
-        //インデックス数
-        res.indexNum = static_cast<int>(index.size());
+    //IndexBufferView
+	ibv_.indexBuffer.Attach(CreateBufferResource(device, sizeof(uint32_t) * indices_.size()));
 
-        //頂点リソースの作成
-        res.indexBuffer.Attach(CreateBufferResource(device, sizeof(uint32_t) * res.indexNum));
+	uint32_t* indexData = nullptr;
 
-        //データの読み込み
-		uint32_t* mappedData = nullptr;
-        res.indexBuffer->Map(0, nullptr, (void**)&mappedData);
-		memcpy(mappedData, index.data(), sizeof(uint32_t) * res.indexNum);
-		res.indexBuffer->Unmap(0, nullptr);
+	ibv_.indexBuffer->Map(0, nullptr, (void**)&indexData);
+	std::memcpy(indexData, indices_.data(), sizeof(uint32_t) * indices_.size());
+	ibv_.indexBuffer->Unmap(0, nullptr);
 
-        //BufferViewの作成
-		res.bufferView = std::make_shared<D3D12_INDEX_BUFFER_VIEW>();
-        res.bufferView->BufferLocation = res.indexBuffer->GetGPUVirtualAddress();
-        res.bufferView->SizeInBytes = sizeof(uint32_t) * res.indexNum;
-		res.bufferView->Format = DXGI_FORMAT_R32_UINT;
+	ibv_.bufferView.BufferLocation = ibv_.indexBuffer->GetGPUVirtualAddress();
+	ibv_.bufferView.SizeInBytes = sizeof(uint32_t) * static_cast<UINT>(indices_.size());
+	ibv_.bufferView.Format = DXGI_FORMAT_R32_UINT;
 
-		//登録
-		indexBufferViews_[material] = res;
-    }
+	ibv_.indexNum = static_cast<int>(indices_.size());
 }

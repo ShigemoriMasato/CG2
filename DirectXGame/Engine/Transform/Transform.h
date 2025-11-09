@@ -32,6 +32,7 @@ struct ModelVertexData final
 	Vector4 position;
 	Vector2 texcoord;
 	Vector3 normal;
+	uint32_t textureIndex_;
 	int nodeIndex;
 };
 

@@ -11,8 +11,10 @@ void TitleScene::Initialize() {
 	camera_ = std::make_unique<DebugCamera>();
 	camera_->Initialize();
 
+	auto modelID = assetsLoader_->Load("DefaultDesc");
+
 	res_ = std::make_unique<DrawResource>();
-	res_->Initialize(ShapeType::Sphere);
+	res_->Initialize(modelID);
 	res_->camera_ = camera_.get();
 }
 

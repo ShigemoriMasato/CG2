@@ -179,6 +179,27 @@ void DrawResource::Initialize(ShapeType type) {
 	}
 }
 
+void DrawResource::Initialize(AssetsID modelID) {
+
+	SetModelData(modelID);
+
+	localPos_.resize(vertexNum_);
+	texcoord_.resize(vertexNum_);
+	normal_.resize(vertexNum_);
+	index_.resize(indexNum_);
+
+	MakeCBV(matrix_);
+	MakeCBV(material_);
+	MakeCBV(light_);
+	MakeUAV();
+
+	matrix_->world = Matrix::MakeIdentity4x4();
+	matrix_->wvp = Matrix::MakeIdentity4x4();
+
+	textureIndex_ = 0;
+
+}
+
 void DrawResource::DrawReady() {
 	//InputLayout
 

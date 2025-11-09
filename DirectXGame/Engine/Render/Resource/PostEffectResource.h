@@ -1,6 +1,7 @@
 #pragma once
 #include "Data/BaseResource.h"
 #include "Data/PostEffectData.h"
+#include <Transform/Transform.h>
 #include <Assets/OffScreen/OffScreenManager.h>
 
 // 新しいポストエフェクトの追加手順 -================================================================
@@ -56,7 +57,6 @@ public:
 	ScreenID output_;
 
 private:
-
 
 	VertexData* vertex_ = nullptr;
 

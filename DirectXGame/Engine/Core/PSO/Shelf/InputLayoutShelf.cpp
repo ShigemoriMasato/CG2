@@ -57,7 +57,7 @@ InputLayoutShelf::InputLayoutShelf() {
 
         inputElementsList_[int(InputLayoutID::Model)][3].SemanticName = "TEXTURE";
         inputElementsList_[int(InputLayoutID::Model)][3].SemanticIndex = 0;
-        inputElementsList_[int(InputLayoutID::Model)][3].Format = DXGI_FORMAT_R32_SINT;
+        inputElementsList_[int(InputLayoutID::Model)][3].Format = DXGI_FORMAT_R32_UINT;
         inputElementsList_[int(InputLayoutID::Model)][3].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
 
 		inputElementsList_[int(InputLayoutID::Model)][4].SemanticName = "NODEINDEX";

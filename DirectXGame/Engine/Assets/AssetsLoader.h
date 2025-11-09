@@ -5,13 +5,14 @@
 #include "Audio/AudioManager.h"
 #include "Model/ModelManager.h"
 
-class AssetsLoader;
-
 struct AssetsID : public EntityID {
 };
 
 class AssetsLoader {
 public:
+
+	AssetsLoader() = default;
+	~AssetsLoader() = default;
 
 	void Initialize(DXDevice* device, SRVManager* srvmanager, ID3D12GraphicsCommandList* cmdList);
 
@@ -44,5 +45,6 @@ private:
 	std::unique_ptr<AudioManager> audioManager_;
 	std::unique_ptr<ModelManager> modelManager_;
 
-	uint32_t nextID_ = 0;
+	uint32_t nextTextureID_ = 0;
+	uint32_t nextOtherID_ = 1024;
 };

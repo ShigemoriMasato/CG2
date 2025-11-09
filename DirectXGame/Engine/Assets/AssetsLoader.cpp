@@ -1,4 +1,5 @@
 #include "AssetsLoader.h"
+#include "Model/ModelManager.h"
 #include <filesystem>
 
 namespace fs = std::filesystem;
@@ -11,7 +12,7 @@ void AssetsLoader::Initialize(DXDevice* device, SRVManager* srvmanager, ID3D12Gr
 	audioManager_->Initialize();
 
 	modelManager_ = std::make_unique<ModelManager>();
-	modelManager_->Initialize(textureManager_.get(), device);
+	modelManager_->Initialize(this, device);
 
 	Load("Assets/Texture/white1x1.png");
 }
@@ -69,7 +70,11 @@ AssetsID AssetsLoader::Load(std::filesystem::path filePath) {
 	}
 
 	AssetsID id;
-	id.id = nextID_++;
+	if (type == AssetType::Texture) {
+		id.id = nextTextureID_++;
+	} else {
+		id.id = nextOtherID_++;
+	}
 
 	switch (type) {
 	case AssetsLoader::AssetType::Texture:

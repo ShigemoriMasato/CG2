@@ -1,18 +1,19 @@
 #pragma once
 #include <string>
-#include <unordered_map>
+#include <Core/DXDevice.h>
 #include <vector>
 #include <Transform/Transform.h>
-#include <Assets/Texture/TextureManager.h>
 #include <Func/MyMath.h>
 #include "ModelAnimation.h"
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 
+class AssetsLoader;
+
 struct ModelMaterial final {
 	std::string name;
-	int textureHandle = -1;
+	uint32_t textureHandle;
 };
 
 struct Node {
@@ -27,24 +28,24 @@ public:
 
 	struct VertexResource {
 		Microsoft::WRL::ComPtr<ID3D12Resource> resource = nullptr;
-		std::shared_ptr<D3D12_VERTEX_BUFFER_VIEW> bufferView = nullptr;
+		D3D12_VERTEX_BUFFER_VIEW bufferView = {};
 		int vertexNum = 0;
 	};
 
 	struct IndexResource {
 		Microsoft::WRL::ComPtr<ID3D12Resource> indexBuffer = nullptr;
-		std::shared_ptr<D3D12_INDEX_BUFFER_VIEW> bufferView = nullptr;
+		D3D12_INDEX_BUFFER_VIEW bufferView = {};
 		int indexNum = 0;
 	};
 
 	ModelData() = default;
 	~ModelData() = default;
 
-	virtual void LoadModel(const std::string& directoryPath, const std::string& filename, TextureManager* textureManager, DXDevice* device);
+	virtual void LoadModel(const std::string& directoryPath, const std::string& filename, AssetsLoader* assetsManager, DXDevice* device);
 
 	Node GetParentNode() { return rootNode_; }
-	std::unordered_map<std::string, VertexResource> GetVertexResource() const { return vertexBufferViews_; }
-	std::unordered_map<std::string, IndexResource> GetIndexResource() const { return indexBufferViews_; }
+	VertexResource GetVertexResource() const { return vbv_; }
+	IndexResource GetIndexResource() const { return ibv_; }
 	std::vector<ModelMaterial> GetMaterials() const { return material_; }
 	int GetNodeCount() const { return nodeCount_; }
 
@@ -52,16 +53,17 @@ public:
 
 protected:
 
-	void LoadMaterial(const aiScene* scene, std::string directoryPath, TextureManager* textureManager);
+	void LoadMaterial(const aiScene* scene, std::string directoryPath, AssetsLoader* assetsManager);
 	Node LoadNode(aiNode* node, const aiScene* scene);
 	void CreateID3D12Resource(ID3D12Device* device);
 
 	std::vector<ModelMaterial> material_{};
-	std::unordered_map<std::string, std::vector<ModelVertexData>> vertices_{};
-	std::unordered_map<std::string, std::vector<uint32_t>> indices_{};
+	std::vector<ModelVertexData> vertices_{};
+	std::vector<VertexTexture> vertexTextures_{};
+	std::vector<uint32_t> indices_{};
 
-	std::unordered_map<std::string, VertexResource> vertexBufferViews_{};
-	std::unordered_map<std::string, IndexResource> indexBufferViews_{};
+	VertexResource vbv_{};
+	IndexResource ibv_{};
 
 	int nodeCount_ = 0;
 
