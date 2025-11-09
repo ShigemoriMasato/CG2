@@ -24,7 +24,7 @@ struct PixelShaderOutput
     float4 color : SV_TARGET0;
 };
 
-Texture2D<float4> gTexture[1024] : register(t0);
+Texture2D<float4> gTexture[] : register(t0);
 SamplerState gSampler : register(s0);
 
 
@@ -54,13 +54,13 @@ PixelShaderOutput main(PixelShaderInput input)
     
     float4 color = gMaterial.color;
 
-    if (input.texture != 0)
+    if (input.textureIndex != 0)
     {
-        input.texture = 0;
+        input.textureIndex = 0;
         color = float4(1.0f, 0.0f, 1.0f, 1.0f);
     }
     
-    float4 textureColor = gTexture[input.texture].Sample(gSampler, transformedUV.xy);
+    float4 textureColor = gTexture[input.textureIndex].Sample(gSampler, transformedUV.xy);
     
     if (gDirectionalLight.enableLight)
     {
