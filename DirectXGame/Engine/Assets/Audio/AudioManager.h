@@ -45,5 +45,7 @@ private:
 	IXAudio2MasteringVoice* masterVoice_;
 
 	std::map<uint32_t, std::unique_ptr<AudioData>> audioData_{};
+
+	const std::string basePath = "Assets/Audio/";
 };
 

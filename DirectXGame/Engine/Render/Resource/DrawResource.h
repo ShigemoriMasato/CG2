@@ -33,13 +33,13 @@ public:
 	ID3D12Resource* GetMaterialResource() const { return materialResource.Get(); }
 	ID3D12Resource* GetParticleDataResource() const;
 	ID3D12Resource* GetLightResource() const { return lightResource.Get(); }
-	std::vector<D3D12_GPU_DESCRIPTOR_HANDLE> GetTextureHandle() const { return textureHandle_; }
 
 	std::vector<uint32_t> index_{};
 
 	std::vector<Vector3> localPos_{};
 	std::vector<Vector2> texcoord_{};
 	std::vector<Vector3> normal_{};
+	uint32_t textureIndex_{};
 
 	Vector3 position_{};
 	Vector3 rotate_{};
@@ -61,6 +61,7 @@ public:
 private:
 
 	VertexData* vertex_ = nullptr;
+	VertexTexture* vertexTexture_ = nullptr;
 	uint32_t* indices_ = nullptr;
 	Material* material_ = nullptr;
 	MatrixData* matrix_ = nullptr;

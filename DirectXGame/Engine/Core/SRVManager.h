@@ -31,6 +31,8 @@ public:
 
 	ID3D12DescriptorHeap* GetHeap() { return srvDescriptorHeap.Get(); }
 
+	D3D12_GPU_DESCRIPTOR_HANDLE GetStartPtr() { return srvDescriptorHeap->GetGPUDescriptorHandleForHeapStart(); }
+
 	uint32_t GetNextOffset(bool isTexture);
 
 private:

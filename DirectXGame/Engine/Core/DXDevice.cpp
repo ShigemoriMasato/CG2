@@ -17,7 +17,7 @@ DXDevice::~DXDevice() {
 
 void DXDevice::Initialize() {
 	//ウィンドウの作成
-	window_->CreateWindowForApp(L"2108_チェインロープ");
+	window_->CreateWindowForApp(L"CG");
 
     CreateDevice();
 }
@@ -62,7 +62,7 @@ void DXDevice::CreateDevice() {
         //ソフトウェアアダプタでなければ採用
         if (!(adapterDesc.Flags & DXGI_ADAPTER_FLAG3_SOFTWARE)) {
             //採用したアダプタの情報をログに出力
-            logger->info(ConvertString(std::format(L"Use Adapter:{}\n", adapterDesc.Description)));
+            logger->info(ConvertString(std::format(L"Use Adapter:{}", adapterDesc.Description)));
 
             break;
         }
@@ -90,14 +90,14 @@ void DXDevice::CreateDevice() {
         //指定した機能レベルでデバイスが生成できたか確認
         if (SUCCEEDED(hr)) {
             //生成できたのでログを出力してループを抜ける
-            logger->info(std::format("FeatureLevel:{}\n", featureLevelStrings[i]));
+            logger->info(std::format("FeatureLevel:{}", featureLevelStrings[i]));
             break;
         }
     }
 
     //デバイスの生成が上手くいかなかったので起動できない
     assert(device != nullptr);
-    logger->info("Complete create D3D12Device\n");
+    logger->info("Complete create D3D12Device");
 
     // DescriptorSizeの取得
 

@@ -1,13 +1,6 @@
 #include "RootSignatureShelf.h"
 #include <cassert>
 
-//||================||
-//||    注意!!       ||
-//||================||
-//==============================================================================
-//CBV->SRV->UAVの順番で作成すること！！！！！！
-//==============================================================================
-
 RootSignatureShelf::RootSignatureShelf(ID3D12Device* device) {
 
     logger_ = Logger::getLogger("Core");
@@ -36,6 +29,13 @@ RootSignatureShelf::RootSignatureShelf(ID3D12Device* device) {
     instancingDescriptor[0].NumDescriptors = 1;
     instancingDescriptor[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
     instancingDescriptor[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+    //画像全部のDescriptorRange
+    D3D12_DESCRIPTOR_RANGE allTexDescriptor[1] = {};
+    allTexDescriptor[0].BaseShaderRegister = 0;
+    allTexDescriptor[0].NumDescriptors = 1024;
+    allTexDescriptor[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+    allTexDescriptor[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
 #pragma endregion
 
@@ -88,8 +88,8 @@ RootSignatureShelf::RootSignatureShelf(ID3D12Device* device) {
         //Texture
         rootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;	//テーブルを使う
         rootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;	//PixelShaderで使う
-        rootParameters[3].DescriptorTable.pDescriptorRanges = textureDescriptor;	//テーブルの中身
-        rootParameters[3].DescriptorTable.NumDescriptorRanges = _countof(textureDescriptor);	//テーブルの数
+        rootParameters[3].DescriptorTable.pDescriptorRanges = allTexDescriptor;	//テーブルの中身
+        rootParameters[3].DescriptorTable.NumDescriptorRanges = _countof(allTexDescriptor);	//テーブルの数
 
         descriptionRootSignature.pParameters = rootParameters;                  //ルートパラメータ配列へのポインタ
         descriptionRootSignature.NumParameters = _countof(rootParameters);      //配列の長さ

@@ -33,26 +33,12 @@ public:
 
 	std::vector<D3D12_GPU_VIRTUAL_ADDRESS> GetCBVAddress() const { return cbvAddresses_; }
 	std::vector<SRVHandle> GetSRVHandle() { return srvHandles_; }
-	std::vector<D3D12_GPU_DESCRIPTOR_HANDLE> GetTextureHandle() const { return textureHandle_; }
 
 	uint32_t GetVertexNum() const { return vertexNum_; }
 	uint32_t GetIndexNum() const { return indexNum_; }
 	uint32_t GetInstanceNum() const { return instanceNum_; }
 
-	//使用しないかもだけどいちいち面倒なのでここで宣言する。気になる場合はprivateでオーバーライドすること
-	/// <summary>
-	/// 画像の設定
-	/// </summary>
-	/// <param name="id">AssetsLoaderから取得したid</param>
-	/// <param name="index">何枚目の画像に設定するか</param>
-	void SetTextureHandle(AssetsID id, uint32_t textureIndex = 0);
-
-	/// <summary>
-	/// 画像の設定
-	/// </summary>
-	/// <param name="offScreenIndex">スクリーンのID</param>
-	/// <param name="textureIndex">何枚目の画像に設定するか</param>
-	void SetTextureHandle(ScreenID offScreenIndex, uint32_t textureIndex = 0);
+	bool IsUseTexture() const { return useTexture_; }
 
 	PSOConfig psoConfig_{};
 	
@@ -69,7 +55,7 @@ protected:
 	SRVHandle MakeSRV(T*& ptr, uint32_t num);
 
 	//今はまだテクスチャの配列増やすだけ
-	void MakeUAV(uint32_t textureNum);
+	void MakeUAV();
 
 protected:
 
@@ -80,9 +66,6 @@ protected:
 
 	std::shared_ptr<spdlog::logger> logger_ = nullptr;
 
-	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource;
-	Microsoft::WRL::ComPtr<ID3D12Resource> indexResource;
-
 	std::vector<D3D12_VERTEX_BUFFER_VIEW> vbv_;
 	D3D12_INDEX_BUFFER_VIEW ibv_;
 
@@ -90,8 +73,6 @@ protected:
 	uint32_t indexNum_ = 0;
 	uint32_t instanceNum_ = 1;
 	
-	std::vector<D3D12_GPU_DESCRIPTOR_HANDLE> textureHandle_{};
-
 private:
 
 	struct Resource {
@@ -104,6 +85,8 @@ private:
 	std::vector<SRVHandle> srvHandles_{};
 
 	std::shared_ptr<spdlog::logger> debugLogger_ = nullptr;
+
+	bool useTexture_ = false;
 };
 
 
@@ -111,14 +94,16 @@ private:
 template<typename T>
 inline void BaseResource::MakeVertex(T*& verPtr, uint32_t vertexNum) {
 	//リソースの生成とマップ
-	vertexResource.Attach(CreateBufferResource(dxDevice_->GetDevice(), sizeof(VertexData) * vertexNum));
-	vertexResource->Map(0, nullptr, (void**)&verPtr);
+	Resource res;
+	res.res.Attach(CreateBufferResource(dxDevice_->GetDevice(), sizeof(T) * vertexNum));
+	res.res->Map(0, nullptr, (void**)&verPtr);
+	allResources_.push_back(res);
 
 	//vbvの作成
 	D3D12_VERTEX_BUFFER_VIEW vbv{};
-	vbv.BufferLocation = vertexResource->GetGPUVirtualAddress();
-	vbv.SizeInBytes = sizeof(VertexData) * vertexNum;
-	vbv.StrideInBytes = sizeof(VertexData);
+	vbv.BufferLocation = res.res->GetGPUVirtualAddress();
+	vbv.SizeInBytes = sizeof(T) * vertexNum;
+	vbv.StrideInBytes = sizeof(T);
 	vbv_.push_back(vbv);
 }
 

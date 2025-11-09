@@ -23,6 +23,10 @@ struct VertexData final
 	Vector3 normal;
 };
 
+struct VertexTexture final {
+	uint32_t textureIndex;
+};
+
 struct ModelVertexData final
 {
 	Vector4 position;

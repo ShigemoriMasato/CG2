@@ -31,6 +31,12 @@ private:
 		MaxCount
 	};
 
+private:
+
+	AssetType CheckAssetsType(std::filesystem::path filePath);
+
+private:
+
 	std::map<AssetsID, AssetType> assetTypeMap_;
 	std::unordered_map<std::string, AssetsID> loadedAssets_;
 

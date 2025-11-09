@@ -14,19 +14,19 @@ Render::Render(DXDevice* device) {
     HRESULT hr = device_->GetDevice()->CreateCommandQueue(&commandQueueDesc, IID_PPV_ARGS(&commandQueue));
     //コマンドキューの生成がうまくいかなかったので起動できない
     assert(SUCCEEDED(hr));
-    logger_->info("Complete create CommandQueue\n");
+    logger_->info("Complete create CommandQueue");
 
     //CommandAllocator
     hr = device_->GetDevice()->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&commandAllocator));
     //コマンドアロケータの生成がうまくいかなかったので起動できない
     assert(SUCCEEDED(hr));
-    logger_->info("Complete create CommandAllocator\n");
+    logger_->info("Complete create CommandAllocator");
 
     //CommandList
     hr = device_->GetDevice()->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, commandAllocator.Get(), nullptr, IID_PPV_ARGS(&commandList));
     //コマンドリストの生成がうまくいかなかったので起動できない
     assert(SUCCEEDED(hr));
-    logger_->info("Complete create CommandList\n");
+    logger_->info("Complete create CommandList");
 
 }
 
@@ -56,7 +56,7 @@ void Render::Initialize(OffScreenManager* offScreenManager, SRVManager* srvManag
         nullptr,			    		        //出力の設定
         reinterpret_cast<IDXGISwapChain1**>(swapChain.GetAddressOf()));	//スワップチェーンのポインタ
     assert(SUCCEEDED(hr));
-    logger_->info("Complete create SwapChain\n");
+    logger_->info("Complete create SwapChain");
 
     //SwapChainからResourceを取得する
     hr = swapChain->GetBuffer(0, IID_PPV_ARGS(&swapChainResources[0]));
@@ -70,7 +70,7 @@ void Render::Initialize(OffScreenManager* offScreenManager, SRVManager* srvManag
 	ID3D12DescriptorHeap* rawHeap = nullptr;
     rawHeap = CreateDescriptorHeap(device_->GetDevice(), D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 2, false);
 	rtvDescriptorHeap.Attach(rawHeap);
-    logger_->info("Complete create DescriptorHeap\n");
+    logger_->info("Complete create DescriptorHeap");
 
     //RTVの設定
     D3D12_RENDER_TARGET_VIEW_DESC rtvDesc{};
@@ -85,7 +85,7 @@ void Render::Initialize(OffScreenManager* offScreenManager, SRVManager* srvManag
     rtvHandles[1].ptr = rtvHandles[0].ptr + device_->GetDescriptorSizeRTV();
     //二つ目を作る
     device_->GetDevice()->CreateRenderTargetView(swapChainResources[1].Get(), &rtvDesc, rtvHandles[1]);
-    logger_->info("Complete create RenderTargetView\n");
+    logger_->info("Complete create RenderTargetView");
 
 #pragma endregion
 
@@ -190,19 +190,20 @@ void Render::Draw(BaseResource* res) {
     psoEditor_->SetPSOConfig(res->psoConfig_);
 	psoEditor_->Setting(commandList.Get());
 
+    UINT rootIndex = 0;
+
 	auto cbvAddresses = res->GetCBVAddress();
     for (size_t i = 0; i < cbvAddresses.size(); i++) {
-        commandList->SetGraphicsRootConstantBufferView(static_cast<UINT>(i), cbvAddresses[i]);
+        commandList->SetGraphicsRootConstantBufferView(rootIndex++, cbvAddresses[i]);
 	}
 
 	auto srvHandles = res->GetSRVHandle();
     for (size_t i = 0; i < srvHandles.size(); i++) {
-        commandList->SetGraphicsRootDescriptorTable(static_cast<UINT>(cbvAddresses.size() + i), srvHandles[i].GPU);
+        commandList->SetGraphicsRootDescriptorTable(rootIndex++, srvHandles[i].GPU);
 	}
 
-	auto textureHandles = res->GetTextureHandle();
-    for (size_t i = 0; i < textureHandles.size(); i++) {
-        commandList->SetGraphicsRootDescriptorTable(static_cast<UINT>(cbvAddresses.size() + srvHandles.size() + i), textureHandles[i]);
+    if (res->IsUseTexture()) {
+        commandList->SetGraphicsRootDescriptorTable(rootIndex++, srvManager_->GetStartPtr());
     }
 
     if (hasIndex) {
@@ -297,11 +298,7 @@ void Render::EndFrame(bool swapchainPresent) {
     if (swapchainPresent) {
         //GPUとOSに画面の交換を行うよう通知する
         hr = swapChain->Present(1, 0);
-
-        if (true) {
-            // ログに hr を出す (8桁16進などで)
-            logger_->info(std::format("Failed to Present. hr = 0x{}\n", hr));
-        }
+        assert(SUCCEEDED(hr));
     }
 
     //presentするとBarrierが自動でCommonになる。

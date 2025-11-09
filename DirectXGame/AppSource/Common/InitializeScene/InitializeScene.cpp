@@ -26,4 +26,16 @@ void InitializeScene::LoadAllResources() {
 
 	auto modelFolder = SearchFileNames("Assets/Model");
 
+	for(const auto& filePath : textureFile) {
+		assetsLoader_->Load(filePath);
+	}
+
+	for (const auto& filePath : audioFiles) {
+		assetsLoader_->Load(filePath);
+	}
+
+	for (const auto& fileName : modelFolder) {
+		assetsLoader_->Load(fileName);
+	}
+
 }

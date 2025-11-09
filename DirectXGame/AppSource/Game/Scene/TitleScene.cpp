@@ -12,7 +12,7 @@ void TitleScene::Initialize() {
 	camera_->Initialize();
 
 	res_ = std::make_unique<DrawResource>();
-	res_->Initialize(ShapeType::Cube);
+	res_->Initialize(ShapeType::Sphere);
 	res_->camera_ = camera_.get();
 }
 

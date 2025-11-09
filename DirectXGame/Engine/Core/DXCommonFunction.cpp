@@ -50,7 +50,8 @@ IDxcBlob* CompileShader(
     IDxcBlobUtf8* shaderError = nullptr;
     shaderResult->GetOutput(DXC_OUT_ERRORS, IID_PPV_ARGS(&shaderError), nullptr);
     if (shaderError != nullptr && shaderError->GetStringLength() != 0) {
-        logger->info(shaderError->GetStringPointer());
+        logger->error(shaderError->GetStringPointer());
+        logger->flush();
         //警告・エラーが起きている状態なので止める
         assert(false);
     }

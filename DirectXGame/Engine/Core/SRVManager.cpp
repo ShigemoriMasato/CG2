@@ -12,7 +12,7 @@ uint32_t SRVManager::GetNextOffset(bool isTexture) {
 	uint32_t i = 0;
 
 	if (!isTexture) {
-		i = maxCount / 2;
+		i = maxCount / 4;
 	}
 
 	for (i; i < maxCount; ++i) {

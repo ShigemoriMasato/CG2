@@ -14,6 +14,7 @@ void DrawResource::Initialize(uint32_t vertexNum, uint32_t indexNum) {
 	auto device = dxDevice_->GetDevice();
 
 	MakeVertex(vertex_, vertexNum);
+	MakeVertex(vertexTexture_, vertexNum);
 
 	if (indexNum > 0)
 		MakeIndex(indices_, indexNum);
@@ -26,13 +27,15 @@ void DrawResource::Initialize(uint32_t vertexNum, uint32_t indexNum) {
 	MakeCBV(matrix_);
 	MakeCBV(material_);
 	MakeCBV(light_);
-	MakeUAV(1);
+	MakeUAV();
 
 	matrix_->world = Matrix::MakeIdentity4x4();
 	matrix_->wvp = Matrix::MakeIdentity4x4();
 
 	vertexNum_ = vertexNum;
 	indexNum_ = indexNum;
+
+	textureIndex_ = 0;
 }
 
 void DrawResource::Initialize(ShapeType type) {
@@ -40,9 +43,9 @@ void DrawResource::Initialize(ShapeType type) {
 	int vertexCount = 0;
 	int indexCount = 0;
 
-	int vertical = 8;
-	int horizontal = 16;
-	float radius = 0.5f;
+	int vertical = 16;
+	int horizontal = 32;
+	float radius = 1.0f;
 
 	float theta;
 	float phi;
@@ -189,6 +192,11 @@ void DrawResource::DrawReady() {
 	if (indexNum_ > 0) {
 		index_.resize(indexNum_);
 		std::memcpy(indices_, index_.data(), sizeof(uint32_t) * indexNum_);
+	}
+
+	//VertexTexture
+	for(uint32_t i = 0; i < vertexNum_; ++i) {
+		vertexTexture_[i].textureIndex = textureIndex_;
 	}
 
 	//Material

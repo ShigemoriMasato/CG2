@@ -12,6 +12,7 @@ struct VertexShaderInput {
     float4 position : POSITION0;
     float2 texcoord : TEXCOORD0;
     float3 normal : NORMAL0;
+    uint texture : TEXTURE0;
 };
 
 VertexShaderOutput main(VertexShaderInput input) {
@@ -19,5 +20,6 @@ VertexShaderOutput main(VertexShaderInput input) {
     output.position = mul(input.position, gTransformMatrix.WVP);
     output.texcoord = input.texcoord;
     output.normal = normalize(mul(input.normal, (float3x3)gTransformMatrix.World));
+    output.texture = input.texture;
     return output;
 }
