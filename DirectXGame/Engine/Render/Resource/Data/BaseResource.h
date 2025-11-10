@@ -34,6 +34,8 @@ public:
 
 	virtual ~BaseResource();
 
+	void Initialize();
+
 	virtual void DrawReady() = 0;
 	
 	std::vector<D3D12_VERTEX_BUFFER_VIEW> GetVBV() const { return vbv_; }

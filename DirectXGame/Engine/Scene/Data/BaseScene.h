@@ -9,6 +9,7 @@ public:
 
 	BaseScene() = default;
 	virtual ~BaseScene() = default;
+
 	virtual void Initialize() = 0;
 	virtual std::unique_ptr<BaseScene> Update() = 0;
 	virtual void Draw() = 0;

@@ -9,6 +9,8 @@ DrawResource::~DrawResource() {
 }
 
 void DrawResource::Initialize(uint32_t vertexNum, uint32_t indexNum) {
+	BaseResource::Initialize();
+
 	psoConfig_ = PSOConfig{};
 
 	auto device = dxDevice_->GetDevice();
@@ -180,6 +182,7 @@ void DrawResource::Initialize(ShapeType type) {
 }
 
 void DrawResource::Initialize(AssetsID modelID) {
+	BaseResource::Initialize();
 
 	SetModelData(modelID);
 

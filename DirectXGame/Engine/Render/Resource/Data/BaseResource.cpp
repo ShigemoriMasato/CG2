@@ -19,6 +19,13 @@ BaseResource::~BaseResource() {
 	debugLogger_->debug("Delete BaseResource");
 }
 
+void BaseResource::Initialize() {
+	allResources_.clear();
+	cbvAddresses_.clear();
+	srvHandles_.clear();
+	useTexture_ = false;
+}
+
 void BaseResource::SetModelData(AssetsID modelID) {
 	ModelData* modelData = loader_->GetModelData(modelID);
 	assert(modelData);
