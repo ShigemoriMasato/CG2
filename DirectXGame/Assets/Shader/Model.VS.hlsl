@@ -16,8 +16,10 @@ struct VertexShaderInput {
     int nodeIndex : NODEINDEX0;
 };
 
-VertexShaderOutput main(VertexShaderInput input) {
+VertexShaderOutput main(VertexShaderInput input, uint instanceId : SV_InstanceID)
+{
     VertexShaderOutput output;
+    input.position.x += instanceId / 2.0f;
     output.position = mul(input.position, gTransformMatrix.WVP);
     output.texcoord = input.texcoord;
     output.normal = normalize(mul(input.normal, (float3x3) gTransformMatrix.World));

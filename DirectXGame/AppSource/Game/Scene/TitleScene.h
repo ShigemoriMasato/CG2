@@ -2,6 +2,7 @@
 #include <Scene/Data/BaseScene.h>
 #include <Camera/DebugCamera.h>
 #include <Render/ImGuiWrapper.h>
+#include <Render/Resource/ParticleResource.h>
 
 class TitleScene : public BaseScene {
 public:
@@ -23,7 +24,8 @@ private:
 	Matrix4x4 worldMatrix_ = Matrix::MakeIdentity4x4();
 	Transform gizmoTransform_;
 
-	std::unique_ptr<DrawResource> res_ = nullptr;
+	std::unique_ptr<DrawResource> model_ = nullptr;
+	std::unique_ptr<ParticleResource> particleRes_ = nullptr;
 
 	int mp3Handle;
 	int wavHandle;

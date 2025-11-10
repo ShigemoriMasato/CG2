@@ -70,6 +70,7 @@
     <ClCompile Include="AppSource\Game\Scene\TitleScene.cpp" />
     <ClCompile Include="Engine\Core\SRVManager.cpp" />
     <ClCompile Include="Engine\Func\MyString.cpp" />
+    <ClCompile Include="Engine\Render\Resource\ParticleResource.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AppSource\Common\InitializeScene\InitializeScene.h" />
@@ -135,6 +136,7 @@
     <ClInclude Include="Engine\Core\SRVManager.h" />
     <ClInclude Include="Engine\Func\MyString.h" />
     <ClInclude Include="Engine\Tools\FPS\FPSObserver.h" />
+    <ClInclude Include="Engine\Render\Resource\ParticleResource.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />

@@ -11,6 +11,14 @@
 
 //todo SetPSOConfig内でのRootSignatureの作成命令の出力
 
+enum class ShapeType {
+	Plane,
+	Cube,
+	Sphere,
+
+	Count
+};
+
 class BaseResource {
 public:
 
@@ -95,16 +103,18 @@ private:
 
 template<typename T>
 inline void BaseResource::MakeVertex(T*& verPtr, uint32_t vertexNum) {
+	vertexNum_ = vertexNum;
+
 	//リソースの生成とマップ
 	Resource res;
-	res.res.Attach(CreateBufferResource(dxDevice_->GetDevice(), sizeof(T) * vertexNum));
+	res.res.Attach(CreateBufferResource(dxDevice_->GetDevice(), sizeof(T) * vertexNum_));
 	res.res->Map(0, nullptr, (void**)&verPtr);
 	allResources_.push_back(res);
 
 	//vbvの作成
 	D3D12_VERTEX_BUFFER_VIEW vbv{};
 	vbv.BufferLocation = res.res->GetGPUVirtualAddress();
-	vbv.SizeInBytes = sizeof(T) * vertexNum;
+	vbv.SizeInBytes = sizeof(T) * vertexNum_;
 	vbv.StrideInBytes = sizeof(T);
 	vbv_.push_back(vbv);
 }
@@ -127,12 +137,12 @@ template<typename T>
 inline SRVHandle BaseResource::MakeSRV(T*& ptr, uint32_t num) {
 
 	Resource resource;
-	resource.res.Attach(CreateBufferResource(dxDevice_->GetDevice(), sizeof(T)));
+	resource.res.Attach(CreateBufferResource(dxDevice_->GetDevice(), sizeof(T) * num));
 	resource.res->Map(0, nullptr, (void**)&ptr);
 	allResources_.push_back(resource);
 
 	SRVHandle srvHandle;
-	srvHandle.UpdateHandle();
+	srvHandle.UpdateHandle(srvManager_);
 
 	//ParticleDataのSRV作成
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};

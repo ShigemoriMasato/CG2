@@ -145,17 +145,17 @@ RootSignatureShelf::RootSignatureShelf(ID3D12Device* device) {
         //RootParameter作成
         D3D12_ROOT_PARAMETER rootParameters[2] = {};
 
-        //Matrix
-        rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;       //CBVを使う
+        //ParticleData
+        rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;       //TABLEを使う
         rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;                //VertexShaderで使う
         rootParameters[0].DescriptorTable.pDescriptorRanges = instancingDescriptor;         //テーブルの中身
         rootParameters[0].DescriptorTable.NumDescriptorRanges = _countof(instancingDescriptor); //テーブルの数
 
         //Texture
         rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;	//テーブルを使う
-        rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;	//PixelShaderで使う
-        rootParameters[1].DescriptorTable.pDescriptorRanges = textureDescriptor;	//テーブルの中身
-        rootParameters[1].DescriptorTable.NumDescriptorRanges = _countof(textureDescriptor);	//テーブルの数
+        rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;	            //PixelShaderで使う
+        rootParameters[1].DescriptorTable.pDescriptorRanges = allTexDescriptor;	        //テーブルの中身
+        rootParameters[1].DescriptorTable.NumDescriptorRanges = _countof(allTexDescriptor);	//テーブルの数
 
         descriptionRootSignature.pParameters = rootParameters;                  //ルートパラメータ配列へのポインタ
         descriptionRootSignature.NumParameters = _countof(rootParameters);      //配列の長さ

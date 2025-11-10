@@ -5,6 +5,8 @@ struct ParticleData
     float4x4 WVP;
     float4x4 World;
     float4 Color;
+    uint textureIndex;
+    float3 padding;
 };
 
 StructuredBuffer<ParticleData> gTransformMatrix : register(t0);
@@ -21,5 +23,6 @@ VertexShaderOutput main(VertexShaderInput input, uint instanceId : SV_InstanceID
     output.texcoord = input.texcoord;
     output.normal = normalize(mul(input.normal, (float3x3)gTransformMatrix[instanceId].World));
     output.color = gTransformMatrix[instanceId].Color;
+    output.textureIndex = gTransformMatrix[instanceId].textureIndex;
     return output;
 }

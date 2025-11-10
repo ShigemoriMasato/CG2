@@ -5,7 +5,7 @@ InputLayoutShelf::InputLayoutShelf() {
 	inputLayouts_.resize(int(InputLayoutID::Count));
     inputElementsList_.resize(static_cast<int>(InputLayoutID::Count));
     {
-        inputElementsList_[int(InputLayoutID::Default)].resize(4);
+        inputElementsList_[int(InputLayoutID::Default)].resize(3);
 
         //InputLayout
         inputElementsList_[int(InputLayoutID::Default)][0].SemanticName = "POSITION";
@@ -23,17 +23,43 @@ InputLayoutShelf::InputLayoutShelf() {
         inputElementsList_[int(InputLayoutID::Default)][2].Format = DXGI_FORMAT_R32G32B32_FLOAT;
         inputElementsList_[int(InputLayoutID::Default)][2].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
 
-        inputElementsList_[int(InputLayoutID::Default)][3].SemanticName = "TEXTURE";
-        inputElementsList_[int(InputLayoutID::Default)][3].SemanticIndex = 0;
-        inputElementsList_[int(InputLayoutID::Default)][3].Format = DXGI_FORMAT_R32_UINT;
-        inputElementsList_[int(InputLayoutID::Default)][3].InputSlot = 1;
-        inputElementsList_[int(InputLayoutID::Default)][3].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
-
         D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
         inputLayoutDesc.pInputElementDescs = inputElementsList_[int(InputLayoutID::Default)].data();
         inputLayoutDesc.NumElements = static_cast<UINT>(inputElementsList_[int(InputLayoutID::Default)].size());
 
         inputLayouts_[int(InputLayoutID::Default)] = inputLayoutDesc;
+    }
+    
+    {
+        inputElementsList_[int(InputLayoutID::Texture)].resize(4);
+
+        //InputLayout
+        inputElementsList_[int(InputLayoutID::Texture)][0].SemanticName = "POSITION";
+        inputElementsList_[int(InputLayoutID::Texture)][0].SemanticIndex = 0;
+        inputElementsList_[int(InputLayoutID::Texture)][0].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+        inputElementsList_[int(InputLayoutID::Texture)][0].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+
+        inputElementsList_[int(InputLayoutID::Texture)][1].SemanticName = "TEXCOORD";
+        inputElementsList_[int(InputLayoutID::Texture)][1].SemanticIndex = 0;
+        inputElementsList_[int(InputLayoutID::Texture)][1].Format = DXGI_FORMAT_R32G32_FLOAT;
+        inputElementsList_[int(InputLayoutID::Texture)][1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+
+        inputElementsList_[int(InputLayoutID::Texture)][2].SemanticName = "NORMAL";
+        inputElementsList_[int(InputLayoutID::Texture)][2].SemanticIndex = 0;
+        inputElementsList_[int(InputLayoutID::Texture)][2].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+        inputElementsList_[int(InputLayoutID::Texture)][2].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+
+        inputElementsList_[int(InputLayoutID::Texture)][3].SemanticName = "TEXTURE";
+        inputElementsList_[int(InputLayoutID::Texture)][3].SemanticIndex = 0;
+        inputElementsList_[int(InputLayoutID::Texture)][3].Format = DXGI_FORMAT_R32_UINT;
+        inputElementsList_[int(InputLayoutID::Texture)][3].InputSlot = 1;
+        inputElementsList_[int(InputLayoutID::Texture)][3].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+
+        D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
+        inputLayoutDesc.pInputElementDescs = inputElementsList_[int(InputLayoutID::Texture)].data();
+        inputLayoutDesc.NumElements = static_cast<UINT>(inputElementsList_[int(InputLayoutID::Texture)].size());
+
+        inputLayouts_[int(InputLayoutID::Texture)] = inputLayoutDesc;
     }
 
     {

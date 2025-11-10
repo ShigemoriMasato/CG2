@@ -4,7 +4,8 @@
 #include <d3d12.h>
 
 enum class InputLayoutID : uint8_t {
-	Default = 0,
+	Default,
+	Texture,
 	Model,
 
 	Count

@@ -2,14 +2,6 @@
 #include <Camera/Camera.h>
 #include "Data/BaseResource.h"
 
-enum class ShapeType {
-	Plane,
-	Cube,
-	Sphere,	
-
-	Count
-};
-
 /// <summary>
 /// CG2で作成した基本的(?)な描画情報
 /// </summary>

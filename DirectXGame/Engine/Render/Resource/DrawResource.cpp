@@ -197,12 +197,10 @@ void DrawResource::Initialize(AssetsID modelID) {
 	matrix_->wvp = Matrix::MakeIdentity4x4();
 
 	textureIndex_ = 0;
-
 }
 
 void DrawResource::DrawReady() {
 	//InputLayout
-
 	for (uint32_t i = 0; i < vertexNum_; ++i) {
 		vertex_[i].position = { localPos_[i].x, localPos_[i].y, localPos_[i].z, 1.0f };
 		vertex_[i].texcoord = texcoord_[i];
