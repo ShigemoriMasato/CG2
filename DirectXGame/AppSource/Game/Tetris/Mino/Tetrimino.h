@@ -1,0 +1,62 @@
+#pragma once
+#include <utility>
+#include <Common/KeyConfig/KeyManager.h>
+#include <random>
+
+//テトリミノに関する管理。7種1順をここで管理する
+class Tetrimino {
+public:
+
+	enum Type {
+		None,
+		S,
+		Z,
+		T,
+		O,
+		I,
+		L,
+		J,
+		Count
+	};
+
+	Tetrimino() = default;
+	~Tetrimino() = default;
+
+	void Initialize(std::mt19937 g);
+
+	std::vector<std::pair<int, int>> GetOffset(Type type);
+
+	/// <summary>
+	/// ネクストが1進んだ場合に呼ぶ
+	/// </summary>
+	/// <returns>削除されたネクスト</returns>
+	Type PopFirst();
+
+	/// <summary>
+	/// 次のテトリミノを取得する
+	/// </summary>
+	/// <param name="nextNum">16まで</param>
+	Type GetNextTetrimino(int nextNum);
+
+private:
+
+	void RefillNextBuffer();
+
+private:
+
+	std::map<Type, std::vector<std::pair<int, int>>> blockOffsets_ = {
+		{ Type::I, { {0, -1}, {0, 0}, {0, 1}, {0, 2} } },
+		{ Type::O, { {0, 0}, {1, 0}, {0, 1}, {1, 1} } },
+		{ Type::S, { {0, 0}, {1, 0}, {-1, 1}, {0, 1} } },
+		{ Type::Z, { {0, 0}, {1, 0}, {1, 1}, {2, 1} } },
+		{ Type::J, { {0, 1}, {0, 0}, {1, 0}, {2, 0} } },
+		{ Type::L, { {1, 1}, {-1, 0}, {0, 0}, {1, 0} } },
+		{ Type::T, { {-1, 0}, {0, 1}, {0, 0}, {1, 0} } }
+	};
+
+	std::vector<Type> nexts_;
+	std::vector<Type> nextBuffer_;
+
+	std::mt19937 radg_;
+
+};

@@ -3,12 +3,13 @@
 // グリッチパラメータ用の定数バッファ
 cbuffer GlitchParams : register(b0)
 {
+    float4x4 padding;
+    float4 padding1;
     float intensity;            // 全体の強度 (0.0 - 1.0)
     float rgbSplit;             // RGB色収差の強度 (0.0 - 1.0)
     float scanlineIntensity;    // スキャンライン強度 (0.0 - 1.0)
     float blockIntensity;       // ブロックノイズ強度 (0.0 - 1.0)
     float time;                 // 時間パラメータ
-    float3 padding;             // パディング
 };
 
 Texture2D<float4> gTexture : register(t0);

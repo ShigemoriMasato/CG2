@@ -17,6 +17,12 @@
   <ItemGroup>
     <ClCompile Include="AppSource\Common\InitializeScene\InitializeScene.cpp" />
     <ClCompile Include="AppSource\Common\KeyConfig\KeyManager.cpp" />
+    <ClCompile Include="AppSource\Game\Tetris\Field\Field.cpp" />
+    <ClCompile Include="AppSource\Game\Tetris\Mino\Tetrimino.cpp" />
+    <ClCompile Include="AppSource\Game\Tetris\Score\LevelManager.cpp" />
+    <ClCompile Include="AppSource\Game\Tetris\Score\ScoreManager.cpp" />
+    <ClCompile Include="AppSource\Game\Tetris\Block\BlockRender.cpp" />
+    <ClCompile Include="Engine\Render\Resource\BlockResource.cpp" />
     <ClCompile Include="Engine\Assets\AssetsLoader.cpp" />
     <ClCompile Include="Engine\Assets\Audio\AudioManager.cpp" />
     <ClCompile Include="Engine\Assets\Audio\Data\AudioData.cpp" />
@@ -60,6 +66,7 @@
     <ClCompile Include="Engine\Core\PSO\Shelf\InputLayoutShelf.cpp" />
     <ClCompile Include="Engine\Render\ImGuiWrapper.cpp" />
     <ClCompile Include="Engine\Tools\FPS\FPSObserver.cpp" />
+    <ClCompile Include="AppSource\Game\Scene\GameScene.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Engine\Core\PSO\Shelf\RasterizerShelf.cpp" />
     <ClCompile Include="Engine\Core\PSO\Shelf\RootSignatureShelf.cpp" />
@@ -71,10 +78,17 @@
     <ClCompile Include="Engine\Core\SRVManager.cpp" />
     <ClCompile Include="Engine\Func\MyString.cpp" />
     <ClCompile Include="Engine\Render\Resource\ParticleResource.cpp" />
+    <ClCompile Include="AppSource\Game\Tetris\Tetris.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AppSource\Common\InitializeScene\InitializeScene.h" />
     <ClInclude Include="AppSource\Common\KeyConfig\KeyManager.h" />
+    <ClInclude Include="AppSource\Game\Tetris\Field\Field.h" />
+    <ClInclude Include="AppSource\Game\Tetris\Mino\Tetrimino.h" />
+    <ClInclude Include="AppSource\Game\Tetris\Score\LevelManager.h" />
+    <ClInclude Include="AppSource\Game\Tetris\Score\ScoreManager.h" />
+    <ClInclude Include="AppSource\Game\Tetris\Block\BlockRender.h" />
+    <ClInclude Include="Engine\Render\Resource\BlockResource.h" />
     <ClInclude Include="Engine\Assets\AssetsLoader.h" />
     <ClInclude Include="Engine\Assets\Audio\AudioManager.h" />
     <ClInclude Include="Engine\Assets\Audio\Data\AudioData.h" />
@@ -137,6 +151,8 @@
     <ClInclude Include="Engine\Func\MyString.h" />
     <ClInclude Include="Engine\Tools\FPS\FPSObserver.h" />
     <ClInclude Include="Engine\Render\Resource\ParticleResource.h" />
+    <ClInclude Include="AppSource\Game\Scene\GameScene.h" />
+    <ClInclude Include="AppSource\Game\Tetris\Tetris.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />

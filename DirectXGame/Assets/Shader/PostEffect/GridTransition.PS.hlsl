@@ -2,6 +2,7 @@
 
 cbuffer GridTransitionParameters : register(b0)
 {
+    float4x3 padding;
     float Progress;      // 遷移の進行度 (0.0 - 1.0)
     float GridSize;      // グリッドサイズ（1辺のタイル数）
     float FadeColor;     // フェード色 (0=黒, 1=白)

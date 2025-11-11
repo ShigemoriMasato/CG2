@@ -3,6 +3,8 @@
 // 常時走査線パラメータ用の定数バッファ
 cbuffer ConstantScanlineParams : register(b0)
 {
+    float4x4 padding;
+    float4x3 padding1;
     float intensity;      // 走査線の強度 (0.0 - 1.0)
     float speed;          // 走査線の移動速度
     float lineWidth;      // 走査線の幅

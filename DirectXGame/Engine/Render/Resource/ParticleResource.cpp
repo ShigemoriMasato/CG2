@@ -7,7 +7,7 @@ void ParticleResource::Initialize(ShapeType type, uint32_t instanceNum) {
 
 	int vertical = 16;
 	int horizontal = 32;
-	float radius = 1.0f;
+	float radius = 0.5f;
 
 	float theta;
 	float phi;
@@ -19,9 +19,10 @@ void ParticleResource::Initialize(ShapeType type, uint32_t instanceNum) {
 	float cosPhi;
 #pragma endregion
 
-	std::vector<Vector3> position;
-	std::vector<Vector2> texcoord;
-	std::vector<Vector3> normal;
+	std::vector<Vector3> position(1000, {});
+	std::vector<Vector2> texcoord(1000, {});
+	std::vector<Vector3> normal(1000, {});
+	index_.resize(4000, 0);
 
 	//Primitiveの頂点を作成
 	switch (type) {
@@ -149,7 +150,7 @@ void ParticleResource::Initialize(ShapeType type, uint32_t instanceNum) {
 		break;
 	}
 
-	for(uint32_t i = 0; i < position.size(); ++i) {
+	for(uint32_t i = 0; i < vertexNum_; ++i) {
 		vertex_[i].position = { position[i].x, position[i].y, position[i].z, 1.0f };
 		vertex_[i].texcoord = texcoord[i];
 		vertex_[i].normal = normal[i];
@@ -180,7 +181,7 @@ void ParticleResource::DrawReady() {
 	Matrix4x4 vp = camera_->GetVPMatrix();
 	for (uint32_t i = 0; i < instanceNum_; ++i) {
 		particleData_[i].world = MakeAffineMatrix(scale_[i], rotate_[i], position_[i]);
-		particleData_[i].wvp = particleData_[i].world * vp;
+		particleData_[i].wvp = vp;
 		particleData_[i].color = ConvertColor(color_[i]);
 		particleData_[i].textureIndex = textureIndex_[i].id;
 	}

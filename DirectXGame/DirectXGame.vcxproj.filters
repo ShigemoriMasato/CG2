@@ -108,35 +108,11 @@
     <ClCompile Include="Engine\Input\Input.cpp">
       <Filter>MyEngine\Input</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Math\MyMath.cpp">
-      <Filter>MyEngine\Math</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Logger\Logger.cpp">
       <Filter>MyEngine\Logger</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Resource\Texture\TextureManager.cpp">
-      <Filter>MyEngine\Resource</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Resource\Texture\TextureData.cpp">
-      <Filter>MyEngine\Resource</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Resource\OffScreen\OffScreenManager.cpp">
-      <Filter>MyEngine\Resource</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Resource\OffScreen\OffScreenData.cpp">
-      <Filter>MyEngine\Resource</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Resource\Model\ModelManager.cpp">
-      <Filter>MyEngine\Resource</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Resource\Model\ModelData.cpp">
-      <Filter>MyEngine\Resource</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Resource\SRVManager.cpp">
-      <Filter>MyEngine\Resource</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Core\DXDevice.cpp">
       <Filter>MyEngine\Core</Filter>
@@ -198,37 +174,16 @@
     <ClCompile Include="Engine\Core\EngineTerminal.cpp">
       <Filter>MyEngine\Core</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Scene\Engine\ShaderEditScene.cpp">
-      <Filter>MyEngine\Scene\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Math\MyString.cpp">
-      <Filter>MyEngine\Math</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Tools\FPS\FPSObserver.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="externals\imgui\ImGuizmo.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Resource\Audio\AudioManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Resource\Audio\Data\AudioData.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Resource\Audio\Data\WAVData.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Resource\Audio\Data\MP3Data.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="AppSource\Common\KeyConfig\KeyManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="AppSource\Common\InitializeScene\InitializeScene.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Resource\Model\ModelAnimation.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Render\Resource\Data\BaseResource.cpp">
@@ -238,6 +193,78 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Render\Resource\PostEffectResource.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Assets\AssetsLoader.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Assets\Audio\AudioManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Assets\Audio\Data\AudioData.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Assets\Audio\Data\MP3Data.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Assets\Audio\Data\WAVData.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Assets\Model\ModelAnimation.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Assets\Model\ModelData.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Assets\Model\ModelManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Assets\OffScreen\OffScreenData.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Assets\OffScreen\OffScreenManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Assets\Texture\TextureData.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Assets\Texture\TextureManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Func\MyMath.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\SRVManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Func\MyString.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Render\Resource\ParticleResource.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="AppSource\Game\Tetris\Field\Field.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="AppSource\Game\Tetris\Mino\Tetrimino.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="AppSource\Game\Tetris\Score\LevelManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="AppSource\Game\Tetris\Score\ScoreManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="AppSource\Game\Scene\GameScene.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Render\Resource\BlockResource.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="AppSource\Game\Tetris\Block\BlockRender.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="AppSource\Game\Tetris\Tetris.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -281,9 +308,6 @@
     <ClInclude Include="Engine\Input\Input.h">
       <Filter>MyEngine\Input</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Math\MyMath.h">
-      <Filter>MyEngine\Math</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Logger\Logger.h">
       <Filter>MyEngine\Logger</Filter>
     </ClInclude>
@@ -292,27 +316,6 @@
     </ClInclude>
     <ClInclude Include="Engine\Tools\Binary\Data\Value.h">
       <Filter>MyEngine\Transform</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Resource\Texture\TextureManager.h">
-      <Filter>MyEngine\Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Resource\Model\ModelData.h">
-      <Filter>MyEngine\Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Resource\Model\ModelManager.h">
-      <Filter>MyEngine\Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Resource\OffScreen\OffScreenData.h">
-      <Filter>MyEngine\Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Resource\OffScreen\OffScreenManager.h">
-      <Filter>MyEngine\Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Resource\SRVManager.h">
-      <Filter>MyEngine\Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Resource\Texture\TextureData.h">
-      <Filter>MyEngine\Resource</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Core\DXDevice.h">
       <Filter>MyEngine\Core</Filter>
@@ -380,28 +383,10 @@
     <ClInclude Include="Engine\Core\EngineTerminal.h">
       <Filter>MyEngine\Core</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Scene\Engine\ShaderEditScene.h">
-      <Filter>MyEngine\Scene\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Math\MyString.h">
-      <Filter>MyEngine\Math</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Tools\FPS\FPSObserver.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="externals\imgui\ImGuizmo.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Resource\Audio\AudioManager.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Resource\Audio\Data\AudioData.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Resource\Audio\Data\WAVData.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Resource\Audio\Data\MP3Data.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Scene\Data\SceneTools.h">
@@ -416,9 +401,6 @@
     <ClInclude Include="Engine\Render\Resource\Data\PostEffectData.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Resource\Model\ModelAnimation.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Render\Resource\Data\BaseResource.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -426,6 +408,81 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Render\Resource\PostEffectResource.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Assets\AssetsLoader.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Assets\Audio\AudioManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Assets\Audio\Data\AudioData.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Assets\Audio\Data\MP3Data.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Assets\Audio\Data\WAVData.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Assets\Model\ModelAnimation.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Assets\Model\ModelData.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Assets\Model\ModelManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Assets\OffScreen\OffScreenData.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Assets\OffScreen\OffScreenManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Assets\Texture\TextureData.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Assets\Texture\TextureManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\ECS\EntityID.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Func\MyMath.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\SRVManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Func\MyString.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Render\Resource\ParticleResource.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="AppSource\Game\Tetris\Field\Field.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="AppSource\Game\Tetris\Mino\Tetrimino.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="AppSource\Game\Tetris\Score\LevelManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="AppSource\Game\Tetris\Score\ScoreManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="AppSource\Game\Scene\GameScene.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Render\Resource\BlockResource.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="AppSource\Game\Tetris\Block\BlockRender.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="AppSource\Game\Tetris\Tetris.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

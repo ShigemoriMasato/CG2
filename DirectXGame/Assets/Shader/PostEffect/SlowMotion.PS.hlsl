@@ -2,6 +2,7 @@
 
 cbuffer SlowMotionParameters : register(b0)
 {
+    float4x4 padding;
     float ChromaticAberration;  // 色収差強度 (0.0 - 1.0)
     float VignetteStrength;     // ビネット強度 (0.0 - 1.0)
     float Saturation;           // 彩度 (0.0=モノクロ, 1.0=通常)

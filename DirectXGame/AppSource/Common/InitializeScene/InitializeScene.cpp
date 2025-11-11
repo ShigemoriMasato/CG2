@@ -1,6 +1,7 @@
 #include "InitializeScene.h"
 #include <Func/MyString.h>
 #include <Game/Scene/TitleScene.h>
+#include <Game/Scene/GameScene.h>
 
 void InitializeScene::Initialize() {
 	LoadAllResources();
@@ -12,7 +13,7 @@ void InitializeScene::Initialize() {
 }
 
 std::unique_ptr<BaseScene> InitializeScene::Update() {
-	return std::make_unique<TitleScene>();
+	return std::make_unique<GameScene>();
 }
 
 void InitializeScene::Draw() {
@@ -35,7 +36,7 @@ void InitializeScene::LoadAllResources() {
 	}
 
 	for (const auto& fileName : modelFolder) {
-		assetsLoader_->Load(fileName);
+		//assetsLoader_->Load(fileName);
 	}
 
 }

@@ -2,12 +2,12 @@
 
 cbuffer FadeParameters : register(b0)
 {
+    float4 padding;
     float FadeAmount; // フェードの進行度 (0.0 = no fade, 1.0 = full fade)
     float FadeType; // フェードタイプ (0=Black, 1=White, 2=Radial, 3=Wipe, 4=Dissolve)
     float2 padding1;
     
     float3 FadeColor; // フェードカラー
-    float padding2;
 }
 
 Texture2D<float4> gTexture : register(t0);

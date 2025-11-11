@@ -64,6 +64,7 @@ private:
 	ScreenID offScreenHandle_ = ScreenID::SwapChain;
 
 	bool isFrameFirst_ = true;	//PreDrawが初回かどうか
+	bool initializeFrame_ = true; //セッション単位での初回かどうか
 
 	//フェンス
 	Microsoft::WRL::ComPtr<ID3D12Fence> fence = nullptr;

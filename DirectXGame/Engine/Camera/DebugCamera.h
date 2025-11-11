@@ -17,6 +17,10 @@ public:
 		center_ = center;
 	}
 
+	void SetDistance(float distance) {
+		spherical_.x = distance;
+	}
+
 private:
 
 	//カメラの親座標

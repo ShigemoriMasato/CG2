@@ -61,58 +61,58 @@ void PostEffectResource::DrawReady() {
 
 	} else if (task_ & PostEffectJob::Fade) {
 		// slot1: alpha, type, -, -
-		infoForGPU_->slot1.x = data_.fade.alpha;
-		infoForGPU_->slot1.y = static_cast<float>(static_cast<int>(data_.fade.type));
-		infoForGPU_->slot1.z = 0.0f;
-		infoForGPU_->slot1.w = 0.0f;
+		infoForGPU_->slot2.x = data_.fade.alpha;
+		infoForGPU_->slot2.y = static_cast<float>(static_cast<int>(data_.fade.type));
+		infoForGPU_->slot2.z = 0.0f;
+		infoForGPU_->slot2.w = 0.0f;
 		
 		// slot2: fadeColor (r, g, b, -)
-		infoForGPU_->slot2.x = data_.fade.color.x;
-		infoForGPU_->slot2.y = data_.fade.color.y;
-		infoForGPU_->slot2.z = data_.fade.color.z;
-		infoForGPU_->slot2.w = 0.0f;
+		infoForGPU_->slot3.x = data_.fade.color.x;
+		infoForGPU_->slot3.y = data_.fade.color.y;
+		infoForGPU_->slot3.z = data_.fade.color.z;
+		infoForGPU_->slot3.w = 0.0f;
 
 		psoConfig_.ps = data_.fade.shaderFile;
 		task_ &= ~PostEffectJob::Fade;
 	} else if (task_ & PostEffectJob::GridTransition) {
 		// slot1: progress, gridSize, fadeColor, pattern
-		infoForGPU_->slot1.x = data_.gridTransition.progress;
-		infoForGPU_->slot1.y = data_.gridTransition.gridSize;
-		infoForGPU_->slot1.z = data_.gridTransition.fadeColor;
-		infoForGPU_->slot1.w = data_.gridTransition.pattern;
+		infoForGPU_->slot4.x = data_.gridTransition.progress;
+		infoForGPU_->slot4.y = data_.gridTransition.gridSize;
+		infoForGPU_->slot4.z = data_.gridTransition.fadeColor;
+		infoForGPU_->slot4.w = data_.gridTransition.pattern;
 
 		psoConfig_.ps = data_.gridTransition.shaderFile;
 		task_ &= ~PostEffectJob::GridTransition;
 	} else if (task_ & PostEffectJob::SlowMotion) {
 		// slot1: chromaticAberration, vignetteStrength, saturation, intensity
-		infoForGPU_->slot1.x = data_.slowMotion.chromaticAberration;
-		infoForGPU_->slot1.y = data_.slowMotion.vignetteStrength;
-		infoForGPU_->slot1.z = data_.slowMotion.saturation;
-		infoForGPU_->slot1.w = data_.slowMotion.intensity;
+		infoForGPU_->slot5.x = data_.slowMotion.chromaticAberration;
+		infoForGPU_->slot5.y = data_.slowMotion.vignetteStrength;
+		infoForGPU_->slot5.z = data_.slowMotion.saturation;
+		infoForGPU_->slot5.w = data_.slowMotion.intensity;
 
 		psoConfig_.ps = data_.slowMotion.shaderFile;
 		task_ &= ~PostEffectJob::SlowMotion;
 	} else if (task_ & PostEffectJob::Glitch) {
 		// slot1: intensity, rgbSplit, scanlineIntensity, blockIntensity
-		infoForGPU_->slot1.x = data_.glitch.intensity;
-		infoForGPU_->slot1.y = data_.glitch.rgbSplit;
-		infoForGPU_->slot1.z = data_.glitch.scanlineIntensity;
-		infoForGPU_->slot1.w = data_.glitch.blockIntensity;
+		infoForGPU_->slot6.x = data_.glitch.intensity;
+		infoForGPU_->slot6.y = data_.glitch.rgbSplit;
+		infoForGPU_->slot6.z = data_.glitch.scanlineIntensity;
+		infoForGPU_->slot6.w = data_.glitch.blockIntensity;
 		
 		// slot2: time, -, -, -
-		infoForGPU_->slot2.x = data_.glitch.time;
-		infoForGPU_->slot2.y = 0.0f;
-		infoForGPU_->slot2.z = 0.0f;
-		infoForGPU_->slot2.w = 0.0f;
+		infoForGPU_->slot7.x = data_.glitch.time;
+		infoForGPU_->slot7.y = 0.0f;
+		infoForGPU_->slot7.z = 0.0f;
+		infoForGPU_->slot7.w = 0.0f;
 
 		psoConfig_.ps = data_.glitch.shaderFile;
 		task_ &= ~PostEffectJob::Glitch;
 	} else if (task_ & PostEffectJob::ConstantScanline) {
 		// slot1: intensity, speed, lineWidth, time
-		infoForGPU_->slot1.x = data_.constantScanline.intensity;
-		infoForGPU_->slot1.y = data_.constantScanline.speed;
-		infoForGPU_->slot1.z = data_.constantScanline.lineWidth;
-		infoForGPU_->slot1.w = data_.constantScanline.time;
+		infoForGPU_->slot8.x = data_.constantScanline.intensity;
+		infoForGPU_->slot7.y = data_.constantScanline.speed;
+		infoForGPU_->slot7.z = data_.constantScanline.lineWidth;
+		infoForGPU_->slot7.w = data_.constantScanline.time;
 
 		psoConfig_.ps = data_.constantScanline.shaderFile;
 		task_ &= ~PostEffectJob::ConstantScanline;
@@ -122,14 +122,14 @@ void PostEffectResource::DrawReady() {
 	psoConfig_.ps = shaderBasePath_ + psoConfig_.ps;
 	psoConfig_.vs = shaderBasePath_ + "PostEffect.VS.hlsl";
 	psoConfig_.depthStencilID = DepthStencilID::Transparent;
-	psoConfig_.rootID = RootSignatureID::PostEffect;
+	//psoConfig_.rootID = RootSignatureID::PostEffect;
 }
 
 void PostEffectResource::SimpleDrawReady() {
 	psoConfig_.ps = shaderBasePath_ + "Simple.PS.hlsl";
 	psoConfig_.vs = shaderBasePath_ + "PostEffect.VS.hlsl";
 	psoConfig_.depthStencilID = DepthStencilID::Transparent;
-	psoConfig_.rootID = RootSignatureID::PostEffect;
+	//psoConfig_.rootID = RootSignatureID::PostEffect;
 }
 
 bool PostEffectResource::IsContinue() const {

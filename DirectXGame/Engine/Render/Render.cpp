@@ -151,6 +151,24 @@ void Render::Initialize(OffScreenManager* offScreenManager, SRVManager* srvManag
 void Render::PreDraw(ScreenID index, bool isClear) {
     //PSOとRootSignatureを初期化する
     if (isFrameFirst_) {
+
+        //Fenceの値が指定したSignal値にたどり着いてるかを確認する
+        //GetCompletedValueの初期値はFence作成時に渡した初期値
+        if (fence->GetCompletedValue() < fenceValue) {
+            //指定したSignalにたどり着いていないので、たどり着くまで待つようにイベントを設定する
+            fence->SetEventOnCompletion(fenceValue, fenceEvent);
+            //イベントを待つ
+            WaitForSingleObject(fenceEvent, INFINITE);
+        }
+
+        if (!initializeFrame_) {
+            //次のフレームのためのcommandReset
+            commandAllocator->Reset();
+            commandList->Reset(commandAllocator.Get(), nullptr);
+        } else {
+			initializeFrame_ = false;
+        }
+
         psoEditor_->FrameInitialize(commandList.Get());
         ID3D12DescriptorHeap* ppHeaps[] = { srvManager_->GetHeap() };
 		commandList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
@@ -309,19 +327,6 @@ void Render::EndFrame(bool swapchainPresent) {
     fenceValue++;
     //GPUがここまでたどり着いたときに、Fenceの値を指定した値に代入するようにSignalを送る
     commandQueue->Signal(fence.Get(), fenceValue);
-
-    //Fenceの値が指定したSignal値にたどり着いてるかを確認する
-    //GetCompletedValueの初期値はFence作成時に渡した初期値
-    if (fence->GetCompletedValue() < fenceValue) {
-        //指定したSignalにたどり着いていないので、たどり着くまで待つようにイベントを設定する
-        fence->SetEventOnCompletion(fenceValue, fenceEvent);
-        //イベントを待つ
-        WaitForSingleObject(fenceEvent, INFINITE);
-    }
-
-    //次のフレームのためのcommandReset
-    commandAllocator->Reset();
-    commandList->Reset(commandAllocator.Get(), nullptr);
 
     isFrameFirst_ = true;
 }

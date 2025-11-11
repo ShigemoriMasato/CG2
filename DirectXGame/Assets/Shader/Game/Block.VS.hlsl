@@ -1,4 +1,4 @@
-#include "BackGround.hlsli"
+#include "Block.hlsli"
 
 struct VSInput
 {
@@ -9,19 +9,34 @@ struct VSInput
 
 struct ParticleData
 {
-    float4x4 wvp;
     float4x4 world;
-    float4 color;
+    float4x4 vp;
+    uint color;
+    uint outlineColor;
+    float2 padding;
+    float4 padding2;
 };
+
+float4 ConvertColor(uint color)
+{
+    float4 result = float4(
+        ((color >> 24) & 0xFF) / 255.0,
+        ((color >> 16) & 0xFF) / 255.0,
+        ((color >> 8) & 0xFF) / 255.0,
+        (color & 0xFF) / 255.0);
+    
+    return result;
+}
 
 StructuredBuffer<ParticleData> data : register(t0);
 
 VSOutput main(VSInput input, uint instance : SV_InstanceID)
 {
     VSOutput output;
-    output.position = mul(input.position, data[instance].wvp);
+    output.position = mul(input.position, mul(data[instance].world, data[instance].vp));
     output.texCoord = input.texcoord;
-    output.color = data[instance].color;
+    output.color = ConvertColor(data[instance].color);
+    output.outlineColor = ConvertColor(data[instance].outlineColor);
     output.normal = normalize(mul(input.normal, (float3x3) data[instance].world));
     return output;
 }

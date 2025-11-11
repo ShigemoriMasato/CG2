@@ -2,7 +2,7 @@
 
 struct ParticleData
 {
-    float4x4 WVP;
+    float4x4 VP;
     float4x4 World;
     float4 Color;
     uint textureIndex;
@@ -19,7 +19,7 @@ struct VertexShaderInput {
 
 VertexShaderOutput main(VertexShaderInput input, uint instanceId : SV_InstanceID) {
     VertexShaderOutput output;
-    output.position = mul(input.position, gTransformMatrix[instanceId].WVP);
+    output.position = mul(input.position, mul(gTransformMatrix[instanceId].World, gTransformMatrix[instanceId].VP));
     output.texcoord = input.texcoord;
     output.normal = normalize(mul(input.normal, (float3x3)gTransformMatrix[instanceId].World));
     output.color = gTransformMatrix[instanceId].Color;
