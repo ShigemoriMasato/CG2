@@ -36,6 +36,8 @@ void Field::Down() {
 
 void Field::Update() {
 	
+	
+
 }
 
 void Field::Draw(Render* render) {

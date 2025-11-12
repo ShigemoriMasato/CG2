@@ -1,32 +1,36 @@
 #include "Render.h"
 #include <Core/DXCommonFunction.h>
 
+int Render::CommandObjects::index = 0;
+
 Render::Render(DXDevice* device) {
     device_ = device;
-	logger_ = Logger::getLogger("Core");
+    logger_ = Logger::getLogger("Core");
     psoEditor_ = std::make_unique<PSOEditor>(device_->GetDevice());
 
-	// ============================================
+    // ============================================
 
-    //CommandQueue
+        //CommandQueue
     D3D12_COMMAND_QUEUE_DESC commandQueueDesc{};
-    HRESULT hr = device_->GetDevice()->CreateCommandQueue(&commandQueueDesc, IID_PPV_ARGS(&commandQueue));
+    HRESULT hr = device_->GetDevice()->CreateCommandQueue(&commandQueueDesc, IID_PPV_ARGS(&commandQueue_));
     //コマンドキューの生成がうまくいかなかったので起動できない
     assert(SUCCEEDED(hr));
     logger_->info("Complete create CommandQueue");
 
-    //CommandAllocator
-    hr = device_->GetDevice()->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&commandAllocator));
-    //コマンドアロケータの生成がうまくいかなかったので起動できない
-    assert(SUCCEEDED(hr));
-    logger_->info("Complete create CommandAllocator");
+    for (int i = 0; i < 2; ++i) {
+        //CommandAllocator
+        hr = device_->GetDevice()->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&command_[i].allocator));
+        //コマンドアロケータの生成がうまくいかなかったので起動できない
+        assert(SUCCEEDED(hr));
+        logger_->info("Complete create CommandAllocator {}", i);
 
-    //CommandList
-    hr = device_->GetDevice()->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, commandAllocator.Get(), nullptr, IID_PPV_ARGS(&commandList));
-    //コマンドリストの生成がうまくいかなかったので起動できない
-    assert(SUCCEEDED(hr));
-    logger_->info("Complete create CommandList");
+        //CommandList
+        hr = device_->GetDevice()->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, command_[i].allocator.Get(), nullptr, IID_PPV_ARGS(&command_[i].list));
+        //コマンドリストの生成がうまくいかなかったので起動できない
+        assert(SUCCEEDED(hr));
+        logger_->info("Complete create CommandList {}", i);
 
+    }
 }
 
 Render::~Render() {
@@ -48,7 +52,7 @@ void Render::Initialize(OffScreenManager* offScreenManager, SRVManager* srvManag
 
     //コマンドキュー、ウィンドウハンドル、設定を渡して生成する
     HRESULT hr = device_->GetDxgiFactory()->CreateSwapChainForHwnd(
-        commandQueue.Get(),		        		//コマンドキュー
+        commandQueue_.Get(),		        		//コマンドキュー
         device_->GetHwnd(),			            //ウィンドウハンドル
         &swapChainDesc,	        		        //設定
         nullptr,		    	    		    //モニタの設定
@@ -119,53 +123,29 @@ void Render::Initialize(OffScreenManager* offScreenManager, SRVManager* srvManag
 
 	offScreenManager_ = offScreenManager;
 	srvManager_ = srvManager;
-
-	//初期化の段階で一度コマンドリストの中身をすべて実行する
-    hr = commandList->Close();
-    assert(SUCCEEDED(hr));
-
-    // GPUにコマンドリストの実行を行わせる
-    ID3D12CommandList* commandLists[] = { commandList.Get() };
-    commandQueue->ExecuteCommandLists(1, commandLists);
-
-    //Fenceの値を更新
-    fenceValue++;
-    //GPUがここまでたどり着いたときに、Fenceの値を指定した値に代入するようにSignalを送る
-    commandQueue->Signal(fence.Get(), fenceValue);
-
-    //Fenceの値が指定したSignal値にたどり着いてるかを確認する
-    //GetCompletedValueの初期値はFence作成時に渡した初期値
-    if (fence->GetCompletedValue() < fenceValue) {
-        //指定したSignalにたどり着いていないので、たどり着くまで待つようにイベントを設定する
-        fence->SetEventOnCompletion(fenceValue, fenceEvent);
-        //イベントを待つ
-        WaitForSingleObject(fenceEvent, INFINITE);
-    }
-
-    //次のフレームのためのcommandReset
-    commandAllocator->Reset();
-    commandList->Reset(commandAllocator.Get(), nullptr);
 }
 
 void Render::PreDraw(ScreenID index, bool isClear) {
     //PSOとRootSignatureを初期化する
     if (isFrameFirst_) {
 
-        //Fenceの値が指定したSignal値にたどり着いてるかを確認する
-        //GetCompletedValueの初期値はFence作成時に渡した初期値
-        if (fence->GetCompletedValue() < fenceValue) {
-            //指定したSignalにたどり着いていないので、たどり着くまで待つようにイベントを設定する
-            fence->SetEventOnCompletion(fenceValue, fenceEvent);
-            //イベントを待つ
-            WaitForSingleObject(fenceEvent, INFINITE);
+        if (fenceValue > 1) {
+
+            //Fenceの値が指定したSignal値にたどり着いてるかを確認する
+            //GetCompletedValueの初期値はFence作成時に渡した初期値
+            if (fence->GetCompletedValue() < fenceValue) {
+                //指定したSignalにたどり着いていないので、たどり着くまで待つようにイベントを設定する
+                fence->SetEventOnCompletion(fenceValue, fenceEvent);
+                //イベントを待つ
+                WaitForSingleObject(fenceEvent, INFINITE);
+            }
+
         }
 
-        if (!initializeFrame_) {
+        if (fenceValue > 1) {
             //次のフレームのためのcommandReset
-            commandAllocator->Reset();
-            commandList->Reset(commandAllocator.Get(), nullptr);
-        } else {
-			initializeFrame_ = false;
+            command_[CommandObjects::index].allocator->Reset();
+            command_[CommandObjects::index].list->Reset(command_[CommandObjects::index].allocator.Get(), nullptr);
         }
 
         psoEditor_->FrameInitialize(commandList.Get());
@@ -322,10 +302,8 @@ void Render::EndFrame(bool swapchainPresent) {
     int backBufferIndex = swapChain->GetCurrentBackBufferIndex();
     resourcestates_[backBufferIndex] = D3D12_RESOURCE_STATE_COMMON;
 
-    //Fenceの値を更新
-    fenceValue++;
     //GPUがここまでたどり着いたときに、Fenceの値を指定した値に代入するようにSignalを送る
-    commandQueue->Signal(fence.Get(), fenceValue);
+    commandQueue->Signal(fence.Get(), ++fenceValue);
 
     isFrameFirst_ = true;
 }

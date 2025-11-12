@@ -12,7 +12,7 @@ void KeyCoating::Update(float deltaTime) {
 			//一定時間押し続けたら
 			if (timer[index] <= 0.0f) {
 				keyFlugs_[key] = true;
-				timer[index] = initialTime;
+				timer[index] = continueTime;
 			} else {
 				keyFlugs_[key] = false;
 			}

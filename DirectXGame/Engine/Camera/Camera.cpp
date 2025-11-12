@@ -1,8 +1,5 @@
 #include "Camera.h"
-
-#ifdef USE_IMGUI
 #include <imgui/imgui.h>
-#endif
 
 using namespace Matrix;
 using namespace MyMath;

@@ -50,9 +50,13 @@ private:
 	DXDevice* device_ = nullptr;
 
 	//Command関連
-	Microsoft::WRL::ComPtr<ID3D12CommandQueue> commandQueue = nullptr;
-	Microsoft::WRL::ComPtr<ID3D12CommandAllocator> commandAllocator = nullptr;
-	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> commandList = nullptr;
+	struct CommandObjects {
+		Microsoft::WRL::ComPtr<ID3D12CommandAllocator> allocator = nullptr;
+		Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> list = nullptr;
+		static int index;
+	};
+	std::array<CommandObjects, 2> command_{};
+	Microsoft::WRL::ComPtr<ID3D12CommandQueue> commandQueue_ = nullptr;
 
 	//RTV
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> rtvDescriptorHeap = nullptr;
@@ -66,7 +70,6 @@ private:
 	ScreenID offScreenHandle_ = ScreenID::SwapChain;
 
 	bool isFrameFirst_ = true;	//PreDrawが初回かどうか
-	bool initializeFrame_ = true; //セッション単位での初回かどうか
 
 	//フェンス
 	Microsoft::WRL::ComPtr<ID3D12Fence> fence = nullptr;
