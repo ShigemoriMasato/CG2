@@ -25,7 +25,10 @@ public:
 	void EndFrame(bool swapchainPresent);
 
 	ID3D12GraphicsCommandList* GetCommandList() const { return commandList.Get(); }
+
+#ifdef USE_IMGUI
 	ImGui_ImplDX12_InitInfo GetImGuiInitInfo(SRVManager* srv);
+#endif
 
 	void SetClearColor(float r, float g, float b, float a) {
 		clearColor_[0] = r;

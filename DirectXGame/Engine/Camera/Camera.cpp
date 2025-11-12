@@ -1,5 +1,8 @@
 #include "Camera.h"
-#include "../../externals/imgui/imgui.h"
+
+#ifdef USE_IMGUI
+#include <imgui/imgui.h>
+#endif
 
 using namespace Matrix;
 using namespace MyMath;
@@ -49,11 +52,13 @@ void Camera::MakeMatrix() {
 }
 
 void Camera::DrawImGui() {
+#ifdef USE_IMGUI
 	ImGui::Begin("Camera");
 	ImGui::DragFloat3("Position", &transform_.position.x, 0.1f);
 	ImGui::DragFloat3("Rotation", &transform_.rotation.x, 0.01f);
 	ImGui::DragFloat3("Scale", &transform_.scale.x, 0.1f);
 	ImGui::End();
+#endif
 }
 
 void Camera::SetTransform(Transform transform) {

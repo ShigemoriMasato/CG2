@@ -10,6 +10,9 @@ public:
 	~Field() = default;
 
 	void Initialize(Camera* camera);
+
+	void Down();
+
 	void Update();
 	void Draw(Render* render);
 
@@ -20,10 +23,13 @@ public:
 private:
 
 	std::vector<std::vector<int>> field_;
+	std::array<std::pair<int, int>, 4> currentMino_{};
 	const int width_;
 	const int height_;
 	std::pair<int, int> spawnPosition_;
 
 	std::unique_ptr<ParticleResource> debugSphere_ = nullptr;
 
+
+	bool isDown_ = false;
 };

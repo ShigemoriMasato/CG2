@@ -30,8 +30,12 @@ void Field::Initialize(Camera* camera) {
 	spawnPosition_ = { width_ / 2, height_ - 3 };
 }
 
+void Field::Down() {
+	isDown_ = true;
+}
+
 void Field::Update() {
-	// フィールドの更新処理（例：ラインの消去など）をここに実装
+	
 }
 
 void Field::Draw(Render* render) {
@@ -39,11 +43,14 @@ void Field::Draw(Render* render) {
 }
 
 void Field::SpawnMino(std::vector<std::pair<int, int>> tetrimino, int minoType) {
+	uint32_t index = 0;
+
 	for (const auto& offset : tetrimino) {
 		int x = spawnPosition_.first + offset.first;
 		int y = spawnPosition_.second + offset.second;
 		if (x >= 0 && x < width_ && y >= 0 && y < height_ + 5) {
 			field_[y][x] = minoType; // ブロックを配置（1はブロックが存在することを示す)
+			currentMino_[index++] = { x, y };
 		}
 	}
 }

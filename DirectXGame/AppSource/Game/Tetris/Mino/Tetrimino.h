@@ -40,6 +40,7 @@ public:
 
 private:
 
+	//Nextの抽選
 	void RefillNextBuffer();
 
 private:

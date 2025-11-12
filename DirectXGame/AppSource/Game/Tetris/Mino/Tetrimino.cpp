@@ -41,6 +41,7 @@ Tetrimino::Type Tetrimino::GetNextTetrimino(int nextNum) {
 void Tetrimino::RefillNextBuffer() {
     nextBuffer_.clear();
     std::vector<Type> allTypes = { S, Z, T, O, I, L, J };
+    //1,2,3,4,5,6,7の最小公倍数:420
     std::uniform_int_distribution<int> dist(1, 420);
 
     for (int i = static_cast<int>(Type::Count) - 1; i > 0; --i) {

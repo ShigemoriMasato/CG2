@@ -40,17 +40,6 @@ void TitleScene::Initialize() {
 std::unique_ptr<BaseScene> TitleScene::Update() {
 	camera_->Update();
 
-	ImGui::Begin("Model Debug");
-	if (ImGui::Button("Desc")) {
-		AssetsID modelID = assetsLoader_->Load("DefaultDesc");
-		model_->Initialize(modelID);
-	}
-	if (ImGui::Button("Bunny")) {
-		AssetsID modelID = assetsLoader_->Load("Bunny");
-		model_->Initialize(modelID);
-	}
-	ImGui::End();
-
 	return std::unique_ptr<BaseScene>();
 }
 

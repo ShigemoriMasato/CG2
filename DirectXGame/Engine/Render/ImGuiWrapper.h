@@ -1,12 +1,15 @@
 #pragma once
 #include <cstdint>
-#include <imgui/imgui.h>
-#include <imgui/imgui_impl_dx12.h>
 #include <Core/DXDevice.h>
 #include <Core/SRVManager.h>
-#include <imgui/ImGuizmo.h>
 #include <Camera/Camera.h>
 
+#ifdef USE_IMGUI
+#include <imgui/imgui.h>
+#include <imgui/imgui_impl_dx12.h>
+#include <imgui/ImGuizmo.h>
+#include <imgui/imgui_impl_win32.h>
+#endif
 class Render;
 
 namespace ImGuiOperator {
@@ -40,12 +43,14 @@ private:
 		Transform* transform;
 	};
 
+	static Camera* camera_;
+
+#ifdef USE_IMGUI
 	void UseGuizmo(ImGuizmo::OPERATION operationType, GuizmoData& data);
 
 	std::vector<GuizmoData> guizmoDataMap_;
 
-	static Camera* camera_;
-
 	ImGuizmo::OPERATION operationType_ = ImGuizmo::TRANSLATE;
+#endif
 };
 

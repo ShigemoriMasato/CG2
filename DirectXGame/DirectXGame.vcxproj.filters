@@ -267,6 +267,9 @@
     <ClCompile Include="AppSource\Game\Tetris\Tetris.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="AppSource\Game\KeyState\KeyCoating.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="externals\imgui\imconfig.h">
@@ -485,11 +488,9 @@
     <ClInclude Include="AppSource\Game\Tetris\Tetris.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="externals\imgui\LICENSE.txt">
-      <Filter>externals\imgui</Filter>
-    </Text>
+    <ClInclude Include="AppSource\Game\KeyState\KeyCoating.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="AppSource\Game\Emitter\ReadMe.md" />

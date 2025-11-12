@@ -1,6 +1,7 @@
 #pragma once
 #include <Scene/Data/BaseScene.h>
 #include <Camera/DebugCamera.h>
+#include <Game/KeyState/KeyCoating.h>
 #include "../Tetris/Tetris.h"
 
 class GameScene : public BaseScene {
@@ -18,5 +19,6 @@ private:
 	std::unique_ptr<DebugCamera> debugCamera_ = nullptr;
 
 	std::unique_ptr<Tetris> tetris_ = nullptr;
+	std::unique_ptr<KeyCoating> keyCoating_ = nullptr;
 
 };

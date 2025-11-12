@@ -1,6 +1,6 @@
 #include "Tetris.h"
 
-void Tetris::Initialize(Camera* camera) {
+void Tetris::Initialize(KeyCoating* keys, Camera* camera) {
 	field_ = std::make_unique<Field>(fieldWidth_, fieldHeight_);
 	field_->Initialize(camera);
 
@@ -22,13 +22,16 @@ void Tetris::Initialize(Camera* camera) {
 	std::random_device rd;
 	mt = std::mt19937(rd());
 	tetrimino_->Initialize(mt);
+
+	keys_ = keys;
 }
 
 void Tetris::Update(float deltaTime) {
+	auto key = keys_->GetKeyStates();
+
 	field_->Update();
 
-	ImGui::Begin("Tetrimino");
-	if (ImGui::Button("Spawn Next")) {
+	if (key[Key::Correct]) {
 		Tetrimino::Type next = tetrimino_->PopFirst();
 		auto offsets = tetrimino_->GetOffset(next);
 		field_->SpawnMino(offsets, static_cast<int>(next));
@@ -36,7 +39,6 @@ void Tetris::Update(float deltaTime) {
 		auto mapData = field_->GetField();
 		blockRender_->SetBlock(mapData);
 	}
-	ImGui::End();
 }
 
 void Tetris::Draw(Render* render) {

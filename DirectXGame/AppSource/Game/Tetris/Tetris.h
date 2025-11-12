@@ -2,6 +2,7 @@
 #include <Game/Tetris/Field/Field.h>
 #include <Game/Tetris/Block/BlockRender.h>
 #include <Game/Tetris/Mino/Tetrimino.h>
+#include <Game/KeyState/KeyCoating.h>
 
 class Tetris {
 public:
@@ -9,7 +10,7 @@ public:
 	Tetris() = default;
 	~Tetris() = default;
 
-	void Initialize(Camera* camera);
+	void Initialize(KeyCoating* keys, Camera* camera);
 	void Update(float deltaTime);
 	void Draw(Render* render);
 
@@ -21,6 +22,8 @@ private://定数
 	std::mt19937 mt;
 
 private:
+
+	KeyCoating* keys_ = nullptr;
 
 	std::unique_ptr<Field> field_ = nullptr;
 	std::unique_ptr<BlockRender> blockRender_ = nullptr;

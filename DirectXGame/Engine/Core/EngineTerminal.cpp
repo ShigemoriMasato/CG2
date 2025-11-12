@@ -2,7 +2,9 @@
 #include <Common/InitializeScene/InitializeScene.h>
 #include <Scene/SceneManager.h>
 
+#ifdef USE_IMGUI
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+#endif
 
 EngineTerminal::EngineTerminal(BootMode mode) {
 	mode_ = mode;
@@ -35,10 +37,12 @@ void EngineTerminal::Initialize(int32_t windowWidth, int32_t windowHeight) {
 
 	dxDevice_->SetWindowProc([this](HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) -> LRESULT {
 
+#ifdef USE_IMGUI
 		//imguiのウィンドウプロシージャを呼ぶ
 		if (ImGui_ImplWin32_WndProcHandler(hwnd, msg, wparam, lparam)) {
 			return true;
 		}
+#endif
 
 		switch (msg) {
 		case WM_CLOSE:

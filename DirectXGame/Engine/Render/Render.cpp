@@ -1,6 +1,5 @@
 #include "Render.h"
 #include <Core/DXCommonFunction.h>
-#include <imgui/imgui_impl_dx12.h>
 
 Render::Render(DXDevice* device) {
     device_ = device;
@@ -331,6 +330,7 @@ void Render::EndFrame(bool swapchainPresent) {
     isFrameFirst_ = true;
 }
 
+#ifdef USE_IMGUI
 ImGui_ImplDX12_InitInfo Render::GetImGuiInitInfo(SRVManager* srv) {
     ImGui_ImplDX12_InitInfo info;
 	info.Device = device_->GetDevice();
@@ -346,6 +346,7 @@ ImGui_ImplDX12_InitInfo Render::GetImGuiInitInfo(SRVManager* srv) {
 
 	return info;
 }
+#endif
 
 void Render::PreDrawSwapChain(bool isClear) {
     //描画する画面を取得
