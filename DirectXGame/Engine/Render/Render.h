@@ -4,7 +4,6 @@
 #include <Assets/Texture/TextureManager.h>
 #include <Assets/OffScreen/OffScreenManager.h>
 #include <Render/ImGuiWrapper.h>
-#include <imgui/imgui_impl_dx12.h>
 
 #include <Render/Resource/DrawResource.h>
 #include <Render/Resource/PostEffectResource.h>

@@ -1,6 +1,9 @@
 #include "FPSObserver.h"
 #pragma comment(lib,"winmm.lib")
+
+#ifdef USE_IMGUI
 #include <imgui/imgui.h>
+#endif
 
 bool FPSObserver::isFix_ = true;
 float FPSObserver::deltatime_ = 1.0f / 60.0f;

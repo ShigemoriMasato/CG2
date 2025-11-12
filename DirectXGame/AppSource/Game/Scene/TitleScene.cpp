@@ -1,5 +1,4 @@
 #include "TitleScene.h"
-#include <imgui/ImGuizmo.h>
 
 TitleScene::TitleScene() : BaseScene() {
 }
