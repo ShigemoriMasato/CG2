@@ -22,6 +22,7 @@ private:
 
 	float timer[4];
 	bool preFlugs_[4] = {};
-	const float initialTime = 0.2f;
+	const float initialTime = 0.4f;
+	const float intervalTime = 0.07f;
 
 };

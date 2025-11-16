@@ -25,10 +25,17 @@ public:
 
 private:
 
+	struct ParticleData final {
+		Matrix4x4 vp;
+		Matrix4x4 world;
+		uint32_t color;
+		uint32_t textureIndex;
+		Vector2 padding;
+		Vector4 pad;
+	};
+
 	VertexData* vertex_ = nullptr;
 	uint32_t* indices_ = nullptr;
 	ParticleData* particleData_ = nullptr;
-
-
 
 };

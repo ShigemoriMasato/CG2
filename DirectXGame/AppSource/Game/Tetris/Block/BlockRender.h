@@ -21,6 +21,7 @@ public:
 private:
 
 	std::unique_ptr<BlockResource> blockResource_ = nullptr;
+	std::unique_ptr<BlockResource> wallResource_ = nullptr;
 	std::map<int, BlockConfig> configMap_;
 
 	int width_ = 0;

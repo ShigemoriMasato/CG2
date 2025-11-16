@@ -29,16 +29,16 @@ void Tetris::Initialize(KeyCoating* keys, Camera* camera) {
 void Tetris::Update(float deltaTime) {
 	auto key = keys_->GetKeyStates();
 
-	field_->Update();
+	field_->Update(deltaTime, key);
 
-	if (key[Key::Correct]) {
-		Tetrimino::Type next = tetrimino_->PopFirst();
-		auto offsets = tetrimino_->GetOffset(next);
-		field_->SpawnMino(offsets, static_cast<int>(next));
-
-		auto mapData = field_->GetField();
-		blockRender_->SetBlock(mapData);
+	if (!field_->GetHasMoveMino()) {
+		auto next = tetrimino_->PopFirst();
+		auto offset = tetrimino_->GetOffset(next);
+		field_->SpawnMino(offset, static_cast<int>(next));
 	}
+
+	auto mapData = field_->GetField();
+	blockRender_->SetBlock(mapData);
 }
 
 void Tetris::Draw(Render* render) {

@@ -47,15 +47,6 @@ struct Material final
 	float shininess = 0.0f;
 };
 
-struct ParticleData final
-{
-	Matrix4x4 wvp;
-	Matrix4x4 world;
-	Vector4 color;
-	uint32_t textureIndex;
-	Vector3 padding;
-};
-
 struct ModelParticleData final
 {
 	Matrix4x4 wvp;

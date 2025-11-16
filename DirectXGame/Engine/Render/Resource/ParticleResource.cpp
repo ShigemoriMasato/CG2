@@ -181,8 +181,8 @@ void ParticleResource::DrawReady() {
 	Matrix4x4 vp = camera_->GetVPMatrix();
 	for (uint32_t i = 0; i < instanceNum_; ++i) {
 		particleData_[i].world = MakeAffineMatrix(scale_[i], rotate_[i], position_[i]);
-		particleData_[i].wvp = vp;
-		particleData_[i].color = ConvertColor(color_[i]);
+		particleData_[i].vp = vp;
+		particleData_[i].color = color_[i];
 		particleData_[i].textureIndex = textureIndex_[i].id;
 	}
 }

@@ -23,6 +23,34 @@ void BlockRender::Initialize(int width, int height, Camera* camera) {
 
 		}
 	}
+
+	wallResource_ = std::make_unique<BlockResource>();
+	wallResource_->Initialize((height_ + 1) * 2 + width_);
+	wallResource_->camera_ = camera;
+
+	int index = 0;
+	for (int i = 0; i < height_ + 1; ++i) {
+		for (int j = 0; j < 2; ++j) {
+			wallResource_->position_[index] = {
+				-width_ / 2.0f + (width_ + 1.0f) * j - 1.0f, -float(i) + float(height_) / 2 - 1.0f, 0.0f
+			};
+			wallResource_->scale_[index] = { 1.0f, 1.0f, 1.0f };
+			wallResource_->color_[index] = 0xff;
+			wallResource_->outlineColor_[index] = 0xffffffff;
+
+			++index;
+		}
+	}
+
+	for (int i = 0; i < width_; ++i) {
+		wallResource_->position_[index] = {
+			float(i) - float(width_) / 2, -float(height_) / 2 - 1.0f, 0.0f
+		};
+		wallResource_->scale_[index] = { 1.0f, 1.0f, 1.0f };
+		wallResource_->color_[index] = 0xff;
+		wallResource_->outlineColor_[index] = 0xffffffff;
+		++index;
+	}
 }
 
 void BlockRender::SetBlockConfig(std::map<int, BlockConfig> configMap) {
@@ -56,4 +84,5 @@ void BlockRender::SetBlock(std::vector<std::vector<int>> allConfigIndices) {
 
 void BlockRender::Draw(Render* render) {
 	render->Draw(blockResource_.get());
+	render->Draw(wallResource_.get());
 }

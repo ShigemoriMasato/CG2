@@ -216,7 +216,7 @@ void Render::Draw(BaseResource* res) {
 
 	auto srvHandles = res->GetSRVHandle();
     for (size_t i = 0; i < srvHandles.size(); i++) {
-        commandList->SetGraphicsRootDescriptorTable(rootIndex++, srvHandles[i].GPU);
+        commandList->SetGraphicsRootDescriptorTable(rootIndex++, srvHandles[i]->GPU);
 	}
 
     if (res->IsUseTexture()) {

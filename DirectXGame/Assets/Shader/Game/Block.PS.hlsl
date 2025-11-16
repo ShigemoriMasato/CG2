@@ -9,11 +9,6 @@ PSOutput main(PSInput input)
 {
     PSOutput output;
     
-    if (input.color.a < 0.1f)
-    {
-        discard;
-    }
-    
     float outlineWidth = 0.05f;
     
     output.color = input.color;
@@ -22,6 +17,11 @@ PSOutput main(PSInput input)
        input.texCoord.y < outlineWidth || input.texCoord.y > 1.0f - outlineWidth)
     {
         output.color = input.outlineColor;
+    }
+    
+    if(output.color.a < 0.01f)
+    {
+        discard;
     }
     
     return output;

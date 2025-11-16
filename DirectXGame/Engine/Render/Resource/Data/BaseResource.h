@@ -42,7 +42,7 @@ public:
 	D3D12_INDEX_BUFFER_VIEW GetIBV() const { return ibv_; }
 
 	std::vector<D3D12_GPU_VIRTUAL_ADDRESS> GetCBVAddress() const { return cbvAddresses_; }
-	std::vector<SRVHandle> GetSRVHandle() { return srvHandles_; }
+	std::vector<std::shared_ptr<SRVHandle>> GetSRVHandle() { return srvHandles_; }
 
 	uint32_t GetVertexNum() const { return vertexNum_; }
 	uint32_t GetIndexNum() const { return indexNum_; }
@@ -64,7 +64,7 @@ protected:
 	D3D12_GPU_VIRTUAL_ADDRESS MakeCBV(T*& ptr);
 
 	template<typename T>
-	SRVHandle MakeSRV(T*& ptr, uint32_t num);
+	std::shared_ptr<SRVHandle> MakeSRV(T*& ptr, uint32_t num);
 
 	//今はまだテクスチャの配列増やすだけ
 	void MakeUAV();
@@ -94,7 +94,7 @@ private:
 	std::vector<Resource> allResources_{};
 
 	std::vector<D3D12_GPU_VIRTUAL_ADDRESS> cbvAddresses_{};
-	std::vector<SRVHandle> srvHandles_{};
+	std::vector<std::shared_ptr<SRVHandle>> srvHandles_{};
 
 	std::shared_ptr<spdlog::logger> debugLogger_ = nullptr;
 
@@ -136,15 +136,15 @@ inline D3D12_GPU_VIRTUAL_ADDRESS BaseResource::MakeCBV(T*& ptr) {
 }
 
 template<typename T>
-inline SRVHandle BaseResource::MakeSRV(T*& ptr, uint32_t num) {
+inline std::shared_ptr<SRVHandle> BaseResource::MakeSRV(T*& ptr, uint32_t num) {
 
 	Resource resource;
 	resource.res.Attach(CreateBufferResource(dxDevice_->GetDevice(), sizeof(T) * num));
 	resource.res->Map(0, nullptr, (void**)&ptr);
 	allResources_.push_back(resource);
 
-	SRVHandle srvHandle;
-	srvHandle.UpdateHandle(srvManager_);
+	auto srvHandle = std::make_shared<SRVHandle>();
+	srvHandle->UpdateHandle(srvManager_);
 
 	//ParticleDataのSRV作成
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
@@ -158,7 +158,7 @@ inline SRVHandle BaseResource::MakeSRV(T*& ptr, uint32_t num) {
 
 	srvHandles_.push_back(srvHandle);
 
-	dxDevice_->GetDevice()->CreateShaderResourceView(resource.res.Get(), &srvDesc, srvHandle.CPU);
+	dxDevice_->GetDevice()->CreateShaderResourceView(resource.res.Get(), &srvDesc, srvHandle->CPU);
 
 	return srvHandle;
 }

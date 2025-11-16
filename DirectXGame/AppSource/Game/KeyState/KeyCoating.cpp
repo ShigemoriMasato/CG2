@@ -1,7 +1,9 @@
 #include "KeyCoating.h"
+#include <imgui/imgui.h>
 
 void KeyCoating::Update(float deltaTime) {
 	keyFlugs_ = keyManager_->GetKeyStates();
+	auto keys = keyFlugs_;
 
 	for (Key key : { Key::Right, Key::Left, Key::Up, Key::Down }) {
 		int index = static_cast<int>(key);
@@ -12,7 +14,7 @@ void KeyCoating::Update(float deltaTime) {
 			//一定時間押し続けたら
 			if (timer[index] <= 0.0f) {
 				keyFlugs_[key] = true;
-				timer[index] = initialTime;
+				timer[index] = intervalTime;
 			} else {
 				keyFlugs_[key] = false;
 			}
@@ -22,12 +24,14 @@ void KeyCoating::Update(float deltaTime) {
 				keyFlugs_[key] = true;
 			}
 
-			preFlugs_[index] = keyFlugs_[key];
-
 		} else {
 
 			timer[index] = initialTime;
 
 		}
+
+		preFlugs_[index] = keys[key];
+
 	}
+
 }

@@ -11,6 +11,7 @@ EngineTerminal::EngineTerminal(BootMode mode) {
 }
 
 EngineTerminal::~EngineTerminal() {
+	render_->PreDraw();
 	ImGuiOperator::Finalize();
 }
 
