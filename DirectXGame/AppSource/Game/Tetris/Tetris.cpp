@@ -23,22 +23,28 @@ void Tetris::Initialize(KeyCoating* keys, Camera* camera) {
 	mt = std::mt19937(rd());
 	tetrimino_->Initialize(mt);
 
+	player_ = std::make_unique<Player>();
+	player_->Initialize(field_.get());
+
 	keys_ = keys;
 }
 
 void Tetris::Update(float deltaTime) {
 	auto key = keys_->GetKeyStates();
 
-	field_->Update(deltaTime, key);
+	field_->Update(deltaTime);
+
+	player_->Update(deltaTime, key);
 
 	if (!field_->GetHasMoveMino()) {
-		auto next = tetrimino_->PopFirst();
-		auto offset = tetrimino_->GetOffset(next);
-		field_->SpawnMino(offset, static_cast<int>(next));
+		MovableMino next;
+		next.minoType = tetrimino_->PopFirst();
+		next.positions = tetrimino_->GetOffset(next.minoType);
+		field_->SpawnMino(next);
 	}
 
 	auto mapData = field_->GetField();
-	blockRender_->SetBlock(mapData);
+	blockRender_->SetBlock(mapData, player_->GetMoveMino());
 }
 
 void Tetris::Draw(Render* render) {

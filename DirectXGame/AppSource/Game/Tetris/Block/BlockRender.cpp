@@ -68,10 +68,14 @@ void BlockRender::SetBlock(int x, int y, int configIndex) {
 	}
 }
 
-void BlockRender::SetBlock(std::vector<std::vector<int>> allConfigIndices) {
+void BlockRender::SetBlock(std::vector<std::vector<int>> allConfigIndices, MovableMino movableMino) {
 	if (allConfigIndices.size() < static_cast<size_t>(height_) ||
 		allConfigIndices[0].size() < static_cast<size_t>(width_)) {
 		return; // サイズが足りない場合は何もしない
+	}
+
+	for (const auto& [x, y] : movableMino.positions) {
+		allConfigIndices[y][x] = movableMino.minoType;
 	}
 
 	for (int y = 0; y < height_; ++y) {

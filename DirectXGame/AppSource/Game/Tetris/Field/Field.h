@@ -14,10 +14,8 @@ public:
 
 	void Down();
 
-	void Update(float deltaTime, std::unordered_map<Key, bool> key);
+	void Update(float deltaTime);
 	void Draw(Render* render);
-
-	void SpawnMino(std::vector<std::pair<int, int>> tetrimino, int minoType);
 
 	std::vector<std::vector<int>> GetField() const;
 	bool GetHasMoveMino() const { return hasMoveMino_; }
@@ -31,9 +29,6 @@ private:
 	const int width_;
 	const int height_;
 	std::pair<int, int> spawnPosition_;
-
-	std::array<std::pair<int, int>, 4> moveMino_;
-	int minoType_ = 0;
 
 	std::unique_ptr<ParticleResource> debugSphere_ = nullptr;
 

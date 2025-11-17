@@ -3,6 +3,7 @@
 #include <Game/Tetris/Block/BlockRender.h>
 #include <Game/Tetris/Mino/Tetrimino.h>
 #include <Game/KeyState/KeyCoating.h>
+#include <Game/Tetris/Player/Player.h>
 
 class Tetris {
 public:
@@ -27,6 +28,7 @@ private:
 
 	std::unique_ptr<Field> field_ = nullptr;
 	std::unique_ptr<BlockRender> blockRender_ = nullptr;
+	std::unique_ptr<Player> player_ = nullptr;
 
 	std::unique_ptr<Tetrimino> tetrimino_ = nullptr;
 

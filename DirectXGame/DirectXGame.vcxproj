@@ -72,10 +72,12 @@
     <ClCompile Include="Engine\Func\MyString.cpp" />
     <ClCompile Include="Engine\Render\Resource\ParticleResource.cpp" />
     <ClCompile Include="AppSource\Game\Tetris\Tetris.cpp" />
+    <ClCompile Include="AppSource\Game\Tetris\Player\Player.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AppSource\Common\InitializeScene\InitializeScene.h" />
     <ClInclude Include="AppSource\Common\KeyConfig\KeyManager.h" />
+    <ClInclude Include="AppSource\Game\Tetris\Data.h" />
     <ClInclude Include="AppSource\Game\Tetris\Field\Field.h" />
     <ClInclude Include="AppSource\Game\Tetris\Mino\Tetrimino.h" />
     <ClInclude Include="AppSource\Game\Tetris\Score\LevelManager.h" />
@@ -138,6 +140,7 @@
     <ClInclude Include="AppSource\Game\Scene\GameScene.h" />
     <ClInclude Include="AppSource\Game\Tetris\Tetris.h" />
     <ClInclude Include="AppSource\Game\KeyState\KeyCoating.h" />
+    <ClInclude Include="AppSource\Game\Tetris\Player\Player.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="AppSource\Game\Emitter\ReadMe.md" />
