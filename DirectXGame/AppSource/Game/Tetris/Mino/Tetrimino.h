@@ -2,6 +2,8 @@
 #include <utility>
 #include <Common/KeyConfig/KeyManager.h>
 #include <random>
+#include <Render/Render.h>
+#include <Render/Resource/BlockResource.h>
 
 //テトリミノに関する管理。7種1順をここで管理する
 class Tetrimino {
@@ -23,7 +25,8 @@ public:
 	Tetrimino() = default;
 	~Tetrimino() = default;
 
-	void Initialize(std::mt19937 g);
+	void Initialize(std::mt19937 g, Camera* camera);
+	void DrawNext(Render* render);
 
 	std::vector<std::pair<int, int>> GetOffset(Type type);
 
@@ -67,4 +70,5 @@ private:
 
 	std::array<std::array<std::vector<std::pair<int, int>>, 2>, 4> srsOffsets_ = {};
 
+	std::unique_ptr<BlockResource> nextRes_ = nullptr;
 };

@@ -25,13 +25,105 @@ namespace {
 	}
 }
 
-void Player::Initialize(Field* field, Tetrimino* tetrimino) {
+void Player::Initialize(Field* field, Tetrimino* tetrimino, Camera* camera) {
 	field_ = field;
 	tetrimino_ = tetrimino;
 	spawnPosition_ = std::make_pair(int(field->GetField()[0].size() / 2 - 1), static_cast<int>(field->GetField().size() - 7));
+
+	holdRes_ = std::make_unique<BlockResource>();
+	holdRes_->Initialize(4);
+	holdRes_->camera_ = camera;
 }
 
 void Player::Update(float deltaTime, std::unordered_map<Key, bool> key) {
+	auto fieldData = field_->GetField();
+
+	PlayerControl(deltaTime, key);
+
+	//自動落下
+	if (isDown_ && !notAllowDown_) {
+
+		isDown_ = false;
+
+		if (canMove(moveMino_, fieldData, 0, -1)) {
+
+			//一個下に移動
+			moveMino_.position.second -= 1;
+
+		} else {
+			//フィールドに固定
+			reqFix_ = true;
+		}
+	}
+
+	if (reqFix_) {
+		for (const auto& [x, y] : moveMino_.offset) {
+			int newx = x + moveMino_.position.first;
+			int newy = y + moveMino_.position.second;
+			gameOver_ = field_->SetFieldIndex(newx, newy, moveMino_.minoType);
+		}
+		field_->LineCheck();
+		hasMoveMino_ = false;
+		reqFix_ = false;
+		holded_ = false;
+	}
+
+	if (holdMino_ != Tetrimino::None) {
+		auto offset = tetrimino_->GetOffset(holdMino_);
+
+		for (int i = 0; i < offset.size(); ++i) {
+			holdRes_->position_[i] = {
+				holdPosition_.x + float(offset[i].first),
+				holdPosition_.y + float(offset[i].second),
+				holdPosition_.z
+			};
+			holdRes_->scale_[i] = { 1.0f,1.0f,1.0f };
+			holdRes_->rotate_[i] = { 0.0f,0.0f,0.0f };
+
+			holdRes_->outlineColor_[i] = 0xffffffff;
+			holdRes_->color_[i] = 0x418b89ff; //todo 色をミノごとに変えられるようにする
+		}
+	}
+}
+
+void Player::HoldDraw(Render* render) {
+	render->Draw(holdRes_.get());
+}
+
+bool Player::SpawnMino(Tetrimino::Type tetriminoType) {
+	if (hasMoveMino_) {
+		return true;
+	}
+	
+	if (tetriminoType == 0) {
+		moveMino_.minoType = tetrimino_->PopFirst();
+	} else {
+		moveMino_.minoType = tetriminoType;
+	}
+	moveMino_.offset = tetrimino_->GetOffset(Tetrimino::Type(moveMino_.minoType));
+	moveMino_.position = spawnPosition_;
+
+	auto field = field_->GetField();
+
+	//スポーン位置に移動
+	for (int i = 0; i < moveMino_.offset.size(); ++i) {
+		int x = moveMino_.offset[i].first + spawnPosition_.first;
+		int y = moveMino_.offset[i].second + spawnPosition_.second;
+
+		//スポーン位置にブロックがある場合、ゲームオーバー
+		if (field[y][x] != 0) {
+			gameOver_ = true;
+			moveMino_ = {};
+			return false;
+		}
+	}
+
+	direction_ = dUp;
+	hasMoveMino_ = true;
+	return true;
+}
+
+void Player::PlayerControl(float deltaTime, std::unordered_map<Key, bool> key) {
 	auto fieldData = field_->GetField();
 
 	//キーによる移動
@@ -97,60 +189,13 @@ void Player::Update(float deltaTime, std::unordered_map<Key, bool> key) {
 		ExecuteSRS(rRight);
 	}
 
-	//自動落下
-	if (isDown_ && !notAllowDown_) {
-
-		isDown_ = false;
-
-		if (canMove(moveMino_, fieldData, 0, -1)) {
-
-			//一個下に移動
-			moveMino_.position.second -= 1;
-
-		} else {
-			//フィールドに固定
-			reqFix_ = true;
-		}
-	}
-
-	if (reqFix_) {
-		for (const auto& [x, y] : moveMino_.offset) {
-			int newx = x + moveMino_.position.first;
-			int newy = y + moveMino_.position.second;
-			gameOver_ = field_->SetFieldIndex(newx, newy, moveMino_.minoType);
-		}
-		field_->LineCheck();
+	if (key[Key::Hold] && !holded_) {
 		hasMoveMino_ = false;
-		reqFix_ = false;
+		auto prev = Tetrimino::Type(moveMino_.minoType);
+		SpawnMino(holdMino_);
+		holdMino_ = prev;
+		holded_ = true;
 	}
-}
-
-bool Player::SpawnMino() {
-	if (hasMoveMino_) {
-		return true;
-	}
-
-	moveMino_.minoType = tetrimino_->PopFirst();
-	moveMino_.offset = tetrimino_->GetOffset(Tetrimino::Type(moveMino_.minoType));
-	moveMino_.position = spawnPosition_;
-
-	auto field = field_->GetField();
-
-	//スポーン位置に移動
-	for (int i = 0; i < moveMino_.offset.size(); ++i) {
-		int x = moveMino_.offset[i].first + spawnPosition_.first;
-		int y = moveMino_.offset[i].second + spawnPosition_.second;
-
-		//スポーン位置にブロックがある場合、ゲームオーバー
-		if (field[y][x] != 0) {
-			gameOver_ = true;
-			moveMino_ = {};
-			return false;
-		}
-	}
-
-	hasMoveMino_ = true;
-	return true;
 }
 
 void Player::ExecuteSRS(Rotate rotate) {

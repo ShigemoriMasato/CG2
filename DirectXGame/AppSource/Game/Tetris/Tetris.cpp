@@ -21,10 +21,10 @@ void Tetris::Initialize(KeyCoating* keys, Camera* camera) {
 	tetrimino_ = std::make_unique<Tetrimino>();
 	std::random_device rd;
 	mt = std::mt19937(rd());
-	tetrimino_->Initialize(mt);
+	tetrimino_->Initialize(mt, camera);
 
 	player_ = std::make_unique<Player>();
-	player_->Initialize(field_.get(), tetrimino_.get());
+	player_->Initialize(field_.get(), tetrimino_.get(), camera);
 
 	keys_ = keys;
 }
@@ -58,4 +58,6 @@ void Tetris::Update(float deltaTime) {
 void Tetris::Draw(Render* render) {
 	field_->Draw(render);
 	blockRender_->Draw(render);
+	player_->HoldDraw(render);
+	tetrimino_->DrawNext(render);
 }

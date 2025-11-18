@@ -1,7 +1,7 @@
 #include "Tetrimino.h"
 #include <stdlib.h>
 
-void Tetrimino::Initialize(std::mt19937 g) {
+void Tetrimino::Initialize(std::mt19937 g, Camera* camera) {
     radg_ = g;
 	nexts_.clear();
 	RefillNextBuffer();
@@ -16,6 +16,31 @@ void Tetrimino::Initialize(std::mt19937 g) {
 	srsOffsets_[3][0] = { { {0, 0}, {-1, 0}, {-1, -1}, {0, 2}, {-1, 2} } }; //1 rotateL
 	srsOffsets_[2][0] = { { {0, 0}, {-1, 0}, {-1, 1}, {0, -2}, {-1, -2} } }; //2 rotateL
 	srsOffsets_[1][0] = { { {0, 0}, {1, 0}, {1, -1}, {0, 2}, {1, 2} } }; //3 rotateL
+
+	nextRes_ = std::make_unique<BlockResource>();
+	nextRes_->Initialize(20); //ネクスト最大5個×4ブロック
+	nextRes_->camera_ = camera;
+
+	for (int i = 0; i < 5; ++i) {
+		auto offset = GetOffset(nexts_[i]);
+		for (int j = 0; j < 4; ++j) {
+			int index = i * 4 + j;
+			nextRes_->scale_[index] = { 1.0f,1.0f,1.0f };
+			nextRes_->rotate_[index] = { 0.0f,0.0f,0.0f };
+			nextRes_->position_[index] = {
+				float(offset[j].first) + 9.0f,
+				float(offset[j].second) + 7.0f - i * 4.0f,
+				0.0f
+			};
+			nextRes_->color_[index] = 0x84ad54ff;
+			nextRes_->outlineColor_[index] = 0xffffffff;
+		}
+	}
+}
+
+void Tetrimino::DrawNext(Render* render) {
+
+	render->Draw(nextRes_.get());
 }
 
 std::vector<std::pair<int, int>> Tetrimino::GetOffset(Type type) {
@@ -30,7 +55,19 @@ Tetrimino::Type Tetrimino::PopFirst() {
 		nexts_ = nextBuffer_;
 		RefillNextBuffer();
     }
-    
+
+	for (int i = 0; i < 5; ++i) {
+		auto offset = GetOffset(GetNextTetrimino(i));
+		for (int j = 0; j < 4; ++j) {
+			int index = i * 4 + j;
+			nextRes_->position_[index] = {
+				float(offset[j].first) + 9.0f,
+				float(offset[j].second) + 7.0f - i * 4.0f,
+				0.0f
+			};
+		}
+	}
+
     return first;
 }
 

@@ -60,11 +60,11 @@ void BlockResource::Initialize(uint32_t instance) {
 
 	MakeSRV(blockData_, instanceNum_);
 
-	scale_.resize(instanceNum_);
-	rotate_.resize(instanceNum_);
-	position_.resize(instanceNum_);
-	color_.resize(instanceNum_, 0xff);
-	outlineColor_.resize(instanceNum_, 0xffffffff);
+	scale_.resize(instanceNum_, { 1.0f, 1.0f, 1.0f });
+	rotate_.resize(instanceNum_, {});
+	position_.resize(instanceNum_, {});
+	color_.resize(instanceNum_, 0);
+	outlineColor_.resize(instanceNum_, 0);
 
 	psoConfig_.vs = "Game/Block.VS.hlsl";
 	psoConfig_.ps = "Game/Block.PS.hlsl";
