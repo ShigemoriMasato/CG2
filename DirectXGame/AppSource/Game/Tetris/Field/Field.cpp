@@ -54,8 +54,17 @@ void Field::LineCheck() {
 			}
 		}
 
-		if (!isLineFull) {
+		if (isLineFull) {
 			reqLine_.push_back(i);
 		}
 	}
+}
+
+void Field::DeleteFillLine() {
+	int offset = 0;
+	for (const auto& line : reqLine_) {
+		field_.erase(field_.begin() + line - offset++);
+		field_.emplace_back(std::vector<int>(width_, 0));
+	}
+	reqLine_.clear();
 }

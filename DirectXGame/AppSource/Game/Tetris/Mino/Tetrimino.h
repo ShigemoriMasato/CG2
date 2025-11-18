@@ -16,7 +16,7 @@ public:
 		J,
 		I,
 		O,
-		Wall,
+		Del,
 		Count
 	};
 
@@ -39,6 +39,8 @@ public:
 	/// <param name="nextNum">16まで</param>
 	Type GetNextTetrimino(int nextNum);
 
+	std::vector<std::pair<int, int>> GetSRSOffset(int preDir, bool isRight);
+
 private:
 
 	//Nextの抽選
@@ -53,7 +55,7 @@ private:
 		{ Type::L, { {1, 0}, {0, 0}, {-1, 0}, {-1, 1} } },
 		{ Type::J, { {1, 1}, {1, 0}, {0, 0}, {-1, 0} } },
 		{ Type::I, { {2, 0}, {1, 0}, {0, 0}, {-1, 0} } },
-		{ Type::O, { {0, 0}, {-1, 0}, {0, -1}, {-1, -1} } }
+		{ Type::O, { {0, 0}, {1, 0}, {0, 1}, {1, 1} } }
 	};
 
 	std::vector<Type> nexts_;
@@ -62,5 +64,7 @@ private:
 	std::mt19937 radg_;
 
 	const int kMinoTypeNum_ = 7;
+
+	std::array<std::array<std::vector<std::pair<int, int>>, 2>, 4> srsOffsets_ = {};
 
 };

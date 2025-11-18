@@ -18,6 +18,7 @@ public:
 
 	bool SetFieldIndex(int x, int y, int type);
 	void LineCheck();
+	void DeleteFillLine();
 
 	std::vector<int> FillLineIndex() const { return reqLine_; }
 

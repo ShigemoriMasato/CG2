@@ -7,6 +7,15 @@ void Tetrimino::Initialize(std::mt19937 g) {
 	RefillNextBuffer();
 	nexts_ = nextBuffer_;
 	RefillNextBuffer();
+
+	srsOffsets_[0][1] = { { {0, 0}, {-1, 0}, {-1, 1}, {0, -2}, {-1, -2} } };// 0 rotateR
+	srsOffsets_[1][1] = { { {0, 0}, {1, 0}, {1, -1}, {0, 2}, {1, 2} } }; //1 rotateR
+	srsOffsets_[2][1] = { { {0, 0}, {1, 0}, {1, 1}, {0, -2}, {1, -2} } }; //2 rotateR
+	srsOffsets_[3][1] = { { {0, 0}, {-1, 0}, {-1, -1}, {0, 2}, {-1, 2} } }; //3 rotateR
+	srsOffsets_[0][0] = { { {0, 0}, {1, 0}, {1, 1}, {0, -2}, {1, -2} } }; //0 rotateL
+	srsOffsets_[3][0] = { { {0, 0}, {-1, 0}, {-1, -1}, {0, 2}, {-1, 2} } }; //1 rotateL
+	srsOffsets_[2][0] = { { {0, 0}, {-1, 0}, {-1, 1}, {0, -2}, {-1, -2} } }; //2 rotateL
+	srsOffsets_[1][0] = { { {0, 0}, {1, 0}, {1, -1}, {0, 2}, {1, 2} } }; //3 rotateL
 }
 
 std::vector<std::pair<int, int>> Tetrimino::GetOffset(Type type) {
@@ -36,6 +45,10 @@ Tetrimino::Type Tetrimino::GetNextTetrimino(int nextNum) {
         nextNum -= int(nexts_.size());
         return nextBuffer_[nextNum];
     }
+}
+
+std::vector<std::pair<int, int>> Tetrimino::GetSRSOffset(int preDir, bool isRight) {
+	return srsOffsets_[preDir][isRight ? 1 : 0];
 }
 
 void Tetrimino::RefillNextBuffer() {

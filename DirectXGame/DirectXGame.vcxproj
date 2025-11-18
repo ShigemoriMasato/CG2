@@ -21,8 +21,8 @@
     <ClCompile Include="AppSource\Game\Tetris\Mino\Tetrimino.cpp" />
     <ClCompile Include="AppSource\Game\Tetris\Score\LevelManager.cpp" />
     <ClCompile Include="AppSource\Game\Tetris\Score\ScoreManager.cpp" />
-    <ClCompile Include="AppSource\Game\Tetris\Block\Effect\BlockRender.cpp" />
-    <ClCompile Include="AppSource\Game\Tetris\Block\DeleteEffect.cpp" />
+    <ClCompile Include="AppSource\Game\Tetris\Block\BlockRender.cpp" />
+    <ClCompile Include="AppSource\Game\Tetris\Block\Delete\DeleteEffect.cpp" />
     <ClCompile Include="Engine\Render\Resource\BlockResource.cpp" />
     <ClCompile Include="Engine\Assets\AssetsLoader.cpp" />
     <ClCompile Include="Engine\Assets\Audio\AudioManager.cpp" />
@@ -83,8 +83,8 @@
     <ClInclude Include="AppSource\Game\Tetris\Mino\Tetrimino.h" />
     <ClInclude Include="AppSource\Game\Tetris\Score\LevelManager.h" />
     <ClInclude Include="AppSource\Game\Tetris\Score\ScoreManager.h" />
-    <ClInclude Include="AppSource\Game\Tetris\Block\Effect\BlockRender.h" />
-    <ClInclude Include="AppSource\Game\Tetris\Block\DeleteEffect.h" />
+    <ClInclude Include="AppSource\Game\Tetris\Block\BlockRender.h" />
+    <ClInclude Include="AppSource\Game\Tetris\Block\Delete\DeleteEffect.h" />
     <ClInclude Include="Engine\Render\Resource\BlockResource.h" />
     <ClInclude Include="Engine\Assets\AssetsLoader.h" />
     <ClInclude Include="Engine\Assets\Audio\AudioManager.h" />

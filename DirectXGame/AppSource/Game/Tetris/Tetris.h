@@ -15,6 +15,8 @@ public:
 	void Update(float deltaTime);
 	void Draw(Render* render);
 
+	bool IsGameOver() const { return gameOver_; }
+
 private://定数
 
 	const int fieldWidth_ = 10;
@@ -31,6 +33,8 @@ private:
 	std::unique_ptr<Player> player_ = nullptr;
 
 	std::unique_ptr<Tetrimino> tetrimino_ = nullptr;
+
+	bool gameOver_ = false;
 
 };
 
