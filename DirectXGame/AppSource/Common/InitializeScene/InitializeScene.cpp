@@ -86,7 +86,7 @@ void InitializeScene::LoadAllResources() {
 	}
 
 	for (const auto& fileName : modelFolder) {
-		//assetsLoader_->Load(fileName);
+		assetsLoader_->Load(fileName);
 	}
 
 }

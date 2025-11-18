@@ -1,7 +1,7 @@
 #include "Player.h"
 
 namespace {
-	bool canMove(std::array<std::pair<int, int>, 4> positions, const std::vector<std::vector<int>>& field, int dx, int dy) {
+	bool canMove(std::vector<std::pair<int, int>> positions, const std::vector<std::vector<int>>& field, int dx, int dy) {
 		for (int i = 0; i < positions.size(); ++i) {
 			int newX = positions[i].first + dx;
 			int newY = positions[i].second + dy;
@@ -19,19 +19,23 @@ namespace {
 }
 
 void Player::Initialize(Field* field) {
+	field_ = field;
+	spawnPosition_ = std::make_pair(int(field->GetField()[0].size() / 2 - 1), static_cast<int>(field->GetField().size() - 7));
 }
 
 void Player::Update(float deltaTime, std::unordered_map<Key, bool> key) {
+	auto fieldData = field_->GetField();
+
 	//キーによる移動
 	if (key[Key::Right]) {
-		if (canMove(moveMino_.positions, field_->GetField(), 1, 0)) {
+		if (canMove(moveMino_.positions, fieldData, 1, 0)) {
 			//一個右に移動
 			for (int i = 0; i < moveMino_.positions.size(); ++i) {
 				moveMino_.positions[i].first += 1;
 			}
 		}
 	} else if (key[Key::Left]) {
-		if (canMove(moveMino_.positions, field_->GetField(), -1, 0)) {
+		if (canMove(moveMino_.positions, fieldData, -1, 0)) {
 			//一個左に移動
 			for (int i = 0; i < moveMino_.positions.size(); ++i) {
 				moveMino_.positions[i].first -= 1;
@@ -42,7 +46,7 @@ void Player::Update(float deltaTime, std::unordered_map<Key, bool> key) {
 	if (key[Key::HardDrop]) {
 		//落下可能な距離を計算
 		int dropDistance = 0;
-		while (canMove(moveMino_.positions, field_->GetField(), 0, dropDistance)) {
+		while (canMove(moveMino_.positions, fieldData, 0, dropDistance)) {
 			--dropDistance;
 		}
 
@@ -66,7 +70,7 @@ void Player::Update(float deltaTime, std::unordered_map<Key, bool> key) {
 		if (downTimer_ >= 0.1f) {
 			downTimer_ = 0.0f;
 
-			if (canMove(moveMino_.positions, field_->GetField(), 0, -1)) {
+			if (canMove(moveMino_.positions, fieldData, 0, -1)) {
 				//一個下に移動
 				for (int i = 0; i < moveMino_.positions.size(); ++i) {
 					moveMino_.positions[i].second -= 1;
@@ -92,7 +96,7 @@ void Player::Update(float deltaTime, std::unordered_map<Key, bool> key) {
 
 		isDown_ = false;
 
-		if (canMove(moveMino_.positions, field_->GetField(), 0, -1)) {
+		if (canMove(moveMino_.positions, fieldData, 0, -1)) {
 
 			//一個下に移動
 			for (int i = 0; i < moveMino_.positions.size(); ++i) {
@@ -105,4 +109,22 @@ void Player::Update(float deltaTime, std::unordered_map<Key, bool> key) {
 		}
 	}
 
+	if (reqFix_) {
+		for (const auto& [x, y] : moveMino_.positions) {
+			gameOver_ = field_->SetFieldIndex(x, y, moveMino_.minoType);
+		}
+		field_->LineCheck();
+		hasMoveMino_ = false;
+		reqFix_ = false;
+	}
+}
+
+void Player::SpawnMino(MovableMino moveMino) {
+	moveMino_ = moveMino;
+	//スポーン位置に移動
+	for (int i = 0; i < moveMino_.positions.size(); ++i) {
+		moveMino_.positions[i].first += spawnPosition_.first;
+		moveMino_.positions[i].second += spawnPosition_.second;
+	}
+	hasMoveMino_ = true;
 }

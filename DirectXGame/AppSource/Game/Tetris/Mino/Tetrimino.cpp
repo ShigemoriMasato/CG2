@@ -44,7 +44,7 @@ void Tetrimino::RefillNextBuffer() {
     //1,2,3,4,5,6,7の最小公倍数:420
     std::uniform_int_distribution<int> dist(1, 420);
 
-    for (int i = static_cast<int>(Type::Count) - 1; i > 0; --i) {
+    for (int i = kMinoTypeNum_; i > 0; --i) {
 		int randIndex = dist(radg_) % i;
         nextBuffer_.push_back(allTypes[randIndex]);
 		allTypes.erase(allTypes.begin() + randIndex);

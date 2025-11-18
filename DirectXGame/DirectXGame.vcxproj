@@ -21,7 +21,8 @@
     <ClCompile Include="AppSource\Game\Tetris\Mino\Tetrimino.cpp" />
     <ClCompile Include="AppSource\Game\Tetris\Score\LevelManager.cpp" />
     <ClCompile Include="AppSource\Game\Tetris\Score\ScoreManager.cpp" />
-    <ClCompile Include="AppSource\Game\Tetris\Block\BlockRender.cpp" />
+    <ClCompile Include="AppSource\Game\Tetris\Block\Effect\BlockRender.cpp" />
+    <ClCompile Include="AppSource\Game\Tetris\Block\DeleteEffect.cpp" />
     <ClCompile Include="Engine\Render\Resource\BlockResource.cpp" />
     <ClCompile Include="Engine\Assets\AssetsLoader.cpp" />
     <ClCompile Include="Engine\Assets\Audio\AudioManager.cpp" />
@@ -82,7 +83,8 @@
     <ClInclude Include="AppSource\Game\Tetris\Mino\Tetrimino.h" />
     <ClInclude Include="AppSource\Game\Tetris\Score\LevelManager.h" />
     <ClInclude Include="AppSource\Game\Tetris\Score\ScoreManager.h" />
-    <ClInclude Include="AppSource\Game\Tetris\Block\BlockRender.h" />
+    <ClInclude Include="AppSource\Game\Tetris\Block\Effect\BlockRender.h" />
+    <ClInclude Include="AppSource\Game\Tetris\Block\DeleteEffect.h" />
     <ClInclude Include="Engine\Render\Resource\BlockResource.h" />
     <ClInclude Include="Engine\Assets\AssetsLoader.h" />
     <ClInclude Include="Engine\Assets\Audio\AudioManager.h" />
@@ -223,8 +225,8 @@
     </Link>
     <PostBuildEvent>
       <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
-copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dxil.dll"
-</Command>
+copy "$(ProjectDir)dxil.dll" "$(TargetDir)dxil.dll"
+xcopy /E /I /Y "$(ProjectDir)Assets\*" "$(TargetDir)Assets\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -252,7 +254,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </Link>
     <PostBuildEvent>
       <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
-copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dxil.dll"
+copy "$(ProjectDir)dxil.dll" "$(TargetDir)dxil.dll"
 xcopy /E /I /Y "$(ProjectDir)Assets\*" "$(TargetDir)Assets\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -284,8 +286,8 @@ xcopy /E /I /Y "$(ProjectDir)Assets\*" "$(TargetDir)Assets\"</Command>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
-copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dxil.dll"
-</Command>
+copy "$(ProjectDir)dxil.dll" "$(TargetDir)dxil.dll"
+xcopy /E /I /Y "$(ProjectDir)Assets\*" "$(TargetDir)Assets\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

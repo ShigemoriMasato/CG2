@@ -12,16 +12,15 @@ public:
 	void Initialize(Field* field);
 	void Update(float deltaTime, std::unordered_map<Key, bool> key);
 
-	void SpawnMino(MovableMino moveMino) { 
-		moveMino_ = moveMino; 
-		hasMoveMino_ = true;
-	}
+	void SpawnMino(MovableMino moveMino);
 
 	MovableMino GetMoveMino() const { return moveMino_; }
+	bool GetHasMoveMino() const { return hasMoveMino_; }
 
 private:
 
 	MovableMino moveMino_;
+	std::pair<int, int> spawnPosition_;
 
 	Field* field_ = nullptr;
 
@@ -35,4 +34,5 @@ private:
 	bool isDown_ = false;
 	bool reqFix_ = false;
 
+	bool gameOver_ = false;
 };

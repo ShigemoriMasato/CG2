@@ -25,15 +25,6 @@ void Field::Initialize(Camera* camera) {
 	}
 
 	debugSphere_->camera_ = camera;
-
-	spawnPosition_ = { width_ / 2, height_ - 3 };
-}
-
-void Field::Down() {
-	isDown_ = true;
-}
-
-void Field::Update(float deltaTime) {
 }
 
 void Field::Draw(Render* render) {
@@ -41,28 +32,30 @@ void Field::Draw(Render* render) {
 }
 
 std::vector<std::vector<int>> Field::GetField() const {
-	auto ans = field_;
-
-	for(int i = 0; i < 4; ++i) {
-		int x = moveMino_[i].first;
-		int y = moveMino_[i].second;
-		if (x < 0 || x >= width_ || y < 0 || y >= height_) {
-			continue;
-		}
-		ans[y][x] = minoType_;
-	}
-
-	return ans;
+	return field_;
 }
 
-void Field::SetTetriminoToField() {
-	for (int i = 0; i < moveMino_.size(); ++i) {
-		int x = moveMino_[i].first;
-		int y = moveMino_[i].second;
-		if (x < 0 || x >= width_ || y < 0 || y >= height_) {
-			continue;
-		}
-		field_[y][x] = minoType_;
+bool Field::SetFieldIndex(int x, int y, int type) {
+	bool gameover = true;
+	if (field_[y][x] != 0) {
+		gameover = false;
 	}
-	hasMoveMino_ = false;
+	field_[y][x] = type;
+	return gameover;
+}
+
+void Field::LineCheck() {
+	for (int i = 0; i < height_; ++i) {
+		bool isLineFull = true;
+		for (int j = 0; j < width_; ++j) {
+			if (field_[i][j] == 0) {
+				isLineFull = false;
+				break;
+			}
+		}
+
+		if (!isLineFull) {
+			reqLine_.push_back(i);
+		}
+	}
 }

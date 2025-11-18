@@ -53,6 +53,14 @@ void BlockRender::Initialize(int width, int height, Camera* camera) {
 	}
 }
 
+void BlockRender::Update(float deltaTime) {
+
+	if (isDeleting_) {
+
+	}
+
+}
+
 void BlockRender::SetBlockConfig(std::map<int, BlockConfig> configMap) {
 	configMap_ = configMap;
 }
@@ -84,6 +92,11 @@ void BlockRender::SetBlock(std::vector<std::vector<int>> allConfigIndices, Movab
 			SetBlock(x, y, configIndex);
 		}
 	}
+}
+
+void BlockRender::BeginDeleteEffect(std::vector<int> fillLines) {
+	deletingLines_ = fillLines;
+	isDeleting_ = true;
 }
 
 void BlockRender::Draw(Render* render) {
