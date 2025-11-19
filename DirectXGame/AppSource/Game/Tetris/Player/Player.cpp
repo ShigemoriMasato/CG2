@@ -142,6 +142,10 @@ void Player::PlayerControl(float deltaTime, std::unordered_map<Key, bool> key) {
 			//一個右に移動
 			moveMino_.position.first += 1;
 		}
+
+		if (!notAllowDown_ && !canMove(moveMino_, fieldData, 0, -1)) {
+			notAllowDown_ = true;
+		}
 		if (notAllowDown_) {
 			downTimer_ = 0.0f;
 			fixTimer_ = 0.0f;
@@ -150,6 +154,10 @@ void Player::PlayerControl(float deltaTime, std::unordered_map<Key, bool> key) {
 		if (canMove(moveMino_, fieldData, -1, 0)) {
 			//一個左に移動
 			moveMino_.position.first -= 1;
+		}
+
+		if(!notAllowDown_ && !canMove(moveMino_, fieldData, 0, -1)) {
+			notAllowDown_ = true;
 		}
 		if (notAllowDown_) {
 			downTimer_ = 0.0f;

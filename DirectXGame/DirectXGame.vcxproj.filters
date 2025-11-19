@@ -237,9 +237,6 @@
     <ClCompile Include="Engine\Render\Resource\BlockResource.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="AppSource\Game\Tetris\Block\Effect\BlockRender.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="AppSource\Game\Tetris\Tetris.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -249,7 +246,10 @@
     <ClCompile Include="AppSource\Game\Tetris\Player\Player.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="AppSource\Game\Tetris\Block\DeleteEffect.cpp">
+    <ClCompile Include="AppSource\Game\Tetris\Block\BlockRender.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="AppSource\Game\Tetris\Block\Delete\DeleteEffect.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -437,9 +437,6 @@
     <ClInclude Include="Engine\Render\Resource\BlockResource.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="AppSource\Game\Tetris\Block\Effect\BlockRender.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="AppSource\Game\Tetris\Tetris.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -452,7 +449,10 @@
     <ClInclude Include="AppSource\Game\Tetris\Data.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="AppSource\Game\Tetris\Block\DeleteEffect.h">
+    <ClInclude Include="AppSource\Game\Tetris\Block\BlockRender.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="AppSource\Game\Tetris\Block\Delete\DeleteEffect.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

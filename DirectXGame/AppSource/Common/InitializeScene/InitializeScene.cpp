@@ -9,30 +9,38 @@ void InitializeScene::Initialize() {
 	auto keyManager = commonData->keyManager_.get();
 
 	//KeyConfigの設定
+	keyManager->SetKey(Key::Right, DIK_D, KeyState::Hold);
 	keyManager->SetKey(Key::Right, DIK_RIGHTARROW, KeyState::Hold);
 	keyManager->SetButton(Key::Right, XBoxController::kRight, KeyState::Hold);
 	keyManager->SetStick(Key::Right, true, false, 0.5f);
 
+	keyManager->SetKey(Key::Left, DIK_A, KeyState::Hold);
 	keyManager->SetKey(Key::Left, DIK_LEFTARROW, KeyState::Hold);
 	keyManager->SetButton(Key::Left, XBoxController::kLeft, KeyState::Hold);
 	keyManager->SetStick(Key::Left, true, false, -0.5f);
 
+	keyManager->SetKey(Key::Up, DIK_W, KeyState::Hold);
 	keyManager->SetKey(Key::Up, DIK_UPARROW, KeyState::Hold);
 	keyManager->SetButton(Key::Up, XBoxController::kUp, KeyState::Hold);
 	keyManager->SetStick(Key::Up, true, true, 0.5f);
 
+	keyManager->SetKey(Key::Down, DIK_S, KeyState::Hold);
 	keyManager->SetKey(Key::Down, DIK_DOWNARROW, KeyState::Hold);
 	keyManager->SetButton(Key::Down, XBoxController::kDown, KeyState::Hold);
 	keyManager->SetStick(Key::Down, true, true, -0.5f);
 
 	//================================================================================
 
+	keyManager->SetKey(Key::HardDrop, DIK_W, KeyState::Trigger);
 	keyManager->SetKey(Key::HardDrop, DIK_SPACE, KeyState::Trigger);
 	keyManager->SetKey(Key::HardDrop, DIK_UPARROW, KeyState::Trigger);
 	keyManager->SetButton(Key::HardDrop, XBoxController::kUp, KeyState::Trigger);
+	keyManager->SetStick(Key::HardDrop, true, true, 0.5f);
 
 	keyManager->SetKey(Key::Hold, DIK_LSHIFT, KeyState::Trigger);
 	keyManager->SetKey(Key::Hold, DIK_C, KeyState::Trigger);
+	keyManager->SetKey(Key::Hold, DIK_H, KeyState::Trigger);
+	keyManager->SetKey(Key::Hold, DIK_L, KeyState::Trigger);
 	keyManager->SetKey(Key::Hold, DIK_RSHIFT, KeyState::Trigger);
 	keyManager->SetButton(Key::Hold, XBoxController::kLeftShoulder, KeyState::Trigger);
 	keyManager->SetButton(Key::Hold, XBoxController::kLeftTrigger, KeyState::Trigger);
@@ -42,9 +50,11 @@ void InitializeScene::Initialize() {
 	//================================================================================
 
 	keyManager->SetKey(Key::LRotate, DIK_Z, KeyState::Trigger);
+	keyManager->SetKey(Key::LRotate, DIK_J, KeyState::Trigger);
 	keyManager->SetButton(Key::LRotate, XBoxController::kX, KeyState::Trigger);
 
 	keyManager->SetKey(Key::RRotate, DIK_X, KeyState::Trigger);
+	keyManager->SetKey(Key::RRotate, DIK_K, KeyState::Trigger);
 	keyManager->SetButton(Key::RRotate, XBoxController::kY, KeyState::Trigger);
 
 	//================================================================================
