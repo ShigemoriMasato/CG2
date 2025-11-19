@@ -35,8 +35,8 @@ void BlockRender::Initialize(int width, int height, Camera* camera) {
 				-width_ / 2.0f + (width_ + 1.0f) * j - 1.0f, -float(i) + float(height_) / 2 - 1.0f, 0.0f
 			};
 			wallResource_->scale_[index] = { 1.0f, 1.0f, 1.0f };
-			wallResource_->color_[index] = 0xff;
-			wallResource_->outlineColor_[index] = 0xffffffff;
+			wallResource_->color_[index] = 0x474b42ff;
+			wallResource_->outlineColor_[index] = 0xbbbbbbff;
 
 			++index;
 		}
@@ -47,8 +47,8 @@ void BlockRender::Initialize(int width, int height, Camera* camera) {
 			float(i) - float(width_) / 2, -float(height_) / 2 - 1.0f, 0.0f
 		};
 		wallResource_->scale_[index] = { 1.0f, 1.0f, 1.0f };
-		wallResource_->color_[index] = 0xff;
-		wallResource_->outlineColor_[index] = 0xffffffff;
+		wallResource_->color_[index] = 0x474b42ff;
+		wallResource_->outlineColor_[index] = 0xbbbbbbff;
 		++index;
 	}
 

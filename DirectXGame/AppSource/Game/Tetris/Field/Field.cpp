@@ -9,26 +9,33 @@ Field::Field(int width, int height) : width_(width), height_(height) {
 void Field::Initialize(Camera* camera) {
 	field_.resize(height_ + 5, std::vector<int>(width_, 0));
 
-	debugSphere_ = std::make_unique<ParticleResource>();
-	debugSphere_->Initialize(ShapeType::Cube, width_ * height_);
+	debugLine_ = std::make_unique<ParticleResource>();
+	debugLine_->Initialize(ShapeType::Cube, (width_ - 1) + height_);
 
-	for (int i = 0; i < height_; ++i) {
-		for (int j = 0; j < width_; ++j) {
-			int index = i * width_ + j;
-			debugSphere_->position_[index] = {
-				float(j) - float(width_) / 2, -float(i) + float(height_) / 2 - 1.0f, 0.0f
-			};
-			debugSphere_->rotate_[index] = { nums::pi_v<float> / 4.0f, nums::pi_v<float> / 4.0f, 0.0f };
-			debugSphere_->scale_[index] = { 0.1f, 0.1f, 0.1f };
-			debugSphere_->color_[index] = 0x008888ff;	//薄めのシアン
-		}
+	int index = 0;
+	for (int j = 0; j < width_ - 1; ++j) {
+		debugLine_->position_[index] = {
+			float(j) - float(width_) / 2 + 0.5f, -0.5f, 0.0f
+		};
+		debugLine_->scale_[index] = { 0.05f, float(height_), 1.0f };
+		debugLine_->color_[index] = 0x60606060;
+		++index;
 	}
 
-	debugSphere_->camera_ = camera;
+	for (int i = 0; i < height_; ++i) {
+		debugLine_->position_[index] = {
+			-0.5f, float(i) - float(height_) / 2 + 0.5f, 0.0f
+		};
+		debugLine_->scale_[index] = { float(width_), 0.05f, 1.0f };
+		debugLine_->color_[index] = 0x60606060;
+		++index;
+	}
+
+	debugLine_->camera_ = camera;
 }
 
 void Field::Draw(Render* render) {
-	render->Draw(debugSphere_.get());
+	render->Draw(debugLine_.get());
 }
 
 std::vector<std::vector<int>> Field::GetField() const {

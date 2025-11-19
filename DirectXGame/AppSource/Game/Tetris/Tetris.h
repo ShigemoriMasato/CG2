@@ -24,6 +24,11 @@ private://定数
 
 	std::mt19937 mt;
 
+private: //Debug用
+
+	float downTimer_ = 0.0f;
+	const float downInterval_ = 1.0f;
+
 private:
 
 	KeyCoating* keys_ = nullptr;

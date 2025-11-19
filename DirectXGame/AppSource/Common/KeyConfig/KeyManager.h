@@ -27,6 +27,13 @@ enum class Key {
 	Reverse,//取消キー
 	Pause,//ポーズキー
 
+	// Debug -===========
+
+	Restart,//リスタートキー
+	Debug1,
+	Debug2,
+	Debug3,
+
 	Count
 };
 

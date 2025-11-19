@@ -21,4 +21,8 @@ private:
 	std::unique_ptr<Tetris> tetris_ = nullptr;
 	std::unique_ptr<KeyCoating> keyCoating_ = nullptr;
 
+	std::unique_ptr<DrawResource> gameOverRes_ = nullptr;
+
+	bool gameOver_ = false;
+
 };

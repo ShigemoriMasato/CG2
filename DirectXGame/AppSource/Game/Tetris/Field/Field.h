@@ -31,5 +31,5 @@ private:
 
 	std::vector<int> reqLine_{};
 
-	std::unique_ptr<ParticleResource> debugSphere_ = nullptr;
+	std::unique_ptr<ParticleResource> debugLine_ = nullptr;
 };

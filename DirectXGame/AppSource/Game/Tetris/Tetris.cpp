@@ -33,6 +33,12 @@ void Tetris::Update(float deltaTime) {
 	auto key = keys_->GetKeyStates();
 
 	if (!blockRender_->GetIsEffecting()) {
+		downTimer_ += deltaTime;
+		if (downTimer_ >= downInterval_) {
+			downTimer_ = 0.0f;
+			player_->Down();
+		}
+
 		bool success = player_->SpawnMino();
 		if (!success) {
 			gameOver_ = true;

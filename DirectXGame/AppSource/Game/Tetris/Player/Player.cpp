@@ -56,6 +56,15 @@ void Player::Update(float deltaTime, std::unordered_map<Key, bool> key) {
 		}
 	}
 
+	if (notAllowDown_ && !canMove(moveMino_, fieldData, 0, -1)) {
+		fixTimer_ += deltaTime;
+		if (fixTimer_ >= 0.5f) {
+			reqFix_ = true;
+		}
+	} else {
+		fixTimer_ = 0.0f;
+	}
+
 	if (reqFix_) {
 		for (const auto& [x, y] : moveMino_.offset) {
 			int newx = x + moveMino_.position.first;
@@ -65,6 +74,7 @@ void Player::Update(float deltaTime, std::unordered_map<Key, bool> key) {
 		field_->LineCheck();
 		hasMoveMino_ = false;
 		reqFix_ = false;
+		notAllowDown_ = false;
 		holded_ = false;
 	}
 
@@ -132,10 +142,18 @@ void Player::PlayerControl(float deltaTime, std::unordered_map<Key, bool> key) {
 			//一個右に移動
 			moveMino_.position.first += 1;
 		}
+		if (notAllowDown_) {
+			downTimer_ = 0.0f;
+			fixTimer_ = 0.0f;
+		}
 	} else if (key[Key::Left]) {
 		if (canMove(moveMino_, fieldData, -1, 0)) {
 			//一個左に移動
 			moveMino_.position.first -= 1;
+		}
+		if (notAllowDown_) {
+			downTimer_ = 0.0f;
+			fixTimer_ = 0.0f;
 		}
 	}
 
@@ -169,9 +187,7 @@ void Player::PlayerControl(float deltaTime, std::unordered_map<Key, bool> key) {
 
 			} else {
 
-				//! タイマーを起動、一定時間経過したらフィールドに固定する。何かしらのアクションが合ったらタイマーをリセット
-				//! 今は一旦即固定にする
-				reqFix_ = true;
+				notAllowDown_ = true;
 
 			}
 		}
@@ -266,6 +282,10 @@ void Player::ExecuteSRS(Rotate rotate) {
 	//移動できなかったら元に戻す
 	if (!moved) {
 		moveMino_ = prevMino;
+	} else {
+		if(!canMove(moveMino_, field, 0, -1)) {
+			downTimer_ = 0.0f;
+		}
 	}
 
 	direction_ = Direction(dir);

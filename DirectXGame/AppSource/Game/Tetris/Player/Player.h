@@ -14,6 +14,7 @@ public:
 	void Initialize(Field* field, Tetrimino* tetrimino, Camera* camera);
 	void Update(float deltaTime, std::unordered_map<Key, bool> key);
 	void HoldDraw(Render* render);
+	void Down() { isDown_ = true; }
 
 	bool SpawnMino(Tetrimino::Type tetriminoType = Tetrimino::None);
 
@@ -54,6 +55,8 @@ private:
 	Tetrimino* tetrimino_ = nullptr;
 
 	float downTimer_ = 0.0f;
+
+	float fixTimer_ = 0.0f;
 
 private:
 
