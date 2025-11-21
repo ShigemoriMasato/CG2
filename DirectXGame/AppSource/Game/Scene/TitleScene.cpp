@@ -34,10 +34,46 @@ void TitleScene::Initialize() {
 		particleRes_->position_[i] = { static_cast<float>(i) - 3.0f, 2.0f, 0.0f };
 		particleRes_->textureIndex_[i] = textures[i % textures.size()];
 	}
+
+	waterPlane_ = std::make_unique<DrawResource>();
+	waterPlane_->Initialize(ShapeType::Plane);
+	waterPlane_->position_ = { 0.0f, 0.0f, 0.0f };
+	waterPlane_->scale_ = { 50.0f, 50.0f, 50.0f };
+	waterPlane_->rotate_.x = 1.57f;
+	waterPlane_->color_ = 0x6060d0ff;
+	waterPlane_->camera_ = camera_.get();
+	waterPlaneColor_ = ConvertColor(waterPlane_->color_);
+
+	waterObj_ = std::make_unique<WaterObjResource>();
+	waterObj_->Initialize(modelID);
+	waterObj_->position = { 0.0f, 0.0f, 0.0f };
+	waterObj_->camera_ = camera_.get();
+	waterObj_->waterHeight = 0.0f;
 }
 
 std::unique_ptr<BaseScene> TitleScene::Update() {
 	camera_->Update();
+
+	ImGui::Begin("Clear Color");
+	ImGui::ColorEdit4("ClearColor", &clearColor_.x);
+	ImGui::End();
+	render_->SetClearColor(clearColor_.x, clearColor_.y, clearColor_.z, clearColor_.w);
+
+	ImGui::Begin("Water Object");
+	ImGui::ColorEdit4("Color", &waterObjColor_.x);
+	ImGui::DragFloat3("Scale", &waterObj_->scale.x, 0.1f, 0.1f);
+	ImGui::DragFloat3("Rotation", &waterObj_->rotation.x, 0.1f);
+	ImGui::DragFloat3("Position", &waterObj_->position.x, 0.1f);
+	ImGui::End();
+
+	ImGui::Begin("Water Plane");
+	ImGui::ColorEdit4("Plane Color", &waterPlaneColor_.x);
+	ImGui::DragFloat("Height", &waterPlane_->position_.y, 0.01f);
+	ImGui::End();
+
+	waterObj_->color = ConvertColor(waterObjColor_);
+	waterObj_->waterHeight = waterPlane_->position_.y;
+	waterPlane_->color_ = ConvertColor(waterPlaneColor_);
 
 	return std::unique_ptr<BaseScene>();
 }
@@ -45,6 +81,8 @@ std::unique_ptr<BaseScene> TitleScene::Update() {
 void TitleScene::Draw() {
 	//swapchainに描画
 	render_->PreDraw();
-	render_->Draw(model_.get());
+	//render_->Draw(model_.get());
 	render_->Draw(particleRes_.get());
+	render_->Draw(waterObj_.get());
+	render_->Draw(waterPlane_.get());
 }

@@ -3,6 +3,7 @@
 #include <Camera/DebugCamera.h>
 #include <Render/ImGuiWrapper.h>
 #include <Render/Resource/ParticleResource.h>
+#include <Render/Resource/WaterObjResource.h>
 
 class TitleScene : public BaseScene {
 public:
@@ -16,6 +17,8 @@ public:
 
 private:
 
+	Vector4 clearColor_ = { 0.1f, 0.1f, 0.3f, 1.0f };
+
 	int descHandle_ = -1;
 	Transform descTransform_;
 
@@ -26,6 +29,12 @@ private:
 
 	std::unique_ptr<DrawResource> model_ = nullptr;
 	std::unique_ptr<ParticleResource> particleRes_ = nullptr;
+
+	//water系
+	std::unique_ptr<DrawResource> waterPlane_ = nullptr;
+	std::unique_ptr<WaterObjResource> waterObj_ = nullptr;
+	Vector4 waterObjColor_ = { 1.0f, 1.0f, 1.0f, 1.0f };
+	Vector4 waterPlaneColor_ = { 1.0f, 1.0f, 1.0f, 1.0f };
 
 	int mp3Handle;
 	int wavHandle;

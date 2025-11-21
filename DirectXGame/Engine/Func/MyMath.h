@@ -154,3 +154,4 @@ Vector3 GetCatmullPoint(const std::vector<Vector3>& points, float t);
 float CalculateAngle(const Vector3& a, const Vector3& b);
 
 Vector4 ConvertColor(uint32_t color);
+uint32_t ConvertColor(const Vector4& color);

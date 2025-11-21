@@ -74,6 +74,7 @@
     <ClCompile Include="Engine\Render\Resource\ParticleResource.cpp" />
     <ClCompile Include="AppSource\Game\Tetris\Tetris.cpp" />
     <ClCompile Include="AppSource\Game\Tetris\Player\Player.cpp" />
+    <ClCompile Include="Engine\Render\Resource\WaterObjResource.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AppSource\Common\InitializeScene\InitializeScene.h" />
@@ -143,6 +144,7 @@
     <ClInclude Include="AppSource\Game\Tetris\Tetris.h" />
     <ClInclude Include="AppSource\Game\KeyState\KeyCoating.h" />
     <ClInclude Include="AppSource\Game\Tetris\Player\Player.h" />
+    <ClInclude Include="Engine\Render\Resource\WaterObjResource.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="AppSource\Game\Emitter\ReadMe.md" />

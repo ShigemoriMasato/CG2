@@ -677,6 +677,14 @@ Vector4 ConvertColor(uint32_t color) {
 	return converted;
 }
 
+uint32_t ConvertColor(const Vector4& color) {
+	uint32_t r = static_cast<uint32_t>(std::clamp(color.x, 0.0f, 1.0f) * 255.0f) << 24;
+	uint32_t g = static_cast<uint32_t>(std::clamp(color.y, 0.0f, 1.0f) * 255.0f) << 16;
+	uint32_t b = static_cast<uint32_t>(std::clamp(color.z, 0.0f, 1.0f) * 255.0f) << 8;
+	uint32_t a = static_cast<uint32_t>(std::clamp(color.w, 0.0f, 1.0f) * 255.0f) << 0;
+	return r | g | b | a;
+}
+
 float MyMath::lerp(float a, float b, float t)
 {
 	return a + (b - a) * t;

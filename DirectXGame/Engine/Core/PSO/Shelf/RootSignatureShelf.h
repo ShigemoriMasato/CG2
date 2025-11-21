@@ -11,6 +11,7 @@ enum class RootSignatureID : uint8_t {
 	Particle,
 	Model,
 	Block,
+	Water,
 
 	Count
 };
