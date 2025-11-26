@@ -7,11 +7,12 @@
 #include "ShaderShelf.h"
 
 enum class RootSignatureID : uint8_t {
-	Default,
-	Particle,
-	Model,
-	Block,
-	Water,
+	VerC1_PixC2_Tex,
+	VerS1_Tex,
+	VerS1_PixC1_Tex,
+	VerS1,
+	VerC1_PixC1_Tex,
+	VerS1_PixS1,
 
 	Count
 };

@@ -57,7 +57,7 @@ AssetsID AssetsLoader::Load(std::filesystem::path filePath) {
 			filePath = "Assets/Audio/" + filePath.string();
 			break;
 
-		case AssetType::Model:
+		case AssetType::VerS1_PixC1_Tex:
 			filePath = "Assets/Model/" + filePath.string();
 			break;
 		}
@@ -83,7 +83,7 @@ AssetsID AssetsLoader::Load(std::filesystem::path filePath) {
 	case AssetsLoader::AssetType::Audio:
 		audioManager_->Load(filePath, id.id);
 		break;
-	case AssetsLoader::AssetType::Model:
+	case AssetsLoader::AssetType::VerS1_PixC1_Tex:
 		modelManager_->LoadModel(filePath.string(), id.id);
 		break;
 	}
@@ -109,7 +109,7 @@ AudioData* AssetsLoader::GetAudioData(AssetsID id) {
 }
 
 ModelData* AssetsLoader::GetModelData(AssetsID id) {
-	if (assetTypeMap_[id] == AssetType::Model) {
+	if (assetTypeMap_[id] == AssetType::VerS1_PixC1_Tex) {
 		return modelManager_->GetModelData(id.id);
 	}
 	return nullptr;
@@ -130,7 +130,7 @@ AssetsLoader::AssetType AssetsLoader::CheckAssetsType(std::filesystem::path file
 	} else if (fs::is_directory(filePath) || fs::is_directory("Assets/Model/" + filePath.string())) {
 		
 		//モデル
-		return AssetType::Model;
+		return AssetType::VerS1_PixC1_Tex;
 
 	}
 

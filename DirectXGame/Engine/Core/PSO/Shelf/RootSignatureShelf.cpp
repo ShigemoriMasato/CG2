@@ -97,7 +97,7 @@ RootSignatureShelf::RootSignatureShelf(ID3D12Device* device) {
         descriptionRootSignature.pStaticSamplers = staticSampler;              //StaticSamplerの配列へのポインタ
         descriptionRootSignature.NumStaticSamplers = _countof(staticSampler);   //配列の長さ
 
-        CreateRootSignature(descriptionRootSignature, RootSignatureID::Default, device);
+        CreateRootSignature(descriptionRootSignature, RootSignatureID::VerC1_PixC2_Tex, device);
     }
 
     //Particle
@@ -128,7 +128,7 @@ RootSignatureShelf::RootSignatureShelf(ID3D12Device* device) {
         descriptionRootSignature.pStaticSamplers = staticSampler;              //StaticSamplerの配列へのポインタ
         descriptionRootSignature.NumStaticSamplers = _countof(staticSampler);   //配列の長さ
 
-        CreateRootSignature(descriptionRootSignature, RootSignatureID::Particle, device);
+        CreateRootSignature(descriptionRootSignature, RootSignatureID::VerS1_Tex, device);
     }
 
     //Model
@@ -160,7 +160,7 @@ RootSignatureShelf::RootSignatureShelf(ID3D12Device* device) {
         descriptionRootSignature.pStaticSamplers = staticSampler;              //StaticSamplerの配列へのポインタ
         descriptionRootSignature.NumStaticSamplers = _countof(staticSampler);   //配列の長さ
 
-        CreateRootSignature(descriptionRootSignature, RootSignatureID::Model, device);
+        CreateRootSignature(descriptionRootSignature, RootSignatureID::VerS1_PixC1_Tex, device);
     }
 
     //Block
@@ -185,7 +185,7 @@ RootSignatureShelf::RootSignatureShelf(ID3D12Device* device) {
         descriptionRootSignature.pStaticSamplers = staticSampler;              //StaticSamplerの配列へのポインタ
         descriptionRootSignature.NumStaticSamplers = _countof(staticSampler);   //配列の長さ
 
-        CreateRootSignature(descriptionRootSignature, RootSignatureID::Block, device);
+        CreateRootSignature(descriptionRootSignature, RootSignatureID::VerS1, device);
     }
 
     //Water
@@ -220,7 +220,38 @@ RootSignatureShelf::RootSignatureShelf(ID3D12Device* device) {
         descriptionRootSignature.pStaticSamplers = staticSampler;              //StaticSamplerの配列へのポインタ
         descriptionRootSignature.NumStaticSamplers = _countof(staticSampler);   //配列の長さ
 
-        CreateRootSignature(descriptionRootSignature, RootSignatureID::Water, device);
+        CreateRootSignature(descriptionRootSignature, RootSignatureID::VerC1_PixC1_Tex, device);
+    }
+
+    //PointLightBlock
+    {
+        //RootSignature作成
+        D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
+        descriptionRootSignature.Flags =
+            D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+
+        //RootParameter作成
+        D3D12_ROOT_PARAMETER rootParameters[2] = {};
+
+        //ParticleData
+        rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;       //TABLEを使う
+        rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;                 //VertexShaderで使う
+        rootParameters[0].DescriptorTable.pDescriptorRanges = instancingDescriptor;         //テーブルの中身
+        rootParameters[0].DescriptorTable.NumDescriptorRanges = _countof(instancingDescriptor); //テーブルの数
+
+        //PointLight
+        rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;       //TABLEを使う
+        rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;                 //VertexShaderで使う
+        rootParameters[1].DescriptorTable.pDescriptorRanges = instancingDescriptor;         //テーブルの中身
+        rootParameters[1].DescriptorTable.NumDescriptorRanges = _countof(instancingDescriptor); //テーブルの数
+
+        descriptionRootSignature.pParameters = rootParameters;                  //ルートパラメータ配列へのポインタ
+        descriptionRootSignature.NumParameters = _countof(rootParameters);      //配列の長さ
+
+        descriptionRootSignature.pStaticSamplers = staticSampler;              //StaticSamplerの配列へのポインタ
+        descriptionRootSignature.NumStaticSamplers = _countof(staticSampler);   //配列の長さ
+
+        CreateRootSignature(descriptionRootSignature, RootSignatureID::VerS1_PixS1, device);
     }
 }
 

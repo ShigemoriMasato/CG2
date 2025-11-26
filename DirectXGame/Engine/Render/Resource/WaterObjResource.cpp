@@ -14,7 +14,7 @@ void WaterObjResource::Initialize(AssetsID id) {
 	psoConfig_.ps = "Water/WaterObj.PS.hlsl";
 	psoConfig_.vs = "Water/WaterObj.VS.hlsl";
 	psoConfig_.inputLayoutID = InputLayoutID::Model;
-	psoConfig_.rootID = RootSignatureID::Water;
+	psoConfig_.rootID = RootSignatureID::VerC1_PixC1_Tex;
 }
 
 void WaterObjResource::DrawReady() {

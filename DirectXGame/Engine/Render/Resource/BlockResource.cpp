@@ -68,7 +68,15 @@ void BlockResource::Initialize(uint32_t instance) {
 
 	psoConfig_.vs = "Game/Block.VS.hlsl";
 	psoConfig_.ps = "Game/Block.PS.hlsl";
-	psoConfig_.rootID = RootSignatureID::Block;
+	psoConfig_.rootID = RootSignatureID::VerS1;
+}
+
+void BlockResource::MakePointLight(uint32_t num) {
+	MakeSRV(pointLights_, num);
+
+	psoConfig_.ps = "Game/PointLightBlock.PS.hlsl";
+	psoConfig_.vs = "Game/PointLightBlock.VS.hlsl";
+	psoConfig_.rootID = RootSignatureID::VerS1_PixS1;
 }
 
 void BlockResource::DrawReady() {

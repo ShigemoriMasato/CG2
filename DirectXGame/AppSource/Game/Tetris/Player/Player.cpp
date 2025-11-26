@@ -36,14 +36,15 @@ void Player::Initialize(Field* field, Tetrimino* tetrimino, Camera* camera) {
 }
 
 void Player::Update(float deltaTime, std::unordered_map<Key, bool> key) {
+	dropTimer_ += deltaTime;
 	auto fieldData = field_->GetField();
 
 	PlayerControl(deltaTime, key);
 
 	//自動落下
-	if (isDown_ && !notAllowDown_) {
+	if (dropTimer_ >= maxDropTime_) {
 
-		isDown_ = false;
+		dropTimer_ = 0.0f;
 
 		if (canMove(moveMino_, fieldData, 0, -1)) {
 
@@ -54,15 +55,6 @@ void Player::Update(float deltaTime, std::unordered_map<Key, bool> key) {
 			//フィールドに固定
 			reqFix_ = true;
 		}
-	}
-
-	if (notAllowDown_ && !canMove(moveMino_, fieldData, 0, -1)) {
-		fixTimer_ += deltaTime;
-		if (fixTimer_ >= 0.5f) {
-			reqFix_ = true;
-		}
-	} else {
-		fixTimer_ = 0.0f;
 	}
 
 	if (reqFix_) {
@@ -76,6 +68,7 @@ void Player::Update(float deltaTime, std::unordered_map<Key, bool> key) {
 		reqFix_ = false;
 		notAllowDown_ = false;
 		holded_ = false;
+		maxDropTime_ = normalDropTime_;
 	}
 
 	if (holdMino_ != Tetrimino::None) {
@@ -143,25 +136,28 @@ void Player::PlayerControl(float deltaTime, std::unordered_map<Key, bool> key) {
 			moveMino_.position.first += 1;
 		}
 
+		//下に下がれないなら
 		if (!notAllowDown_ && !canMove(moveMino_, fieldData, 0, -1)) {
 			notAllowDown_ = true;
 		}
 		if (notAllowDown_) {
-			downTimer_ = 0.0f;
-			fixTimer_ = 0.0f;
+			DropInit();
 		}
-	} else if (key[Key::Left]) {
+
+	}
+	
+	else if (key[Key::Left]) {
 		if (canMove(moveMino_, fieldData, -1, 0)) {
 			//一個左に移動
 			moveMino_.position.first -= 1;
 		}
 
-		if(!notAllowDown_ && !canMove(moveMino_, fieldData, 0, -1)) {
+		//下に下がれないなら
+		if(!canMove(moveMino_, fieldData, 0, -1)) {
 			notAllowDown_ = true;
 		}
 		if (notAllowDown_) {
-			downTimer_ = 0.0f;
-			fixTimer_ = 0.0f;
+			DropInit();
 		}
 	}
 
@@ -179,11 +175,12 @@ void Player::PlayerControl(float deltaTime, std::unordered_map<Key, bool> key) {
 
 	}
 
-	//下キーを押しているときは自由落下できない様にする
-	notAllowDown_ = key[Key::Down];
-
 	if (key[Key::Down]) {
 		downTimer_ += deltaTime;
+		//下キーを押しているときは自動落下できなくする(すぐ下がブロックの場合は例外とする)
+		if (!notAllowDown_) {
+			dropTimer_ = 0.0f;
+		}
 
 		//todo レベルによって条件の値を変更する
 		if (downTimer_ >= 0.1f) {
@@ -193,9 +190,10 @@ void Player::PlayerControl(float deltaTime, std::unordered_map<Key, bool> key) {
 				//一個下に移動
 				moveMino_.position.second -= 1;
 
-			} else {
+			} else if(!notAllowDown_) {
 
 				notAllowDown_ = true;
+				DropInit();
 
 			}
 		}
@@ -297,4 +295,18 @@ void Player::ExecuteSRS(Rotate rotate) {
 	}
 
 	direction_ = Direction(dir);
+}
+
+void Player::NotAllowDown() {
+	notAllowDown_ = true;
+	maxDropTime_ = norAllowDropTime_;
+}
+
+void Player::DropInit() {
+	if(dropInitTime_ >= maxDropInitTime_) {
+		return;
+	}
+
+	dropInitTime_ += dropTimer_;
+	dropTimer_ = 0.0f;
 }

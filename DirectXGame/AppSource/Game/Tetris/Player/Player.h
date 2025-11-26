@@ -14,7 +14,7 @@ public:
 	void Initialize(Field* field, Tetrimino* tetrimino, Camera* camera);
 	void Update(float deltaTime, std::unordered_map<Key, bool> key);
 	void HoldDraw(Render* render);
-	void Down() { isDown_ = true; }
+	void SetDownTime(float dropTimer) { normalDropTime_ = dropTimer; }
 
 	bool SpawnMino(Tetrimino::Type tetriminoType = Tetrimino::None);
 
@@ -41,6 +41,10 @@ private:
 
 	void ExecuteSRS(Rotate rotate);
 
+	void NotAllowDown();
+
+	void DropInit();
+
 private:
 
 	MovableMino moveMino_;
@@ -56,14 +60,19 @@ private:
 
 	float downTimer_ = 0.0f;
 
-	float fixTimer_ = 0.0f;
+	float dropTimer_ = 0.0f;
+	float maxDropTime_ = 1.0f;
+	float normalDropTime_ = 1.0f;				//通常の落下時間
+	const float norAllowDropTime_ = 1.0f;		//notAllowDownがtrueの時の落下時間
+
+	float dropInitTime_ = 0;
+	const float maxDropInitTime_ = 20.0f;
 
 private:
 
 	bool hasMoveMino_ = false;
 	bool notAllowDown_ = false;
 
-	bool isDown_ = false;
 	bool reqFix_ = false;
 
 	bool gameOver_ = false;

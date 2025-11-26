@@ -28,7 +28,7 @@ private:
 		Unknown,
 		Texture,
 		Audio,
-		Model,
+		VerS1_PixC1_Tex,
 		MaxCount
 	};
 

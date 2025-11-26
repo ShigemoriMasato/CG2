@@ -26,7 +26,6 @@ private://定数
 
 private: //Debug用
 
-	float downTimer_ = 0.0f;
 	const float downInterval_ = 1.0f;
 
 private:

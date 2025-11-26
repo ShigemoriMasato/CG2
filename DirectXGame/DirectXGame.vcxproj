@@ -23,6 +23,7 @@
     <ClCompile Include="AppSource\Game\Tetris\Score\ScoreManager.cpp" />
     <ClCompile Include="AppSource\Game\Tetris\Block\BlockRender.cpp" />
     <ClCompile Include="AppSource\Game\Tetris\Block\Delete\DeleteEffect.cpp" />
+    <ClCompile Include="AppSource\Game\Effect\RotateBlockEffect.cpp" />
     <ClCompile Include="Engine\Render\Resource\BlockResource.cpp" />
     <ClCompile Include="Engine\Assets\AssetsLoader.cpp" />
     <ClCompile Include="Engine\Assets\Audio\AudioManager.cpp" />
@@ -86,6 +87,7 @@
     <ClInclude Include="AppSource\Game\Tetris\Score\ScoreManager.h" />
     <ClInclude Include="AppSource\Game\Tetris\Block\BlockRender.h" />
     <ClInclude Include="AppSource\Game\Tetris\Block\Delete\DeleteEffect.h" />
+    <ClInclude Include="AppSource\Game\Effect\RotateBlockEffect.h" />
     <ClInclude Include="Engine\Render\Resource\BlockResource.h" />
     <ClInclude Include="Engine\Assets\AssetsLoader.h" />
     <ClInclude Include="Engine\Assets\Audio\AudioManager.h" />
@@ -222,13 +224,13 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalOptions>/ignore:4049 %(AdditionalOptions)</AdditionalOptions>
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
-      <AdditionalLibraryDirectories>$(ProjectDir)externals\DirectXTex\lib\Debug;$(ProjectDir)externals\assimp\lib\Debug;$(ProjectDir)externals\imgui\lib\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>DirectXTex.lib; ImGui.lib; assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)externals\DirectXTex\lib\$(Configuration);$(ProjectDir)externals\assimp\lib\$(Configuration);$(ProjectDir)externals\imgui\lib\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>DirectXTex.lib;assimp.lib;imgui.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
-copy "$(ProjectDir)dxil.dll" "$(TargetDir)dxil.dll"
-xcopy /E /I /Y "$(ProjectDir)Assets\*" "$(TargetDir)Assets\"</Command>
+copy "$(ProjectDir)externals\assimp\lib\$(Configuration)\assimp.dll" "$(TargetDir)assimp.dll"
+xcopy /E /I /Y "$(ProjectDir)Assets\" "$(TargetDir)Assets\"</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>
@@ -255,13 +257,13 @@ xcopy /E /I /Y "$(ProjectDir)Assets\*" "$(TargetDir)Assets\"</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir)externals/assimp/lib/Release;$(ProjectDir)externals/DirectXTex/lib/Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>DirectXTex.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)externals/DirectXTex/lib/$(Configuration);$(ProjectDir)externals/assimp/lib/$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>DirectXTex.lib;assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
-copy "$(ProjectDir)dxil.dll" "$(TargetDir)dxil.dll"
-xcopy /E /I /Y "$(ProjectDir)Assets\*" "$(TargetDir)Assets\"</Command>
+copy "$(ProjectDir)externals\assimp\lib\$(Configuration)\assimp.dll" "$(TargetDir)assimp.dll"
+xcopy /E /I /Y "$(ProjectDir)Assets\" "$(TargetDir)Assets\"</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>
@@ -291,13 +293,13 @@ xcopy /E /I /Y "$(ProjectDir)Assets\*" "$(TargetDir)Assets\"</Command>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <LinkTimeCodeGeneration />
-      <AdditionalLibraryDirectories>$(ProjectDir)externals\assimp\lib\Release;$(ProjectDir)externals\imgui\lib\Release;$(ProjectDir)externals\DirectXTex\lib\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>DirectXTex.lib; ImGui.lib; assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)externals\DirectXTex\lib\$(Configuration);$(ProjectDir)externals\assimp\lib\$(Configuration);$(ProjectDir)externals\imgui\lib\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>DirectXTex.lib;assimp.lib;imgui.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
-copy "$(ProjectDir)dxil.dll" "$(TargetDir)dxil.dll"
-xcopy /E /I /Y "$(ProjectDir)Assets\*" "$(TargetDir)Assets\"</Command>
+copy "$(ProjectDir)externals\assimp\lib\$(Configuration)\assimp.dll" "$(TargetDir)assimp.dll"
+xcopy /E /I /Y "$(ProjectDir)Assets\" "$(TargetDir)Assets\"</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>

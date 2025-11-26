@@ -83,7 +83,7 @@ void InitializeScene::Initialize() {
 }
 
 std::unique_ptr<BaseScene> InitializeScene::Update() {
-	return std::make_unique<TitleScene>();
+	return std::make_unique<GameScene>();
 }
 
 void InitializeScene::Draw() {

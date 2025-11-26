@@ -10,7 +10,7 @@
 struct PSOConfig {
 	std::string vs = "Object3d.VS.hlsl";
 	std::string ps = "Object3d.PS.hlsl";
-	RootSignatureID rootID = RootSignatureID::Default;
+	RootSignatureID rootID = RootSignatureID::VerC1_PixC2_Tex;
 	InputLayoutID inputLayoutID = InputLayoutID::Texture;
 	BlendStateID blendID = BlendStateID::Normal;
 	DepthStencilID depthStencilID = DepthStencilID::Default;

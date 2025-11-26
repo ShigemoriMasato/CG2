@@ -54,6 +54,7 @@ void TitleScene::Initialize() {
 std::unique_ptr<BaseScene> TitleScene::Update() {
 	camera_->Update();
 
+#ifdef USE_IMGUI
 	ImGui::Begin("Clear Color");
 	ImGui::ColorEdit4("ClearColor", &clearColor_.x);
 	ImGui::End();
@@ -74,6 +75,7 @@ std::unique_ptr<BaseScene> TitleScene::Update() {
 	waterObj_->color = ConvertColor(waterObjColor_);
 	waterObj_->waterHeight = waterPlane_->position_.y;
 	waterPlane_->color_ = ConvertColor(waterPlaneColor_);
+#endif
 
 	return std::unique_ptr<BaseScene>();
 }

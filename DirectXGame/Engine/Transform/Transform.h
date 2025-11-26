@@ -71,6 +71,13 @@ struct DirectionalLightData final
 	Vector3 padding;
 };
 
+struct PointLightData final
+{
+	Vector4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
+	Vector3 position = { 0.0f, 0.0f, 0.0f };
+	float intensity = 1.0f;
+};
+
 //即興クオータニオン。仕組みはよくわかってない。AI制なので、いい感じに変えて
 struct Quaternion {
 	float x = 0.0f, y = 0.0f, z = 0.0f, w = 1.0f;

@@ -11,7 +11,7 @@ std::vector<std::string> SearchFiles(const fs::path& directory, const std::strin
     }
 
     for (const auto& entry : fs::directory_iterator(directory)) {
-        if (entry.is_regular_file() && entry.path().extension() == extension) {
+        if ((entry.is_regular_file() && entry.path().extension() == extension) || extension.empty()) {
             fs::path relativePath = entry.path().lexically_relative(directory);
             contents.push_back(relativePath.generic_string());
         }

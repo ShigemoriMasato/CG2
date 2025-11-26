@@ -172,7 +172,7 @@ void ParticleResource::Initialize(ShapeType type, uint32_t instanceNum) {
 	psoConfig_.ps = "Particle.PS.hlsl";
 	psoConfig_.vs = "Particle.VS.hlsl";
 	psoConfig_.inputLayoutID = InputLayoutID::Default;
-	psoConfig_.rootID = RootSignatureID::Particle;
+	psoConfig_.rootID = RootSignatureID::VerS1_Tex;
 }
 
 void ParticleResource::DrawReady() {

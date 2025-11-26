@@ -6,6 +6,7 @@ class BlockResource : public BaseResource {
 public:
 
 	void Initialize(uint32_t instance);
+	void MakePointLight(uint32_t num);
 
 	void DrawReady() override;
 
@@ -30,5 +31,7 @@ private:
 	};
 
 	BlockData* blockData_ = nullptr;
+
+	PointLightData* pointLights_ = nullptr;
 
 };
