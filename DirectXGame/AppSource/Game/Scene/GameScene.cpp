@@ -17,6 +17,20 @@ void GameScene::Initialize() {
 	gameOverRes_->Initialize(goID);
 	gameOverRes_->position_ = { 0.0f, 2.5f, -70.0f };
 	gameOverRes_->camera_ = debugCamera_.get();
+
+
+	bgRes_ = std::make_unique<DrawResource>();
+	auto bgID = assetsLoader_->Load("BG_Ginga.png");
+	bgRes_->Initialize(ShapeType::Plane);
+	bgRes_->scale_ *= 2.0f;
+	bgRes_->position_.z = 1000.0f;
+	bgRes_->textureIndex_ = bgID.id;
+	
+	std::random_device rd;
+	mt_ = std::mt19937(rd());
+
+	rotateBlockEffect_ = std::make_unique<RotateBlockEffect>();
+	rotateBlockEffect_->Initialize(16, debugCamera_.get(), mt_);
 }
 
 std::unique_ptr<BaseScene> GameScene::Update() {
@@ -33,10 +47,18 @@ std::unique_ptr<BaseScene> GameScene::Update() {
 	if (!gameOver_) {
 		tetris_->Update(deltaTime);
 	}
+	
+	int deletedLine = tetris_->IsLineDeleted();
+	if (deletedLine) {
+		rotateBlockEffect_->Rotation(static_cast<uint32_t>(deletedLine));
+	}
 
 	if (keyCoating_->GetKeyStates().at(Key::Restart)) {
 		return std::make_unique<GameScene>();
 	}
+
+	rotateBlockEffect_->Update(deltaTime);
+	rotateBlockEffect_->DrawImGui();
 
 	return nullptr;
 }
@@ -44,7 +66,11 @@ std::unique_ptr<BaseScene> GameScene::Update() {
 void GameScene::Draw() {
 	render_->PreDraw();
 
+	render_->Draw(bgRes_.get());
+
 	tetris_->Draw(render_);
+
+	rotateBlockEffect_->Draw(render_);
 
 	if (gameOver_) {
 		render_->Draw(gameOverRes_.get());

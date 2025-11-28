@@ -243,9 +243,9 @@ void DrawResource::DrawReady() {
 
 	if (camera_) {
 		matrix_->wvp = matrix_->world * camera_->GetVPMatrix();
+	} else {
+		matrix_->wvp = matrix_->world;
 	}
-
-	light_->enableLighting = static_cast<int32_t>(enableLighting_);
 
 	//Lighting
 	if (enableLighting_) {

@@ -31,6 +31,7 @@ void Tetris::Initialize(KeyCoating* keys, Camera* camera) {
 
 void Tetris::Update(float deltaTime) {
 	auto key = keys_->GetKeyStates();
+	deletedLine_ = 0;
 
 	if (!blockRender_->GetIsEffecting()) {
 		player_->SetDownTime(downInterval_);
@@ -50,6 +51,7 @@ void Tetris::Update(float deltaTime) {
 		if (!fillLines.empty()) {
 			field_->DeleteFillLine();
 			blockRender_->BeginDeleteEffect(fillLines, field_->GetField());
+			deletedLine_ = int(fillLines.size());
 		}
 
 	}

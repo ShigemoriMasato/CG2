@@ -17,7 +17,7 @@ public:
 	~BinaryManager();
 
 	template<typename T>
-	void RegistOutput(T value, std::string name) {
+	void RegistOutput(T value, std::string name = "") {
 		values.push_back(std::make_shared<Value<T>>(value, name));
 	};
 

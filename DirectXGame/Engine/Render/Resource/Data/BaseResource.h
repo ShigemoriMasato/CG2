@@ -66,6 +66,9 @@ protected:
 	template<typename T>
 	std::shared_ptr<SRVHandle> MakeSRV(T*& ptr, uint32_t num);
 
+	//高度な設定。GPUHandleだけ削除し、SRVは残す。
+	void DeleteOnlyHandleSRV(int index);
+
 	//今はまだテクスチャの配列増やすだけ
 	void MakeUAV();
 
@@ -95,6 +98,7 @@ private:
 
 	std::vector<D3D12_GPU_VIRTUAL_ADDRESS> cbvAddresses_{};
 	std::vector<std::shared_ptr<SRVHandle>> srvHandles_{};
+	std::vector<std::shared_ptr<SRVHandle>> buffers_{};			//SRV保存用
 
 	std::shared_ptr<spdlog::logger> debugLogger_ = nullptr;
 

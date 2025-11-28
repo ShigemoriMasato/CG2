@@ -34,7 +34,7 @@ VSOutput main(VSInput input, uint instance : SV_InstanceID)
 {
     VSOutput output;
     output.position = mul(input.position, mul(data[instance].world, data[instance].vp));
-    output.worldPosition = output.position.xyz;
+    output.worldPosition = mul(input.position, data[instance].world).xyz;
     output.texCoord = input.texcoord;
     output.color = ConvertColor(data[instance].color);
     output.outlineColor = ConvertColor(data[instance].outlineColor);

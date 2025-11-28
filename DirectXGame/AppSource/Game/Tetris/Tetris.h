@@ -16,6 +16,7 @@ public:
 	void Draw(Render* render);
 
 	bool IsGameOver() const { return gameOver_; }
+	int IsLineDeleted() const { return deletedLine_; }
 
 private://定数
 
@@ -39,6 +40,7 @@ private:
 	std::unique_ptr<Tetrimino> tetrimino_ = nullptr;
 
 	bool gameOver_ = false;
+	int deletedLine_ = 0;
 
 };
 

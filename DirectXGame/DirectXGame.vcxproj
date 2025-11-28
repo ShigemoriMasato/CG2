@@ -24,6 +24,7 @@
     <ClCompile Include="AppSource\Game\Tetris\Block\BlockRender.cpp" />
     <ClCompile Include="AppSource\Game\Tetris\Block\Delete\DeleteEffect.cpp" />
     <ClCompile Include="AppSource\Game\Effect\RotateBlockEffect.cpp" />
+    <ClCompile Include="AppSource\Game\Effect\BackGround\BGManager.cpp" />
     <ClCompile Include="Engine\Render\Resource\BlockResource.cpp" />
     <ClCompile Include="Engine\Assets\AssetsLoader.cpp" />
     <ClCompile Include="Engine\Assets\Audio\AudioManager.cpp" />
@@ -76,6 +77,7 @@
     <ClCompile Include="AppSource\Game\Tetris\Tetris.cpp" />
     <ClCompile Include="AppSource\Game\Tetris\Player\Player.cpp" />
     <ClCompile Include="Engine\Render\Resource\WaterObjResource.cpp" />
+    <ClCompile Include="AppSource\Game\Effect\BackGround\Planet\Planets.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AppSource\Common\InitializeScene\InitializeScene.h" />
@@ -88,6 +90,7 @@
     <ClInclude Include="AppSource\Game\Tetris\Block\BlockRender.h" />
     <ClInclude Include="AppSource\Game\Tetris\Block\Delete\DeleteEffect.h" />
     <ClInclude Include="AppSource\Game\Effect\RotateBlockEffect.h" />
+    <ClInclude Include="AppSource\Game\Effect\BackGround\BGManager.h" />
     <ClInclude Include="Engine\Render\Resource\BlockResource.h" />
     <ClInclude Include="Engine\Assets\AssetsLoader.h" />
     <ClInclude Include="Engine\Assets\Audio\AudioManager.h" />
@@ -147,6 +150,7 @@
     <ClInclude Include="AppSource\Game\KeyState\KeyCoating.h" />
     <ClInclude Include="AppSource\Game\Tetris\Player\Player.h" />
     <ClInclude Include="Engine\Render\Resource\WaterObjResource.h" />
+    <ClInclude Include="AppSource\Game\Effect\BackGround\Planet\Planets.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="AppSource\Game\Emitter\ReadMe.md" />

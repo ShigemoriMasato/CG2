@@ -16,19 +16,19 @@ RootSignatureShelf::RootSignatureShelf(ID3D12Device* device) {
     textureDescriptor[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
     textureDescriptor[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-    //画像8枚用のDescriptorRange
-    D3D12_DESCRIPTOR_RANGE multiTexDescriptor[1] = {};
-    multiTexDescriptor[0].BaseShaderRegister = 1;
-    multiTexDescriptor[0].NumDescriptors = 8;
-    multiTexDescriptor[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-    multiTexDescriptor[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
-
     //ParticleDataのDescriptorRange
     D3D12_DESCRIPTOR_RANGE instancingDescriptor[1] = {};
     instancingDescriptor[0].BaseShaderRegister = 0;
     instancingDescriptor[0].NumDescriptors = 1;
     instancingDescriptor[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
     instancingDescriptor[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+	//DirectionalLightとPointLightのDescriptorRange
+    D3D12_DESCRIPTOR_RANGE lightingDescriptor[1] = {};
+    lightingDescriptor[0].BaseShaderRegister = 1;
+    lightingDescriptor[0].NumDescriptors = 1;
+    lightingDescriptor[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+    lightingDescriptor[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
     //画像全部のDescriptorRange
     D3D12_DESCRIPTOR_RANGE allTexDescriptor[1] = {};
@@ -253,6 +253,44 @@ RootSignatureShelf::RootSignatureShelf(ID3D12Device* device) {
 
         CreateRootSignature(descriptionRootSignature, RootSignatureID::VerS1_PixS1, device);
     }
+
+    //LightingBlock
+    {
+        //RootSignature作成
+        D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
+        descriptionRootSignature.Flags =
+            D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+
+        //RootParameter作成
+        D3D12_ROOT_PARAMETER rootParameters[3] = {};
+
+        //ParticleData
+        rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;       //TABLEを使う
+        rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;                 //VertexShaderで使う
+        rootParameters[0].DescriptorTable.pDescriptorRanges = instancingDescriptor;         //テーブルの中身
+        rootParameters[0].DescriptorTable.NumDescriptorRanges = _countof(instancingDescriptor); //テーブルの数
+
+        //PointLight
+        rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;       //TABLEを使う
+        rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;                 //VertexShaderで使う
+        rootParameters[1].DescriptorTable.pDescriptorRanges = instancingDescriptor;         //テーブルの中身
+        rootParameters[1].DescriptorTable.NumDescriptorRanges = _countof(instancingDescriptor); //テーブルの数
+
+        //PointLight
+        rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;       //TABLEを使う
+        rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;                 //VertexShaderで使う
+        rootParameters[2].DescriptorTable.pDescriptorRanges = lightingDescriptor;         //テーブルの中身
+        rootParameters[2].DescriptorTable.NumDescriptorRanges = _countof(lightingDescriptor); //テーブルの数
+
+        descriptionRootSignature.pParameters = rootParameters;                  //ルートパラメータ配列へのポインタ
+        descriptionRootSignature.NumParameters = _countof(rootParameters);      //配列の長さ
+
+        descriptionRootSignature.pStaticSamplers = staticSampler;              //StaticSamplerの配列へのポインタ
+        descriptionRootSignature.NumStaticSamplers = _countof(staticSampler);   //配列の長さ
+
+        CreateRootSignature(descriptionRootSignature, RootSignatureID::VerS1_PixS2, device);
+    }
+
 }
 
 RootSignatureShelf::~RootSignatureShelf() {
@@ -282,6 +320,7 @@ void RootSignatureShelf::CreateRootSignature(D3D12_ROOT_SIGNATURE_DESC& desc, Ro
     if (FAILED(hr)) {
         logger_->info(std::format("RootSignatureID : {}", int(id)));
         logger_->info(reinterpret_cast<char*>(errorBlob->GetBufferPointer()));
+        logger_->flush();
         assert(false);
     }
 

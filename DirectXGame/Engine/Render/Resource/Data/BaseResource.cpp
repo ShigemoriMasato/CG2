@@ -57,6 +57,11 @@ void BaseResource::MakeIndex(uint32_t*& indPtr, uint32_t indexNum) {
 	ibv_.Format = DXGI_FORMAT_R32_UINT;
 }
 
+void BaseResource::DeleteOnlyHandleSRV(int index) {
+	buffers_.push_back(srvHandles_[index]);
+	srvHandles_.erase(srvHandles_.begin() + index);
+}
+
 void BaseResource::MakeUAV() {
 	useTexture_ = true;
 }

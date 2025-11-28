@@ -2,6 +2,7 @@
 #include <Scene/Data/BaseScene.h>
 #include <Camera/DebugCamera.h>
 #include <Game/KeyState/KeyCoating.h>
+#include <Game/Effect/RotateBlockEffect.h>
 #include "../Tetris/Tetris.h"
 
 class GameScene : public BaseScene {
@@ -21,8 +22,13 @@ private:
 	std::unique_ptr<Tetris> tetris_ = nullptr;
 	std::unique_ptr<KeyCoating> keyCoating_ = nullptr;
 
+	std::unique_ptr<RotateBlockEffect> rotateBlockEffect_ = nullptr;
+	std::unique_ptr<DrawResource> bgRes_ = nullptr;
+
 	std::unique_ptr<DrawResource> gameOverRes_ = nullptr;
 
 	bool gameOver_ = false;
 
+
+	std::mt19937 mt_;
 };

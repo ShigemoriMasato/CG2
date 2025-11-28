@@ -11,7 +11,6 @@ ConstantBuffer<Material> gMaterial : register(b0);
 
 struct DirectionalLight
 {
-    int enableLight;
     float4 color;
     float3 direction;
     float intensity;
@@ -53,23 +52,15 @@ PixelShaderOutput main(PixelShaderInput input)
     float4 transformedUV = mul(float4(input.texcoord, 0.0f, 1.0f), gMaterial.uvTransform);
     
     float4 color = gMaterial.color;
-    
     float4 textureColor = gTexture[input.textureIndex].Sample(gSampler, transformedUV.xy);
     
-    if (gDirectionalLight.enableLight)
+    if (length(gDirectionalLight.direction))
     {
-        if (gDirectionalLight.enableLight == 1)
-        {
-            output.color = LambertReflectance(input.normal, color, textureColor, gDirectionalLight);
-        }
-        else if (gDirectionalLight.enableLight == 2)
-        {
-            output.color = HalfLambert(input.normal, color, textureColor, gDirectionalLight);
-        }
+        output.color = HalfLambert(input.normal, color, textureColor, gDirectionalLight);
     }
     else
     {
-        output.color = color * textureColor;
+        output.color = textureColor * color;
     }
     
     if (output.color.w < 0.02f)
