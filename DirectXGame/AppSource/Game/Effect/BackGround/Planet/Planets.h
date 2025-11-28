@@ -32,7 +32,7 @@ private:
 
 private://Config
 
-	const int kPlanetNum_ = 4096;
+	const int kPlanetNum_ = 6000;
 
 	float createInterval_ = 0.01f;
 	float kAcceleration_ = 5.0f;
