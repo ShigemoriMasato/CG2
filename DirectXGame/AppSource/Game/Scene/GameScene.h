@@ -3,6 +3,7 @@
 #include <Camera/DebugCamera.h>
 #include <Game/KeyState/KeyCoating.h>
 #include <Game/Effect/RotateBlockEffect.h>
+#include <Game/Effect/BackGround/BGManager.h>
 #include "../Tetris/Tetris.h"
 
 class GameScene : public BaseScene {
@@ -23,7 +24,7 @@ private:
 	std::unique_ptr<KeyCoating> keyCoating_ = nullptr;
 
 	std::unique_ptr<RotateBlockEffect> rotateBlockEffect_ = nullptr;
-	std::unique_ptr<DrawResource> bgRes_ = nullptr;
+	std::unique_ptr<BGManager> bgManager_ = nullptr;
 
 	std::unique_ptr<DrawResource> gameOverRes_ = nullptr;
 

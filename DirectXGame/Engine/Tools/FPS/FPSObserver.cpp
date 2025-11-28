@@ -39,12 +39,13 @@ void FPSObserver::TimeAdjustment() {
     // 経過時間を計算（秒単位）
     double frameTime = static_cast<double>(timeEnd_.QuadPart - timeStart_.QuadPart) /
         static_cast<double>(timeFreq_.QuadPart);
+    double remainingTime = 0.0;
 
     if (isFix_) {
 
         // 目標フレーム時間まで待機
         if (frameTime < frameTime_) {
-            double remainingTime = frameTime_ - frameTime;
+            remainingTime = frameTime_ - frameTime;
             PreciseSleep(remainingTime);
 
             // 待機後の実際の時間を再測定
@@ -61,7 +62,6 @@ void FPSObserver::TimeAdjustment() {
 	ImGui::Text("Frame Time: %.2f ms", frameTime * 1000.0);
     ImGui::End();
 
-    logger_->info(std::format("FPS: {}, Frame Time : {}", 1.0 / frameTime, frameTime * 1000.0f));
 #endif
 
     deltatime_ = static_cast<float>(frameTime);

@@ -126,6 +126,10 @@ void RotateBlockEffect::Update(float deltaTime) {
 			}
 		}
 
+		if(index >= kPointLightNum_) {
+			goto LightUpdate;
+		}
+
 		lightActive_[index] = true;
 		PointLightData& light = effectBlock_->pointLightData_[index];
 
@@ -151,6 +155,7 @@ void RotateBlockEffect::Update(float deltaTime) {
 		light.color.w = 0.6f;
 	}
 
+	LightUpdate:
 
 	//ライトの更新
 	for (int i = 0; i < kPointLightNum_; ++i) {

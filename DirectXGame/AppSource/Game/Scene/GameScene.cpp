@@ -18,16 +18,11 @@ void GameScene::Initialize() {
 	gameOverRes_->position_ = { 0.0f, 2.5f, -70.0f };
 	gameOverRes_->camera_ = debugCamera_.get();
 
-
-	bgRes_ = std::make_unique<DrawResource>();
-	auto bgID = assetsLoader_->Load("BG_Ginga.png");
-	bgRes_->Initialize(ShapeType::Plane);
-	bgRes_->scale_ *= 2.0f;
-	bgRes_->position_.z = 1000.0f;
-	bgRes_->textureIndex_ = bgID.id;
-	
 	std::random_device rd;
 	mt_ = std::mt19937(rd());
+
+	bgManager_ = std::make_unique<BGManager>();
+	bgManager_->Initialize(assetsLoader_, debugCamera_.get(), mt_);
 
 	rotateBlockEffect_ = std::make_unique<RotateBlockEffect>();
 	rotateBlockEffect_->Initialize(16, debugCamera_.get(), mt_);
@@ -58,7 +53,12 @@ std::unique_ptr<BaseScene> GameScene::Update() {
 	}
 
 	rotateBlockEffect_->Update(deltaTime);
+	bgManager_->Update(deltaTime);
+
+#ifdef USE_IMGUI
+	bgManager_->DrawImGui();
 	rotateBlockEffect_->DrawImGui();
+#endif
 
 	return nullptr;
 }
@@ -66,7 +66,7 @@ std::unique_ptr<BaseScene> GameScene::Update() {
 void GameScene::Draw() {
 	render_->PreDraw();
 
-	render_->Draw(bgRes_.get());
+	bgManager_->Draw(render_);
 
 	tetris_->Draw(render_);
 
