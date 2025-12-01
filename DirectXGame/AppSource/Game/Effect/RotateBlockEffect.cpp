@@ -220,6 +220,8 @@ void RotateBlockEffect::Draw(Render* render) {
 
 void RotateBlockEffect::DrawImGui() {
 
+#ifdef USE_IMGUI
+
 	ImGui::Begin("RotateBlockEffect");
 
 	ImGui::Text("Block");
@@ -311,6 +313,7 @@ void RotateBlockEffect::DrawImGui() {
 
 	ImGui::End();
 
+#endif
 }
 
 void RotateBlockEffect::Rotation(uint32_t level) {

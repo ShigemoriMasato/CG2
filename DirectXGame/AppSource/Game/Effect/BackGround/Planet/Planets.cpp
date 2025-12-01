@@ -97,6 +97,8 @@ void Planets::Create() {
 }
 
 void Planets::DrawImGui() {
+#ifdef USE_IMGUI
+
 	ImGui::Begin("Planets Effect");
 
 	int activeCount = 0;
@@ -124,4 +126,6 @@ void Planets::DrawImGui() {
 	ImGui::SliderFloat("Delete Line", &deleteLine_, 100.0f, 1000.0f);
 
 	ImGui::End();
+
+#endif
 }
