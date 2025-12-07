@@ -19,6 +19,7 @@ IDxcBlob* CompileShader(
     IDxcBlobEncoding* shaderSource = nullptr;
     HRESULT hr = dxcUtils->LoadFile(filePath.c_str(), nullptr, &shaderSource);
     //読めなかったら止める
+    logger->flush();
     assert(SUCCEEDED(hr));
     //読み込んだファイルの内容を設定する
     DxcBuffer shaderSourceBuffer;

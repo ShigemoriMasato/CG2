@@ -35,14 +35,10 @@ void TitleScene::Initialize() {
 		particleRes_->textureIndex_[i] = textures[i % textures.size()];
 	}
 
-	waterPlane_ = std::make_unique<DrawResource>();
-	waterPlane_->Initialize(ShapeType::Plane);
-	waterPlane_->position_ = { 0.0f, 0.0f, 0.0f };
-	waterPlane_->scale_ = { 50.0f, 50.0f, 50.0f };
-	waterPlane_->rotate_.x = 1.57f;
-	waterPlane_->color_ = 0x6060d0ff;
+	AssetsID waterPlaneModel = assetsLoader_->Load("water");
+	waterPlane_ = std::make_unique<WaterPlaneResource>();
+	waterPlane_->Initialize(waterPlaneModel);
 	waterPlane_->camera_ = camera_.get();
-	waterPlaneColor_ = ConvertColor(waterPlane_->color_);
 
 	waterObj_ = std::make_unique<WaterObjResource>();
 	waterObj_->Initialize(modelID);
@@ -69,12 +65,10 @@ std::unique_ptr<BaseScene> TitleScene::Update() {
 
 	ImGui::Begin("Water Plane");
 	ImGui::ColorEdit4("Plane Color", &waterPlaneColor_.x);
-	ImGui::DragFloat("Height", &waterPlane_->position_.y, 0.01f);
+	ImGui::DragFloat("Height", &waterPlane_->position.y, 0.01f);
 	ImGui::End();
 
-	waterObj_->color = ConvertColor(waterObjColor_);
-	waterObj_->waterHeight = waterPlane_->position_.y;
-	waterPlane_->color_ = ConvertColor(waterPlaneColor_);
+	waterPlane_->DrawImGui();
 #endif
 
 	return std::unique_ptr<BaseScene>();

@@ -8,6 +8,7 @@
 #include <Assets/OffScreen/OffScreenManager.h>
 #include <Core/DXCommonFunction.h>
 #include <spdlog/logger.h>
+#include <Camera/Camera.h>
 
 //todo SetPSOConfig内でのRootSignatureの作成命令の出力
 

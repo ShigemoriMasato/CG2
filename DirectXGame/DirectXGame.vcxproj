@@ -78,6 +78,7 @@
     <ClCompile Include="AppSource\Game\Tetris\Player\Player.cpp" />
     <ClCompile Include="Engine\Render\Resource\WaterObjResource.cpp" />
     <ClCompile Include="AppSource\Game\Effect\BackGround\Planet\Planets.cpp" />
+    <ClCompile Include="Engine\Render\Resource\WaterPlaneResource.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AppSource\Common\InitializeScene\InitializeScene.h" />
@@ -151,6 +152,7 @@
     <ClInclude Include="AppSource\Game\Tetris\Player\Player.h" />
     <ClInclude Include="Engine\Render\Resource\WaterObjResource.h" />
     <ClInclude Include="AppSource\Game\Effect\BackGround\Planet\Planets.h" />
+    <ClInclude Include="Engine\Render\Resource\WaterPlaneResource.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="AppSource\Game\Emitter\ReadMe.md" />

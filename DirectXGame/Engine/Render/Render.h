@@ -71,7 +71,7 @@ private:
 	//フェンス
 	Microsoft::WRL::ComPtr<ID3D12Fence> fence = nullptr;
 	HANDLE fenceEvent;
-	uint64_t fenceValue;
+	uint64_t fenceValue = 0;
 
 	//PSO管理
 	std::unique_ptr<PSOEditor> psoEditor_ = nullptr;

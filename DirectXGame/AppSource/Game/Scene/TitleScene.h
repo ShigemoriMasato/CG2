@@ -4,6 +4,7 @@
 #include <Render/ImGuiWrapper.h>
 #include <Render/Resource/ParticleResource.h>
 #include <Render/Resource/WaterObjResource.h>
+#include <Render/Resource/WaterPlaneResource.h>
 
 class TitleScene : public BaseScene {
 public:
@@ -31,7 +32,7 @@ private:
 	std::unique_ptr<ParticleResource> particleRes_ = nullptr;
 
 	//water系
-	std::unique_ptr<DrawResource> waterPlane_ = nullptr;
+	std::unique_ptr<WaterPlaneResource> waterPlane_ = nullptr;
 	std::unique_ptr<WaterObjResource> waterObj_ = nullptr;
 	Vector4 waterObjColor_ = { 1.0f, 1.0f, 1.0f, 1.0f };
 	Vector4 waterPlaneColor_ = { 1.0f, 1.0f, 1.0f, 1.0f };
