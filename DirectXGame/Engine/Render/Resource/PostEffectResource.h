@@ -2,7 +2,7 @@
 #include "Data/BaseResource.h"
 #include "Data/PostEffectData.h"
 #include <Transform/Transform.h>
-#include <Assets/OffScreen/OffScreenManager.h>
+#include <Render/OffScreen/OffScreenManager.h>
 
 // 新しいポストエフェクトの追加手順 -================================================================
 //
@@ -42,46 +42,41 @@ public:
 	void SetJobs(PostEffectJob jobs);
 	void SetJobs(uint32_t jobs);
 
-	PostEffectData data_;
-
 	void DrawReady() override;
+	void SwapPS();
 	void SimpleDrawReady();
 	bool IsContinue() const;
 	void DrawFinish() { task_ = jobs_; };
-
-	ID3D12Resource* GetInfoResource() const { return infoResource_.Get(); }
 
 	//描画したいOffScreenのSRVGPUHandle
 	ScreenID input_;
 	//描画先のOffScreenのSRVGPUHandle
 	ScreenID output_;
 
+	Blur blur_;
+	Grayscale grayscale_;
+	Fade fade_;
+	GridTransition gridTransition_;
+	SlowMotion slowMotion_;
+	Glitch glitch_;
+	ConstantScanline constantScanline_;
+
 private:
 
 	VertexData* vertex_ = nullptr;
-
-	//最低最悪の構造体です。改善予定。ここ以外で使うな。
-	struct InfoForGPU {
-		Vector4
-			slot1,
-			slot2,
-			slot3,
-			slot4,
-			slot5,
-			slot6,
-			slot7,
-			slot8;
-	};
 
 	//このリソースに登録されているエフェクト
 	uint32_t jobs_;
 	//描画時、何のエフェクトをかけるかを確認するもの
 	uint32_t task_;
 
-	//GPUに送る情報群
-	InfoForGPU* infoForGPU_{};
-
-	Microsoft::WRL::ComPtr<ID3D12Resource> infoResource_ = nullptr;
+	Blur* blurData_ = nullptr;
+	Grayscale* grayscaleData_ = nullptr;
+	Fade* fadeData_ = nullptr;
+	GridTransition* gridTransitionData_ = nullptr;
+	SlowMotion* slowMotionData_ = nullptr;
+	Glitch* glitchData_ = nullptr;
+	ConstantScanline* constantScanlineData_ = nullptr;
 
 	D3D12_GPU_DESCRIPTOR_HANDLE infoGPUHandle_{};
 

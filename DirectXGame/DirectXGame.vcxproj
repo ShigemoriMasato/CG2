@@ -25,6 +25,7 @@
     <ClCompile Include="AppSource\Game\Tetris\Block\Delete\DeleteEffect.cpp" />
     <ClCompile Include="AppSource\Game\Effect\RotateBlockEffect.cpp" />
     <ClCompile Include="AppSource\Game\Effect\BackGround\BGManager.cpp" />
+    <ClCompile Include="Engine\Render\Resource\ColorfullPlaneResource.cpp" />
     <ClCompile Include="Engine\Render\Resource\BlockResource.cpp" />
     <ClCompile Include="Engine\Assets\AssetsLoader.cpp" />
     <ClCompile Include="Engine\Assets\Audio\AudioManager.cpp" />
@@ -34,8 +35,8 @@
     <ClCompile Include="Engine\Assets\Model\ModelAnimation.cpp" />
     <ClCompile Include="Engine\Assets\Model\ModelData.cpp" />
     <ClCompile Include="Engine\Assets\Model\ModelManager.cpp" />
-    <ClCompile Include="Engine\Assets\OffScreen\OffScreenData.cpp" />
-    <ClCompile Include="Engine\Assets\OffScreen\OffScreenManager.cpp" />
+    <ClCompile Include="Engine\Render\OffScreen\OffScreenData.cpp" />
+    <ClCompile Include="Engine\Render\OffScreen\OffScreenManager.cpp" />
     <ClCompile Include="Engine\Assets\Texture\TextureData.cpp" />
     <ClCompile Include="Engine\Assets\Texture\TextureManager.cpp" />
     <ClCompile Include="Engine\Render\Resource\Data\BaseResource.cpp" />
@@ -92,6 +93,7 @@
     <ClInclude Include="AppSource\Game\Tetris\Block\Delete\DeleteEffect.h" />
     <ClInclude Include="AppSource\Game\Effect\RotateBlockEffect.h" />
     <ClInclude Include="AppSource\Game\Effect\BackGround\BGManager.h" />
+    <ClInclude Include="Engine\Render\Resource\ColorfullPlaneResource.h" />
     <ClInclude Include="Engine\Render\Resource\BlockResource.h" />
     <ClInclude Include="Engine\Assets\AssetsLoader.h" />
     <ClInclude Include="Engine\Assets\Audio\AudioManager.h" />
@@ -101,8 +103,8 @@
     <ClInclude Include="Engine\Assets\Model\ModelAnimation.h" />
     <ClInclude Include="Engine\Assets\Model\ModelData.h" />
     <ClInclude Include="Engine\Assets\Model\ModelManager.h" />
-    <ClInclude Include="Engine\Assets\OffScreen\OffScreenData.h" />
-    <ClInclude Include="Engine\Assets\OffScreen\OffScreenManager.h" />
+    <ClInclude Include="Engine\Render\OffScreen\OffScreenData.h" />
+    <ClInclude Include="Engine\Render\OffScreen\OffScreenManager.h" />
     <ClInclude Include="Engine\Assets\Texture\TextureData.h" />
     <ClInclude Include="Engine\Assets\Texture\TextureManager.h" />
     <ClInclude Include="Engine\Core\ECS\EntityID.h" />

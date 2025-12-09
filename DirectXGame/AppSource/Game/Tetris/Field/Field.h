@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <Render/Resource/ParticleResource.h>
+#include <Render/Resource/ColorfullPlaneResource.h>
 #include <Render/Render.h>
 #include <Common/KeyConfig/KeyManager.h>
 
@@ -11,8 +12,8 @@ public:
 	~Field() = default;
 
 	void Initialize(Camera* camera);
-
 	void Draw(Render* render);
+	void DrawImGui();
 
 	std::vector<std::vector<int>> GetField() const;
 
@@ -32,4 +33,6 @@ private:
 	std::vector<int> reqLine_{};
 
 	std::unique_ptr<ParticleResource> debugLine_ = nullptr;
+
+	std::unique_ptr<ColorfullPlaneResource> backPlane_ = nullptr;
 };

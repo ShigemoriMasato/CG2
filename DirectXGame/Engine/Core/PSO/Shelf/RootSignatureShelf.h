@@ -8,6 +8,7 @@
 
 enum class RootSignatureID : uint8_t {
 	VerC1_PixC2_Tex,
+	VerC1_PixC1,
 	VerS1_Tex,
 	VerS1_PixC1_Tex,
 	VerC1,
@@ -16,6 +17,7 @@ enum class RootSignatureID : uint8_t {
 	VerC1_PixC1_Tex,
 	VerS1_PixS1,
 	VerS1_PixS2,
+	PixC1,
 
 	Count
 };

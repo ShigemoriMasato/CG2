@@ -7,8 +7,7 @@
 
 enum class ScreenID {
 	SwapChain = -1,
-	PostPing,
-	PostPong,
+	PostPing,		//Pongは対象のOffScreenを使用する
 
 	GameWindow,
 

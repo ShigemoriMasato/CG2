@@ -15,27 +15,53 @@ void Field::Initialize(Camera* camera) {
 	int index = 0;
 	for (int j = 0; j < width_ - 1; ++j) {
 		debugLine_->position_[index] = {
-			float(j) - float(width_) / 2 + 0.5f, -0.5f, 0.0f
+			float(j) - float(width_) / 2 + 0.5f, -0.5f, -0.5f
 		};
-		debugLine_->scale_[index] = { 0.05f, float(height_), 1.0f };
+		debugLine_->scale_[index] = { 0.05f, float(height_), 0.1f };
 		debugLine_->color_[index] = 0x60606060;
 		++index;
 	}
 
 	for (int i = 0; i < height_; ++i) {
 		debugLine_->position_[index] = {
-			-0.5f, float(i) - float(height_) / 2 + 0.5f, 0.0f
+			-0.5f, float(i) - float(height_) / 2 + 0.5f, -0.5f
 		};
-		debugLine_->scale_[index] = { float(width_), 0.05f, 1.0f };
+		debugLine_->scale_[index] = { float(width_), 0.05f, 0.1f };
 		debugLine_->color_[index] = 0x60606060;
 		++index;
 	}
 
 	debugLine_->camera_ = camera;
+
+	backPlane_ = std::make_unique<ColorfullPlaneResource>();
+	std::vector<uint32_t> color = {
+		0xe0, 0xe0, 0xffffffff, 0xffffffff
+	};
+	backPlane_->Initialize(color.data());
+	backPlane_->scale_ = { float(width_), float(height_), 1.0f };
+	backPlane_->position_ = { -0.5f, -0.5f, 0.5f };
+	backPlane_->color_ = 0xff;
+	backPlane_->camera_ = camera;
 }
 
 void Field::Draw(Render* render) {
+	render->Draw(backPlane_.get());
 	render->Draw(debugLine_.get());
+}
+
+void Field::DrawImGui() {
+#ifdef USE_IMGUI
+	ImGui::Begin("Field");
+
+	ImGui::DragFloat3("BackPlane Position", &backPlane_->position_.x, 0.01f);
+	ImGui::DragFloat3("BackPlane Scale", &backPlane_->scale_.x, 0.01f);
+
+	Vector4 color = ConvertColor(backPlane_->color_);
+	ImGui::ColorEdit4("Color", &color.x);
+	backPlane_->color_ = ConvertColor(color);
+
+	ImGui::End();
+#endif
 }
 
 std::vector<std::vector<int>> Field::GetField() const {

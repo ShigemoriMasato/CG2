@@ -98,6 +98,38 @@ InputLayoutShelf::InputLayoutShelf() {
         inputLayouts_[int(InputLayoutID::Model)] = inputLayoutDesc;
     }
 
+    {
+        inputElementsList_[int(InputLayoutID::Color)].resize(4);
+
+        //InputLayout
+        inputElementsList_[int(InputLayoutID::Color)][0].SemanticName = "POSITION";
+        inputElementsList_[int(InputLayoutID::Color)][0].SemanticIndex = 0;
+        inputElementsList_[int(InputLayoutID::Color)][0].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+        inputElementsList_[int(InputLayoutID::Color)][0].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+
+        inputElementsList_[int(InputLayoutID::Color)][1].SemanticName = "TEXCOORD";
+        inputElementsList_[int(InputLayoutID::Color)][1].SemanticIndex = 0;
+        inputElementsList_[int(InputLayoutID::Color)][1].Format = DXGI_FORMAT_R32G32_FLOAT;
+        inputElementsList_[int(InputLayoutID::Color)][1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+
+        inputElementsList_[int(InputLayoutID::Color)][2].SemanticName = "NORMAL";
+        inputElementsList_[int(InputLayoutID::Color)][2].SemanticIndex = 0;
+        inputElementsList_[int(InputLayoutID::Color)][2].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+        inputElementsList_[int(InputLayoutID::Color)][2].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+
+        inputElementsList_[int(InputLayoutID::Color)][3].SemanticName = "Color";
+        inputElementsList_[int(InputLayoutID::Color)][3].SemanticIndex = 0;
+        inputElementsList_[int(InputLayoutID::Color)][3].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+        inputElementsList_[int(InputLayoutID::Color)][3].InputSlot = 1;
+        inputElementsList_[int(InputLayoutID::Color)][3].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+
+        D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
+        inputLayoutDesc.pInputElementDescs = inputElementsList_[int(InputLayoutID::Color)].data();
+        inputLayoutDesc.NumElements = static_cast<UINT>(inputElementsList_[int(InputLayoutID::Color)].size());
+
+        inputLayouts_[int(InputLayoutID::Color)] = inputLayoutDesc;
+    }
+
 }
 
 InputLayoutShelf::~InputLayoutShelf() {

@@ -1,5 +1,6 @@
 #include "OffScreenManager.h"
 #include <Core/DXCommonFunction.h>
+#include <Transform/Vector.h>
 
 OffScreenManager::OffScreenManager() {
 }
@@ -14,8 +15,8 @@ void OffScreenManager::Initialize(DXDevice* device, SRVManager* srvManager) {
 	rtvDescriptorHeap_.Attach(rawHeap);
 
 	for(int i = 0; i < maxOffScreenCount_; ++i) {
-		float clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
-		CreateOffScreen(1280, 720, clearColor);
+		Vector4 clearColor = { 0.0f,0.0f,0.0f,1.0f };
+		CreateOffScreen(1280, 720, &clearColor.x);
 	}
 }
 

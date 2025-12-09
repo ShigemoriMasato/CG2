@@ -4,7 +4,7 @@ void GameScene::Initialize() {
 
 	debugCamera_ = std::make_unique<DebugCamera>();
 	debugCamera_->Initialize();
-	debugCamera_->SetDistance(80.0f);
+	debugCamera_->SetDistance(56.0f);
 	debugCamera_->Update();
 
 	keyCoating_ = std::make_unique<KeyCoating>(commonData->keyManager_.get());
@@ -15,7 +15,7 @@ void GameScene::Initialize() {
 	gameOverRes_ = std::make_unique<DrawResource>();
 	auto goID = assetsLoader_->Load("gameover");
 	gameOverRes_->Initialize(goID);
-	gameOverRes_->position_ = { 0.0f, 2.5f, -70.0f };
+	gameOverRes_->position_ = { -0.2f, 0.5f, -37.0f };
 	gameOverRes_->camera_ = debugCamera_.get();
 
 	std::random_device rd;
@@ -56,6 +56,11 @@ std::unique_ptr<BaseScene> GameScene::Update() {
 	bgManager_->Update(deltaTime);
 
 #ifdef USE_IMGUI
+
+	ImGui::Begin("GameOver");
+	ImGui::DragFloat3("position", &gameOverRes_->position_.x, 0.1f);
+	ImGui::End();
+
 	bgManager_->DrawImGui();
 	rotateBlockEffect_->DrawImGui();
 #endif
@@ -68,9 +73,9 @@ void GameScene::Draw() {
 
 	bgManager_->Draw(render_);
 
-	tetris_->Draw(render_);
-
 	rotateBlockEffect_->Draw(render_);
+
+	tetris_->Draw(render_);
 
 	if (gameOver_) {
 		render_->Draw(gameOverRes_.get());

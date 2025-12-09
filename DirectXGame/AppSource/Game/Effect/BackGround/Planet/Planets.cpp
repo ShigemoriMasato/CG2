@@ -35,6 +35,7 @@ void Planets::Initialize(AssetsID textureIndex, Camera* camera, std::mt19937 ran
 	}
 
 	planetParticles_->psoConfig_.blendID = BlendStateID::Add;
+	planetParticles_->psoConfig_.depthStencilID = DepthStencilID::Transparent;
 
 	createInterval_ = BinaryManager::Reverse<float>(data[i++]);
 	kAcceleration_ = BinaryManager::Reverse<float>(data[i++]);
@@ -51,7 +52,11 @@ void Planets::Update(float deltaTime) {
 	createTimer_ += deltaTime;
 	while (createTimer_ >= createInterval_) {
 		createTimer_ = createTimer_ - createInterval_;
-		Create();
+		bool result = Create();
+		if (!result) {
+			createTimer_ = 0.0f;
+			break;
+		}
 	}
 
 	for (size_t i = 0; i < kPlanetNum_; ++i) {
@@ -76,7 +81,7 @@ void Planets::Draw(Render* render) {
 	render->Draw(planetParticles_.get());
 }
 
-void Planets::Create() {
+bool Planets::Create() {
 	int i;
 	for(i = 0; i < kPlanetNum_; ++i) {
 		if (!active_[i]) {
@@ -85,7 +90,7 @@ void Planets::Create() {
 	}
 
 	if (i >= kPlanetNum_) {
-		return;
+		return false;
 	}
 
 	active_[i] = true;
@@ -94,6 +99,8 @@ void Planets::Create() {
 	std::uniform_real_distribution<float> distY(initPosMin_.y, initPosMax_.y);
 	planetParticles_->position_[i] = { distX(rand_), distY(rand_), initPosZ_ };
 	planetParticles_->color_[i] = 0xffffffff;
+
+	return true;
 }
 
 void Planets::DrawImGui() {
@@ -109,7 +116,8 @@ void Planets::DrawImGui() {
 	}
 	ImGui::Text("%d / %d", activeCount, kPlanetNum_);
 
-	ImGui::DragFloat("Create Interval", &createInterval_, 0.001f, 0.0f);
+	ImGui::DragFloat("Create Interval", &createInterval_, 0.0001f);
+	createInterval_ = std::max(0.0001f, createInterval_);
 	ImGui::DragFloat("Acceleration", &kAcceleration_, 0.0f, 0.0f);
 
 	ImGui::DragFloat2("Init Pos Min", &initPosMin_.x, 0.1f, -100.0f, 100.0f);

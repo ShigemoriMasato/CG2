@@ -16,7 +16,7 @@ public:
 
 private:
 
-	void Create();
+	bool Create();
 
 	std::mt19937 rand_;
 
@@ -27,12 +27,11 @@ private:
 	std::vector<bool> active_{};
 	std::vector<float> speed_{};
 
-
 	float createTimer_ = 0.0f;
 
 private://Config
 
-	const int kPlanetNum_ = 6000;
+	const int kPlanetNum_ = 3000;
 
 	float createInterval_ = 0.01f;
 	float kAcceleration_ = 5.0f;

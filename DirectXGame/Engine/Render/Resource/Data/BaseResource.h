@@ -5,7 +5,7 @@
 #include <Core/DXDevice.h>
 #include <Core/PSO/PSOConfig.h>
 #include <Assets/AssetsLoader.h>
-#include <Assets/OffScreen/OffScreenManager.h>
+#include <Render/OffScreen/OffScreenManager.h>
 #include <Core/DXCommonFunction.h>
 #include <spdlog/logger.h>
 #include <Camera/Camera.h>

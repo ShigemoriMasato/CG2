@@ -66,6 +66,9 @@ void FPSObserver::TimeAdjustment() {
 
     deltatime_ = static_cast<float>(frameTime);
 
+    //deltaTimeが大きくなりすぎないようにする
+	deltatime_ = std::min(deltatime_, static_cast<float>(frameTime_ * 3.0));
+
     // 次のフレームの開始時間を設定
     timeStart_ = timeEnd_;
 }

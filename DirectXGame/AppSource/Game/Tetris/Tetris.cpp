@@ -57,11 +57,15 @@ void Tetris::Update(float deltaTime) {
 	}
 
 	blockRender_->Update(deltaTime);
+
+#ifdef USE_IMGUI
+	field_->DrawImGui();
+#endif
 }
 
 void Tetris::Draw(Render* render) {
-	field_->Draw(render);
 	blockRender_->Draw(render);
+	field_->Draw(render);
 	player_->HoldDraw(render);
 	tetrimino_->DrawNext(render);
 }

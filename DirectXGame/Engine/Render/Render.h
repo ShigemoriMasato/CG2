@@ -2,7 +2,7 @@
 #include <Core/DXDevice.h>
 #include <Core/PSO/PSOEditor.h>
 #include <Assets/Texture/TextureManager.h>
-#include <Assets/OffScreen/OffScreenManager.h>
+#include "OffScreen/OffScreenManager.h"
 #include <Render/ImGuiWrapper.h>
 
 #include <Render/Resource/DrawResource.h>
